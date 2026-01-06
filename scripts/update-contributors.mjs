@@ -4,6 +4,7 @@ import { writeFileSync } from 'fs';
 
 const REPO = 'opendata-oss/opendata';
 const COMPONENT_FILE = 'src/components/Contributors.astro';
+const MANIFESTO_SIGNERS_URL = `https://github.com/${REPO}/edit/main/MANIFESTO_SIGNERS.md`;
 
 async function main() {
   console.log(`Fetching contributors from ${REPO}...`);
@@ -24,7 +25,7 @@ async function main() {
 
 <div class="flex -space-x-3">
 ${avatarHtml}
-  <a href="https://github.com/${REPO}/issues" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border-2 border-white bg-slate-100 hover:bg-slate-200 transition-colors flex items-center justify-center text-slate-500 hover:text-slate-700" title="Become a contributor">
+  <a href="${MANIFESTO_SIGNERS_URL}" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border-2 border-white bg-slate-100 hover:bg-slate-200 transition-colors flex items-center justify-center text-slate-500 hover:text-slate-700" title="Sign the manifesto">
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
   </a>
 </div>
