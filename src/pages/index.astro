@@ -11,8 +11,14 @@ import '../styles/global.css';
     <link rel="icon" type="image/svg+xml" href="/images/icon.svg" />
     <title>OpenData</title>
   </head>
-  <body class="bg-white min-h-screen flex flex-col items-center justify-center gap-4">
+  <body class="bg-white min-h-screen flex flex-col items-center justify-center gap-6 px-2">
     <img src="/images/logo.svg" alt="OpenData" class="max-w-md w-full px-8" />
+    <p class="font-mono text-slate-500 text-center px-4 py-3 border-l-2 border-slate-300 max-w-lg">
+      Object-store native databases built on a common foundation. Simple to operate. Impossible to outgrow.
+    </p>
+    <a href="/manifesto" class="font-mono text-sm text-slate-500 hover:text-slate-900 underline underline-offset-4 transition-colors">
+      read the manifesto →
+    </a>
     <div class="flex gap-4">
       <a href="https://github.com/opendata-oss/opendata" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 transition-colors" aria-label="GitHub">
         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
@@ -25,5 +31,8 @@ import '../styles/global.css';
         </svg>
       </a>
     </div>
+    <a href="https://github.com/opendata-oss/opendata" target="_blank" rel="noopener" class="font-mono text-xs bg-slate-100 text-slate-600 px-3 py-1.5 rounded-full hover:bg-slate-200 transition-colors">
+      OSS · contributors welcome
+    </a>
   </body>
 </html>
