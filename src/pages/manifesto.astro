@@ -1,6 +1,6 @@
 ---
-import '../styles/global.css';
-import Contributors from '../components/Contributors.astro';
+import "../styles/global.css";
+import Contributors from "../components/Contributors.astro";
 ---
 
 <!doctype html>
@@ -21,17 +21,39 @@ import Contributors from '../components/Contributors.astro';
     <meta name="twitter:description" content="The OpenData Manifesto" />
     <meta name="twitter:image" content="/images/opengraph.png" />
   </head>
-  <body class="bg-white min-h-screen flex flex-col items-center justify-center gap-6 px-4">
+  <body
+    class="bg-white min-h-screen flex flex-col items-center justify-center gap-6 px-4 py-12"
+  >
     <article class="font-mono text-slate-700 max-w-2xl space-y-6">
       <h1 class="text-2xl text-slate-900">The OpenData Manifesto</h1>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        Modern cloud databases optimize for vendor economics, not operational
+        reality. Hardware is marked up by the cloud, then marked up again by
+        database vendors layered on top. Complexity compounds as each system
+        demands its own care. Data is locked behind proprietary formats and
+        APIs. What should be durable infrastructure becomes an ongoing rental,
+        expensive to run and hard to escape. This outcome isn&apos;t accidental,
+        it&apos;s the result of incentives misaligned with the people building
+        and operating systems.
       </p>
       <p>
-        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+        Object storage changes what databases can be. It provides durability,
+        availability, and scale as a primitive, removing the need to constantly
+        manage replication, rebalance state, or recover fragile clusters. Most
+        databases fail to take advantage of this because they were designed for
+        a world where object storage didn&apos;t exist. OpenData is built for
+        the world we have now: data lives directly in object storage, compute is
+        decoupled and ephemeral, and readers and writers scale independently.
+        The system is simpler because the foundation is simpler.
       </p>
       <p>
-        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.
+        OpenData is a collection of focused, object-store-native databases built
+        on a shared core. Each database does one thing well, but all share the
+        same storage substrate, configuration model, and operational
+        patterns. Operating many feels like operating one. Data remains
+        portable and accessible while costs remain transparent. OpenData is MIT
+        licensed, with no vendor dependency and no middleman. Object storage
+        changed the rules and OpenData is designed to live by them.
       </p>
       <div class="pt-4">
         <p class="text-slate-400 italic">— The OpenData Contributors</p>
@@ -40,10 +62,18 @@ import Contributors from '../components/Contributors.astro';
         </div>
       </div>
     </article>
-    <a href="https://discord.gg/EUv3Bqcv" target="_blank" rel="noopener" class="font-mono text-sm bg-black text-white px-4 py-2 rounded-full hover:bg-slate-800 transition-colors">
+    <a
+      href="https://discord.gg/EUv3Bqcv"
+      target="_blank"
+      rel="noopener"
+      class="font-mono text-sm bg-black text-white px-4 py-2 rounded-full hover:bg-slate-800 transition-colors"
+    >
       Join us on Discord
     </a>
-    <a href="/" class="font-mono text-sm text-slate-500 hover:text-slate-900 underline underline-offset-4 transition-colors">
+    <a
+      href="/"
+      class="font-mono text-sm text-slate-500 hover:text-slate-900 underline underline-offset-4 transition-colors"
+    >
       &larr; back home
     </a>
   </body>
