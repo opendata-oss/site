@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+
+const enableAnalytics = import.meta.env.PROD;
 ---
 
 <!doctype html>
@@ -19,6 +21,12 @@ import '../styles/global.css';
     <meta name="twitter:title" content="OpenData" />
     <meta name="twitter:description" content="Open-source databases purpose-built for object storage" />
     <meta name="twitter:image" content="/images/opengraph.png" />
+    {enableAnalytics && (
+      <script type="module">
+        import { inject } from '@vercel/analytics';
+        inject();
+      </script>
+    )}
   </head>
   <body class="bg-white min-h-screen flex flex-col items-center justify-center gap-6 px-2">
     <img src="/images/logo.svg" alt="OpenData" class="max-w-md w-full px-8" />
