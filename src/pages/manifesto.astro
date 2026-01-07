@@ -25,36 +25,46 @@ import Contributors from "../components/Contributors.astro";
     class="bg-white min-h-screen flex flex-col items-center justify-center gap-6 px-4 py-12"
   >
     <article class="font-mono text-slate-700 max-w-2xl space-y-6">
+
       <h1 class="text-2xl text-slate-900">The OpenData Manifesto</h1>
+
       <p>
-        Modern cloud databases optimize for vendor economics, not operational
-        reality. Hardware is marked up by the cloud, then marked up again by
-        database vendors layered on top. Complexity compounds as each system
-        demands its own care. Data is locked behind proprietary formats and
-        APIs. What should be durable infrastructure becomes an ongoing rental,
-        expensive to run and hard to escape. This outcome isn&apos;t accidental,
-        it&apos;s the result of incentives misaligned with the people building
-        and operating systems.
+        Databases are mostly open source and commoditized. But running databases is hard.
+        So you still either pay vendors who enjoy 80% margins, or you hire specialized
+        SREs to babysit database clusters. Either way, database operations consume 5–10% of
+        your revenue. The real cost of your databases today is not the software, but the
+        operations.
+      </p>
+
+      <p>
+        OpenData is changing this. Thanks to object storage, we now have durable,
+        globally addressable storage that makes radically simpler database architectures
+        possible. What's more, the work needed to use object storage optimally is
+        substantially similar across modern databases: smart caching and batching coupled
+        with correct metadata management. OpenData leverages this to build multiple databases
+        on a shared core. Bespoke operational know how disappears. Fewer people are needed to
+        run many databases. Operational costs collapse.
+      </p>
+
+      <p>
+        We are building a collection of databases designed natively for object storage.
+        Each database is focused on one usecase. All databases share:
+      </p>
+
+      <ul class="list-disc pl-6">
+        <li><b>a common core</b>, so operational expertise transfers across every database </li>
+        <li><b>common tooling</b>, so you have one operational model to learn </li>
+        <li><b>open data formats and MIT licensing</b>, so there is no vendor lock-in </li>
+      </ul>
+
+      <p>
+        We're making it practical for small teams to run their own databases again. The future
+        belongs to those who own their infrastructure without being owned by it.
       </p>
       <p>
-        Object storage changes what databases can be. It provides durability,
-        availability, and scale as a primitive, removing the need to constantly
-        manage replication, rebalance state, or recover fragile clusters. Most
-        databases fail to take advantage of this because they were designed for
-        a world where object storage didn&apos;t exist. OpenData is built for
-        the world we have now: data lives directly in object storage, compute is
-        decoupled and ephemeral, and readers and writers scale independently.
-        The system is simpler because the foundation is simpler.
+        <b>Join us.</b>
       </p>
-      <p>
-        OpenData is a collection of focused, object-store-native databases built
-        on a shared core. Each database does one thing well, but all share the
-        same storage substrate, configuration model, and operational
-        patterns. Operating many feels like operating one. Data remains
-        portable and accessible while costs remain transparent. OpenData is MIT
-        licensed, with no vendor dependency and no middleman. Object storage
-        changed the rules and OpenData is designed to live by them.
-      </p>
+
       <div class="pt-4">
         <p class="text-slate-400 italic">— The OpenData Contributors</p>
         <div class="mt-3">
