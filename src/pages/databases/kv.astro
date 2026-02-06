@@ -1,0 +1,88 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import TodoBadge from '../../components/TodoBadge.astro';
+
+const toc = [
+  { label: 'Overview', id: 'overview', level: 2 },
+  { label: 'Planned Features', id: 'planned-features', level: 2 },
+  { label: 'Get Notified', id: 'get-notified', level: 2 },
+];
+---
+
+<DocsLayout
+  title="Key-Value — OpenData"
+  description="OpenData Key-Value: fast key-value storage built directly on SlateDB. Coming soon."
+  toc={toc}
+  breadcrumbs={[
+    { label: 'Databases', href: '/databases/log' },
+    { label: 'Key-Value' },
+  ]}
+>
+  <div class="flex items-center gap-3 mb-2">
+    <span class="flex items-center justify-center w-10 h-10 rounded-lg bg-db-kv text-white text-lg">&#x1F511;</span>
+    <h1 class="text-3xl font-bold">Key-Value</h1>
+    <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-surface-alt text-text-muted border border-border">
+      Coming Soon
+    </span>
+  </div>
+  <p class="text-text-secondary text-lg mb-8">
+    Fast key-value storage built directly on SlateDB. Simple get/put/delete operations
+    with point-in-time snapshots and range scans, backed by object storage.
+  </p>
+
+  <h2 id="overview">Overview</h2>
+
+  <p>
+    OpenData Key-Value is the most direct expression of the SlateDB storage engine —
+    a simple, reliable key-value store backed by object storage. It provides the
+    fundamental building block for applications that need durable, cloud-native
+    key-value storage without the operational burden of managing a distributed
+    key-value cluster.
+  </p>
+
+  <p>
+    Like all OpenData databases, it shares the same storage backend configuration,
+    the same monitoring endpoints, the same CLI tools, and the same scaling model.
+    If you've operated any other OpenData database, you already know how to run this one.
+  </p>
+
+  <h2 id="planned-features">Planned Features</h2>
+
+  <ul>
+    <li><strong>Get/Put/Delete</strong> — Simple CRUD operations with strong consistency</li>
+    <li><strong>Range scans</strong> — Efficient ordered iteration over key ranges</li>
+    <li><strong>Point-in-time snapshots</strong> — Read from a consistent snapshot while writes continue</li>
+    <li><strong>TTL support</strong> — Automatic expiry of keys after a configurable time</li>
+    <li><strong>Batch operations</strong> — Atomic multi-key writes</li>
+    <li><strong>HTTP and gRPC APIs</strong> — Access from any language</li>
+  </ul>
+
+  <h2 id="get-notified">Get Notified</h2>
+
+  <p>
+    OpenData KV is under active development. Follow progress and get notified when
+    it's ready:
+  </p>
+
+  <div class="mt-6 flex flex-col sm:flex-row gap-3">
+    <a
+      href="https://github.com/opendata-oss/opendata"
+      target="_blank"
+      rel="noopener"
+      class="btn-primary"
+    >
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+      </svg>
+      Watch on GitHub
+    </a>
+    <a
+      href="https://discord.gg/CsAQJ2AJGU"
+      target="_blank"
+      rel="noopener"
+      class="btn-secondary"
+    >
+      Discuss on Discord
+    </a>
+  </div>
+</DocsLayout>

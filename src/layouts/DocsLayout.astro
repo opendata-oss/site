@@ -1,0 +1,62 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import LeftNav from '../components/LeftNav.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+
+interface TocItem {
+  label: string;
+  id: string;
+  level: number;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  toc?: TocItem[];
+  breadcrumbs?: { label: string; href?: string }[];
+}
+
+const { title, description, toc = [], breadcrumbs = [] } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <Header currentPath={Astro.url.pathname} />
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    {breadcrumbs.length > 0 && (
+      <nav class="mb-6 text-sm text-text-muted" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-1.5">
+          <li><a href="/" class="hover:text-text transition-colors">Home</a></li>
+          {breadcrumbs.map((crumb, i) => (
+            <>
+              <li class="text-border">/</li>
+              <li>
+                {crumb.href ? (
+                  <a href={crumb.href} class="hover:text-text transition-colors">{crumb.label}</a>
+                ) : (
+                  <span class="text-text">{crumb.label}</span>
+                )}
+              </li>
+            </>
+          ))}
+        </ol>
+      </nav>
+    )}
+
+    <div class="flex gap-8">
+      <LeftNav currentPath={Astro.url.pathname} />
+
+      <article class="flex-1 min-w-0 docs-content max-w-3xl">
+        <slot />
+      </article>
+
+      {toc.length > 0 && (
+        <TableOfContents items={toc} />
+      )}
+    </div>
+  </div>
+
+  <Footer />
+</BaseLayout>

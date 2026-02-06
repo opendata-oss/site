@@ -1,0 +1,246 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import TodoBadge from '../../components/TodoBadge.astro';
+
+const toc = [
+  { label: 'Overview', id: 'overview', level: 2 },
+  { label: 'Use Cases', id: 'use-cases', level: 3 },
+  { label: 'Quickstart', id: 'quickstart', level: 2 },
+  { label: 'API Reference', id: 'api-reference', level: 2 },
+  { label: 'Configuration', id: 'configuration', level: 2 },
+  { label: 'Operations', id: 'operations', level: 2 },
+  { label: 'Performance', id: 'performance', level: 2 },
+  { label: 'Comparisons', id: 'comparisons', level: 2 },
+];
+
+const startCode = `<span class="text-[#6c7086]"># Start OpenData Timeseries</span>
+<span class="text-[#a6e3a1]">$</span> docker run -p 8081:8080 -p 9091:9090 \\
+    -e OPENDATA_STORAGE_BACKEND=s3 \\
+    -e OPENDATA_STORAGE_BUCKET=my-opendata-bucket \\
+    opendata/timeseries:latest`;
+
+const promConfig = `<span class="text-[#89b4fa]">remote_write</span><span class="text-[#6c7086]">:</span>
+  <span class="text-[#a6e3a1]">- url: http://opendata-timeseries:8080/api/v1/write</span>
+
+<span class="text-[#89b4fa]">remote_read</span><span class="text-[#6c7086]">:</span>
+  <span class="text-[#a6e3a1]">- url: http://opendata-timeseries:8080/api/v1/read</span>`;
+
+const queryCode = `<span class="text-[#a6e3a1]">$</span> curl http://localhost:8081/api/v1/query \\
+    -d 'query=rate(http_requests_total[5m])'
+
+<span class="text-[#f9e2af]">{"status": "success", "data": {"resultType": "vector", "result": [...]}}</span>`;
+---
+
+<DocsLayout
+  title="Timeseries &mdash; OpenData"
+  description="OpenData Timeseries: Prometheus-compatible TSDB built on object storage."
+  toc={toc}
+  breadcrumbs={[
+    { label: 'Databases', href: '/databases/log' },
+    { label: 'Timeseries' },
+  ]}
+>
+  <div class="flex items-center gap-3 mb-2">
+    <span class="flex items-center justify-center w-10 h-10 rounded-lg bg-db-timeseries text-white text-lg">&#x1F4C8;</span>
+    <h1 class="text-3xl font-bold">Timeseries</h1>
+  </div>
+  <p class="text-text-secondary text-lg mb-8">
+    Prometheus-compatible TSDB for long-term metrics storage. PromQL queries,
+    remote write ingestion, infinite retention at object storage prices.
+  </p>
+
+  <h2 id="overview">Overview</h2>
+
+  <p>
+    OpenData Timeseries is a Prometheus-compatible time series database built natively
+    on object storage. It supports Prometheus remote write for ingestion and PromQL for
+    querying, making it a drop-in long-term storage backend for your existing Prometheus
+    infrastructure.
+  </p>
+
+  <h3 id="use-cases">Use Cases</h3>
+
+  <ul>
+    <li><strong>Long-term metrics storage</strong> &mdash; Store months or years of Prometheus metrics at object storage prices</li>
+    <li><strong>Multi-cluster aggregation</strong> &mdash; Collect metrics from multiple Prometheus instances into one queryable store</li>
+    <li><strong>Infrastructure monitoring</strong> &mdash; High-cardinality metrics with efficient storage and querying</li>
+  </ul>
+
+  <p>
+    <strong>Key differentiators:</strong> Prometheus-compatible APIs (drop-in replacement for remote storage),
+    infinite retention without manual management, shared operational model with all OpenData databases.
+  </p>
+
+  <h2 id="quickstart">Quickstart</h2>
+
+  <div class="my-4">
+    <CodeBlock title="terminal" code={startCode} />
+  </div>
+
+  <p>Configure Prometheus to remote write:</p>
+
+  <div class="my-4">
+    <CodeBlock title="prometheus.yml" code={promConfig} />
+  </div>
+
+  <p>Query with PromQL:</p>
+
+  <div class="my-4">
+    <CodeBlock title="terminal" code={queryCode} />
+  </div>
+
+  <h2 id="api-reference">API Reference</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>Path</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>POST</code></td>
+        <td><code>/api/v1/write</code></td>
+        <td>Prometheus remote write endpoint</td>
+      </tr>
+      <tr>
+        <td><code>POST</code></td>
+        <td><code>/api/v1/read</code></td>
+        <td>Prometheus remote read endpoint</td>
+      </tr>
+      <tr>
+        <td><code>GET</code></td>
+        <td><code>/api/v1/query</code></td>
+        <td>Instant PromQL query</td>
+      </tr>
+      <tr>
+        <td><code>GET</code></td>
+        <td><code>/api/v1/query_range</code></td>
+        <td>Range PromQL query</td>
+      </tr>
+      <tr>
+        <td><code>GET</code></td>
+        <td><code>/api/v1/series</code></td>
+        <td>List matching series</td>
+      </tr>
+      <tr>
+        <td><code>GET</code></td>
+        <td><code>/api/v1/labels</code></td>
+        <td>List label names</td>
+      </tr>
+      <tr>
+        <td><code>GET</code></td>
+        <td><code>/api/v1/label/&#123;name&#125;/values</code></td>
+        <td>List label values</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="my-4">
+    <TodoBadge label="TODO: Detailed API reference with request/response examples" />
+  </div>
+
+  <h2 id="configuration">Configuration Reference</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Config Key</th>
+        <th>Type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>storage.backend</code></td>
+        <td>string</td>
+        <td><code>local</code></td>
+        <td>Storage backend: <code>local</code>, <code>s3</code>, <code>gcs</code>, <code>azure</code></td>
+      </tr>
+      <tr>
+        <td><code>storage.bucket</code></td>
+        <td>string</td>
+        <td>&mdash;</td>
+        <td>Object storage bucket name</td>
+      </tr>
+      <tr>
+        <td><code>retention.max_age</code></td>
+        <td>duration</td>
+        <td><code>infinite</code></td>
+        <td>Max age of data points before deletion</td>
+      </tr>
+      <tr>
+        <td><code>cache.size_mb</code></td>
+        <td>integer</td>
+        <td><code>512</code></td>
+        <td>Local cache size in MB</td>
+      </tr>
+      <tr>
+        <td><code>compaction.interval_secs</code></td>
+        <td>integer</td>
+        <td><code>600</code></td>
+        <td>How often to run compaction</td>
+      </tr>
+      <tr>
+        <td><code>query.max_samples</code></td>
+        <td>integer</td>
+        <td><code>50000000</code></td>
+        <td>Max samples per query</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="my-4">
+    <TodoBadge label="TODO: Complete configuration reference" />
+  </div>
+
+  <h2 id="operations">Operational Guide</h2>
+
+  <div class="my-6 rounded-xl bg-accent/5 border border-accent/20 px-5 py-4">
+    <p class="text-sm text-text-secondary leading-relaxed">
+      <span class="font-semibold text-text">Shared operational model:</span> These operational
+      procedures are shared across all OpenData databases. See the
+      <a href="/databases/log#operations" class="text-accent hover:underline">Log operational guide</a>
+      for full details &mdash; the same patterns apply here.
+    </p>
+  </div>
+
+  <div class="my-4">
+    <TodoBadge label="TODO: Timeseries-specific operational details" />
+  </div>
+
+  <h2 id="performance">Performance &amp; Benchmarks</h2>
+
+  <div class="my-6 rounded-xl border border-border p-6 bg-surface-alt">
+    <div class="flex items-center gap-2 mb-3">
+      <TodoBadge label="TODO: Benchmarks coming soon" />
+    </div>
+    <p class="text-sm text-text-secondary">
+      We test OpenData Timeseries against Prometheus + Thanos on the following workloads:
+    </p>
+    <ul class="mt-3 space-y-1 text-sm text-text-secondary">
+      <li>&#x2022; Ingestion throughput (samples/second)</li>
+      <li>&#x2022; Query latency (instant and range queries)</li>
+      <li>&#x2022; High-cardinality label performance</li>
+      <li>&#x2022; Long-range query efficiency</li>
+    </ul>
+  </div>
+
+  <h2 id="comparisons">Comparisons</h2>
+
+  <div class="my-6 rounded-xl border border-border p-6 bg-surface-alt">
+    <div class="flex items-center gap-2 mb-3">
+      <TodoBadge label="TODO: Comparison pages" />
+    </div>
+    <ul class="space-y-2 text-sm text-text-secondary">
+      <li>&#x2022; <strong>OpenData Timeseries vs Thanos</strong></li>
+      <li>&#x2022; <strong>OpenData Timeseries vs Cortex/Mimir</strong></li>
+      <li>&#x2022; <strong>OpenData Timeseries vs InfluxDB</strong></li>
+      <li>&#x2022; <strong>OpenData Timeseries vs VictoriaMetrics</strong></li>
+    </ul>
+  </div>
+</DocsLayout>

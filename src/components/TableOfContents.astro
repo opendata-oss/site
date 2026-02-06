@@ -1,0 +1,65 @@
+---
+interface TocItem {
+  label: string;
+  id: string;
+  level: number;
+}
+
+interface Props {
+  items: TocItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<aside class="w-[200px] shrink-0 hidden xl:block">
+  <nav class="sticky top-20 overflow-y-auto max-h-[calc(100vh-5rem)] pb-8 pl-4 border-l border-border">
+    <h4 class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
+      On this page
+    </h4>
+    <ul class="space-y-1" id="toc-list">
+      {items.map(item => (
+        <li>
+          <a
+            href={`#${item.id}`}
+            class:list={[
+              "block text-xs leading-relaxed transition-colors text-text-muted hover:text-text",
+              item.level === 3 && "pl-3",
+            ]}
+            data-toc-link={item.id}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</aside>
+
+<script>
+  const links = document.querySelectorAll('[data-toc-link]');
+  const headings = Array.from(links).map(link => {
+    const id = link.getAttribute('data-toc-link');
+    return id ? document.getElementById(id) : null;
+  }).filter(Boolean) as HTMLElement[];
+
+  function updateActive() {
+    let current = '';
+    for (const heading of headings) {
+      if (heading.getBoundingClientRect().top <= 100) {
+        current = heading.id;
+      }
+    }
+    links.forEach(link => {
+      const id = link.getAttribute('data-toc-link');
+      if (id === current) {
+        link.classList.add('!text-accent', 'font-medium');
+      } else {
+        link.classList.remove('!text-accent', 'font-medium');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+</script>
