@@ -1,0 +1,520 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import TodoBadge from '../../components/TodoBadge.astro';
+
+const toc = [
+  { label: 'Overview', id: 'overview', level: 2 },
+  { label: 'Use Cases', id: 'use-cases', level: 3 },
+  { label: 'Quickstart', id: 'quickstart', level: 2 },
+  { label: 'API Reference', id: 'api-reference', level: 2 },
+  { label: 'Write Messages', id: 'write-messages', level: 3 },
+  { label: 'Read Messages', id: 'read-messages', level: 3 },
+  { label: 'Manage Topics', id: 'manage-topics', level: 3 },
+  { label: 'Configuration', id: 'configuration', level: 2 },
+  { label: 'Operations', id: 'operations', level: 2 },
+  { label: 'Deployment', id: 'deployment', level: 3 },
+  { label: 'Monitoring', id: 'monitoring', level: 3 },
+  { label: 'Scaling', id: 'scaling', level: 3 },
+  { label: 'Performance', id: 'performance', level: 2 },
+  { label: 'Comparisons', id: 'comparisons', level: 2 },
+];
+
+const startCode = `<span class="text-[#6c7086]"># Start with local storage (development)</span>
+<span class="text-[#a6e3a1]">$</span> docker run -p 8080:8080 opendata/log:latest
+
+<span class="text-[#6c7086]"># Or start with S3 storage (production)</span>
+<span class="text-[#a6e3a1]">$</span> docker run -p 8080:8080 \\
+    -e OPENDATA_STORAGE_BACKEND=s3 \\
+    -e OPENDATA_STORAGE_BUCKET=my-opendata-bucket \\
+    -e OPENDATA_STORAGE_REGION=us-east-1 \\
+    opendata/log:latest`;
+
+const writeCode = `<span class="text-[#a6e3a1]">$</span> curl -X POST http://localhost:8080/v1/topics/events/messages \\
+    -H "Content-Type: application/json" \\
+    -d '<span class="text-[#f9e2af]">{"value": "hello, opendata"}</span>'
+
+<span class="text-[#f9e2af]">{"offset": 0, "topic": "events"}</span>`;
+
+const readCode = `<span class="text-[#a6e3a1]">$</span> curl http://localhost:8080/v1/topics/events/messages?offset=0
+
+<span class="text-[#f9e2af]">{"messages": [{"offset": 0, "value": "hello, opendata", "timestamp": "2025-01-15T10:30:00Z"}]}</span>`;
+
+const requestBody = `<span class="text-[#f9e2af]">{
+  "key": "user-123",
+  "value": "logged_in",
+  "headers": {
+    "source": "auth-service"
+  }
+}</span>`;
+
+const responseBody = `<span class="text-[#f9e2af]">{
+  "offset": 42,
+  "topic": "events",
+  "partition": 0,
+  "timestamp": "2025-01-15T10:30:00Z"
+}</span>`;
+
+const dockerCompose = `<span class="text-[#89b4fa]">services</span><span class="text-[#6c7086]">:</span>
+<span class="text-[#89b4fa]">  opendata-log</span><span class="text-[#6c7086]">:</span>
+<span class="text-[#89b4fa]">    image</span><span class="text-[#6c7086]">:</span> <span class="text-[#a6e3a1]">opendata/log:latest</span>
+<span class="text-[#89b4fa]">    ports</span><span class="text-[#6c7086]">:</span>
+      <span class="text-[#a6e3a1]">- "8080:8080"</span>
+      <span class="text-[#a6e3a1]">- "9090:9090"</span>
+<span class="text-[#89b4fa]">    environment</span><span class="text-[#6c7086]">:</span>
+      <span class="text-[#89b4fa]">OPENDATA_STORAGE_BACKEND</span><span class="text-[#6c7086]">:</span> <span class="text-[#a6e3a1]">s3</span>
+      <span class="text-[#89b4fa]">OPENDATA_STORAGE_BUCKET</span><span class="text-[#6c7086]">:</span> <span class="text-[#a6e3a1]">my-opendata-bucket</span>
+      <span class="text-[#89b4fa]">OPENDATA_STORAGE_REGION</span><span class="text-[#6c7086]">:</span> <span class="text-[#a6e3a1]">us-east-1</span>`;
+
+const k8sYaml = `<span class="text-[#89b4fa]">apiVersion</span><span class="text-[#6c7086]">:</span> <span class="text-[#a6e3a1]">apps/v1</span>
+<span class="text-[#89b4fa]">kind</span><span class="text-[#6c7086]">:</span> <span class="text-[#a6e3a1]">Deployment</span>
+<span class="text-[#89b4fa]">metadata</span><span class="text-[#6c7086]">:</span>
+<span class="text-[#89b4fa]">  name</span><span class="text-[#6c7086]">:</span> <span class="text-[#a6e3a1]">opendata-log</span>
+<span class="text-[#89b4fa]">spec</span><span class="text-[#6c7086]">:</span>
+<span class="text-[#89b4fa]">  replicas</span><span class="text-[#6c7086]">:</span> <span class="text-[#fab387]">1</span>
+<span class="text-[#89b4fa]">  selector</span><span class="text-[#6c7086]">:</span>
+<span class="text-[#89b4fa]">    matchLabels</span><span class="text-[#6c7086]">:</span>
+<span class="text-[#89b4fa]">      app</span><span class="text-[#6c7086]">:</span> <span class="text-[#a6e3a1]">opendata-log</span>
+<span class="text-[#89b4fa]">  template</span><span class="text-[#6c7086]">:</span>
+<span class="text-[#89b4fa]">    spec</span><span class="text-[#6c7086]">:</span>
+<span class="text-[#89b4fa]">      containers</span><span class="text-[#6c7086]">:</span>
+      <span class="text-[#a6e3a1]">- name: opendata-log</span>
+<span class="text-[#89b4fa]">        image</span><span class="text-[#6c7086]">:</span> <span class="text-[#a6e3a1]">opendata/log:latest</span>
+<span class="text-[#89b4fa]">        ports</span><span class="text-[#6c7086]">:</span>
+        <span class="text-[#a6e3a1]">- containerPort: 8080</span>
+        <span class="text-[#a6e3a1]">- containerPort: 9090</span>
+        <span class="text-[#6c7086]"># TODO: Add resource limits, probes, volume mounts</span>`;
+
+const scalingCode = `<span class="text-[#6c7086]"># Scale read replicas</span>
+<span class="text-[#a6e3a1]">$</span> opendata scale log --readers 3
+
+<span class="text-[#6c7086]"># Check status</span>
+<span class="text-[#a6e3a1]">$</span> opendata status log
+
+<span class="text-[#89b4fa]">Writers:</span>  1 (active)
+<span class="text-[#89b4fa]">Readers:</span>  3 (healthy)
+<span class="text-[#89b4fa]">Storage:</span>  s3://my-opendata-bucket
+<span class="text-[#89b4fa]">Lag:</span>      &lt; 100ms`;
+---
+
+<DocsLayout
+  title="Log &mdash; OpenData"
+  description="OpenData Log: durable event streaming with replayable logs, built on object storage."
+  toc={toc}
+  breadcrumbs={[
+    { label: 'Databases', href: '/databases/log' },
+    { label: 'Log' },
+  ]}
+>
+  <div class="flex items-center gap-3 mb-2">
+    <span class="flex items-center justify-center w-10 h-10 rounded-lg bg-db-log text-white text-lg">&#x1F4CB;</span>
+    <h1 class="text-3xl font-bold">Log</h1>
+  </div>
+  <p class="text-text-secondary text-lg mb-8">
+    Durable event streaming with replayable logs. Built on object storage for
+    infinite retention and zero operational overhead.
+  </p>
+
+  <h2 id="overview">Overview</h2>
+
+  <p>
+    OpenData Log is a durable, replayable event log built natively on object storage.
+    It provides Kafka-like semantics &mdash; topics, partitions, consumer offsets &mdash; without
+    the operational complexity of managing brokers, ZooKeeper, or disk replication.
+    Data is written directly to object storage through SlateDB, giving you 11 nines
+    of durability from the start.
+  </p>
+
+  <h3 id="use-cases">Use Cases</h3>
+
+  <ul>
+    <li><strong>Event sourcing</strong> &mdash; Capture every state change as an immutable event stream</li>
+    <li><strong>Data pipelines</strong> &mdash; Reliable event delivery between microservices</li>
+    <li><strong>Audit logging</strong> &mdash; Tamper-evident, replayable record of all system activity</li>
+    <li><strong>Change data capture</strong> &mdash; Stream database changes to downstream consumers</li>
+  </ul>
+
+  <p>
+    <strong>Key differentiators vs. alternatives:</strong> No brokers to manage,
+    infinite retention at object storage prices, shared operational model with all
+    OpenData databases, and decoupled readers/writers for independent scaling.
+  </p>
+
+  <h2 id="quickstart">Quickstart</h2>
+
+  <p>
+    <strong>Prerequisites:</strong> Docker installed. For cloud storage: AWS credentials
+    or equivalent for your cloud provider.
+  </p>
+
+  <h3>1. Start OpenData Log</h3>
+
+  <div class="my-4">
+    <CodeBlock title="terminal" code={startCode} />
+  </div>
+
+  <h3>2. Write a message</h3>
+
+  <div class="my-4">
+    <CodeBlock title="terminal" code={writeCode} />
+  </div>
+
+  <h3>3. Read it back</h3>
+
+  <div class="my-4">
+    <CodeBlock title="terminal" code={readCode} />
+  </div>
+
+  <h2 id="api-reference">API Reference</h2>
+
+  <h3 id="write-messages">Write Messages</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>Path</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>POST</code></td>
+        <td><code>/v1/topics/&#123;topic&#125;/messages</code></td>
+        <td>Write a single message to a topic</td>
+      </tr>
+      <tr>
+        <td><code>POST</code></td>
+        <td><code>/v1/topics/&#123;topic&#125;/messages/batch</code></td>
+        <td>Write a batch of messages</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Request body (single):</strong></p>
+
+  <div class="my-4">
+    <CodeBlock title="POST /v1/topics/events/messages" code={requestBody} />
+  </div>
+
+  <p><strong>Response:</strong></p>
+
+  <div class="my-4">
+    <CodeBlock title="response" code={responseBody} />
+  </div>
+
+  <h3 id="read-messages">Read Messages</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>Path</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>GET</code></td>
+        <td><code>/v1/topics/&#123;topic&#125;/messages</code></td>
+        <td>Read messages from a topic</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Query parameters:</strong></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>offset</code></td>
+        <td>integer</td>
+        <td><code>0</code></td>
+        <td>Starting offset to read from</td>
+      </tr>
+      <tr>
+        <td><code>limit</code></td>
+        <td>integer</td>
+        <td><code>100</code></td>
+        <td>Maximum number of messages to return</td>
+      </tr>
+      <tr>
+        <td><code>timeout_ms</code></td>
+        <td>integer</td>
+        <td><code>0</code></td>
+        <td>Long-poll timeout (0 = immediate)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="manage-topics">Manage Topics</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>Path</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>GET</code></td>
+        <td><code>/v1/topics</code></td>
+        <td>List all topics</td>
+      </tr>
+      <tr>
+        <td><code>POST</code></td>
+        <td><code>/v1/topics</code></td>
+        <td>Create a new topic</td>
+      </tr>
+      <tr>
+        <td><code>DELETE</code></td>
+        <td><code>/v1/topics/&#123;topic&#125;</code></td>
+        <td>Delete a topic</td>
+      </tr>
+      <tr>
+        <td><code>GET</code></td>
+        <td><code>/v1/topics/&#123;topic&#125;</code></td>
+        <td>Get topic metadata (offsets, partitions)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="my-4">
+    <TodoBadge label="TODO: Complete API reference with all endpoints" />
+  </div>
+
+  <h2 id="configuration">Configuration Reference</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Config Key</th>
+        <th>Type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>storage.backend</code></td>
+        <td>string</td>
+        <td><code>local</code></td>
+        <td>Storage backend: <code>local</code>, <code>s3</code>, <code>gcs</code>, <code>azure</code></td>
+      </tr>
+      <tr>
+        <td><code>storage.bucket</code></td>
+        <td>string</td>
+        <td>&mdash;</td>
+        <td>Object storage bucket name</td>
+      </tr>
+      <tr>
+        <td><code>storage.region</code></td>
+        <td>string</td>
+        <td>&mdash;</td>
+        <td>Cloud region for the bucket</td>
+      </tr>
+      <tr>
+        <td><code>storage.path</code></td>
+        <td>string</td>
+        <td><code>/data</code></td>
+        <td>Local storage path (when backend is <code>local</code>)</td>
+      </tr>
+      <tr>
+        <td><code>cache.size_mb</code></td>
+        <td>integer</td>
+        <td><code>256</code></td>
+        <td>Local cache size in MB</td>
+      </tr>
+      <tr>
+        <td><code>cache.path</code></td>
+        <td>string</td>
+        <td><code>/cache</code></td>
+        <td>Path for local SSD cache</td>
+      </tr>
+      <tr>
+        <td><code>compaction.interval_secs</code></td>
+        <td>integer</td>
+        <td><code>300</code></td>
+        <td>How often to run compaction (seconds)</td>
+      </tr>
+      <tr>
+        <td><code>compaction.max_file_size_mb</code></td>
+        <td>integer</td>
+        <td><code>64</code></td>
+        <td>Target SST file size after compaction</td>
+      </tr>
+      <tr>
+        <td><code>retention.max_age</code></td>
+        <td>duration</td>
+        <td><code>infinite</code></td>
+        <td>Max age of messages before deletion</td>
+      </tr>
+      <tr>
+        <td><code>retention.max_bytes</code></td>
+        <td>integer</td>
+        <td><code>infinite</code></td>
+        <td>Max total bytes per topic before deletion</td>
+      </tr>
+      <tr>
+        <td><code>server.port</code></td>
+        <td>integer</td>
+        <td><code>8080</code></td>
+        <td>HTTP API listen port</td>
+      </tr>
+      <tr>
+        <td><code>server.metrics_port</code></td>
+        <td>integer</td>
+        <td><code>9090</code></td>
+        <td>Prometheus metrics endpoint port</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="my-4">
+    <TodoBadge label="TODO: Complete configuration reference" />
+  </div>
+
+  <h2 id="operations">Operational Guide</h2>
+
+  <div class="my-6 rounded-xl bg-accent/5 border border-accent/20 px-5 py-4">
+    <p class="text-sm text-text-secondary leading-relaxed">
+      <span class="font-semibold text-text">Shared operational model:</span> These operational
+      procedures are shared across all OpenData databases. If you have operated one, you can
+      operate them all.
+    </p>
+  </div>
+
+  <h3 id="deployment">Deployment</h3>
+
+  <p><strong>Docker:</strong></p>
+
+  <div class="my-4">
+    <CodeBlock title="docker-compose.yml" code={dockerCompose} />
+  </div>
+
+  <p><strong>Kubernetes:</strong></p>
+
+  <div class="my-4">
+    <CodeBlock title="opendata-log.yaml" code={k8sYaml} />
+  </div>
+
+  <h3 id="monitoring">Monitoring</h3>
+
+  <p>
+    OpenData Log exposes Prometheus metrics on port <code>9090</code> at <code>/metrics</code>.
+    Key metrics to monitor:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>opendata_log_messages_written_total</code></td>
+        <td>Counter</td>
+        <td>Total messages written</td>
+      </tr>
+      <tr>
+        <td><code>opendata_log_messages_read_total</code></td>
+        <td>Counter</td>
+        <td>Total messages read</td>
+      </tr>
+      <tr>
+        <td><code>opendata_log_write_latency_seconds</code></td>
+        <td>Histogram</td>
+        <td>Write latency distribution</td>
+      </tr>
+      <tr>
+        <td><code>opendata_log_read_latency_seconds</code></td>
+        <td>Histogram</td>
+        <td>Read latency distribution</td>
+      </tr>
+      <tr>
+        <td><code>opendata_storage_bytes_total</code></td>
+        <td>Gauge</td>
+        <td>Total bytes stored in object storage</td>
+      </tr>
+      <tr>
+        <td><code>opendata_cache_hit_ratio</code></td>
+        <td>Gauge</td>
+        <td>Local cache hit ratio</td>
+      </tr>
+      <tr>
+        <td><code>opendata_compaction_runs_total</code></td>
+        <td>Counter</td>
+        <td>Total compaction runs completed</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="my-4">
+    <TodoBadge label="TODO: Grafana dashboard JSON and screenshots" />
+  </div>
+
+  <h3 id="scaling">Scaling</h3>
+
+  <p>
+    OpenData Log separates writers and readers. Writers are responsible for ingesting
+    data into object storage. Readers serve queries from the cached and compacted data.
+    Both are stateless &mdash; no rebalancing, no leader election, no data migration.
+  </p>
+
+  <div class="my-4">
+    <CodeBlock title="terminal" code={scalingCode} />
+  </div>
+
+  <p>
+    <strong>Backup and restore:</strong> Your data lives in object storage. Backup is
+    object storage replication &mdash; enable cross-region replication on your bucket and
+    you have a disaster recovery strategy with zero application-level changes.
+  </p>
+
+  <h2 id="performance">Performance &amp; Benchmarks</h2>
+
+  <div class="my-6 rounded-xl border border-border p-6 bg-surface-alt">
+    <div class="flex items-center gap-2 mb-3">
+      <TodoBadge label="TODO: Benchmarks coming soon" />
+    </div>
+    <p class="text-sm text-text-secondary">
+      We test OpenData Log against Apache Kafka on the following workloads:
+    </p>
+    <ul class="mt-3 space-y-1 text-sm text-text-secondary">
+      <li>&#x2022; Sequential write throughput (1KB, 10KB, 100KB messages)</li>
+      <li>&#x2022; Tail read latency (p50, p99, p999)</li>
+      <li>&#x2022; Historical replay throughput</li>
+      <li>&#x2022; Multi-topic fan-out read performance</li>
+    </ul>
+    <p class="mt-3 text-sm text-text-muted italic">
+      Benchmark framework and results will be published here and in the GitHub repo.
+    </p>
+  </div>
+
+  <h2 id="comparisons">Comparisons</h2>
+
+  <div class="my-6 rounded-xl border border-border p-6 bg-surface-alt">
+    <div class="flex items-center gap-2 mb-3">
+      <TodoBadge label="TODO: Comparison pages" />
+    </div>
+    <ul class="space-y-2 text-sm text-text-secondary">
+      <li>&#x2022; <strong>OpenData Log vs Apache Kafka</strong> &mdash; operational complexity, cost, performance</li>
+      <li>&#x2022; <strong>OpenData Log vs Amazon Kinesis</strong> &mdash; pricing, features, lock-in</li>
+      <li>&#x2022; <strong>OpenData Log vs Redpanda</strong> &mdash; architecture, performance, operations</li>
+      <li>&#x2022; <strong>OpenData Log vs WarpStream</strong> &mdash; object storage approach, feature parity</li>
+    </ul>
+  </div>
+</DocsLayout>

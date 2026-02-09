@@ -1,0 +1,70 @@
+---
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface NavSection {
+  title: string;
+  items: NavItem[];
+}
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+
+const sections: NavSection[] = [
+  {
+    title: 'Overview',
+    items: [
+      { label: 'How It Works', href: '/how-it-works' },
+      { label: 'Manifesto', href: '/manifesto' },
+      { label: 'Community', href: '/community' },
+    ],
+  },
+  {
+    title: 'Databases',
+    items: [
+      { label: 'Log', href: '/databases/log' },
+      { label: 'Timeseries', href: '/databases/timeseries' },
+      { label: 'Vector', href: '/databases/vector' },
+      { label: 'Key-Value', href: '/databases/kv' },
+    ],
+  },
+];
+
+function isActive(href: string): boolean {
+  return currentPath === href;
+}
+---
+
+<aside class="w-[250px] shrink-0 hidden lg:block">
+  <nav class="sticky top-20 overflow-y-auto max-h-[calc(100vh-5rem)] pb-8 pr-4">
+    {sections.map(section => (
+      <div class="mb-6">
+        <h4 class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2 px-3">
+          {section.title}
+        </h4>
+        <ul class="space-y-0.5">
+          {section.items.map(item => (
+            <li>
+              <a
+                href={item.href}
+                class:list={[
+                  "block px-3 py-1.5 text-sm rounded-md transition-colors",
+                  isActive(item.href)
+                    ? "bg-accent/10 text-accent font-medium"
+                    : "text-text-secondary hover:text-text hover:bg-surface-alt",
+                ]}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </nav>
+</aside>

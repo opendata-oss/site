@@ -1,81 +1,125 @@
 ---
-import Base from "../layouts/Base.astro";
-import Contributors from "../components/Contributors.astro";
+import LandingLayout from '../layouts/LandingLayout.astro';
+import Contributors from '../components/Contributors.astro';
 ---
 
-<Base
-  title="Manifesto | OpenData"
-  description="The OpenData Manifesto"
-  ogImage="/images/opengraph.png"
+<LandingLayout
+  title="Manifesto — OpenData"
+  description="The OpenData Manifesto: why object-store native databases change everything."
 >
-  <div
-    class="bg-white min-h-screen flex flex-col items-center justify-center gap-6 px-4 py-12"
-  >
-    <article class="font-mono text-slate-700 max-w-2xl space-y-6">
+  <section class="py-20 md:py-28">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl md:text-4xl font-bold mb-10">The OpenData Manifesto</h1>
 
-      <h1 class="text-2xl text-slate-900">The OpenData Manifesto</h1>
+      <div class="space-y-6 text-text-secondary leading-relaxed text-lg">
+        <p class="text-xl text-text font-medium leading-relaxed">
+          If databases are open source commodities, why can database vendors still charge
+          80% margins? It's because running production database clusters requires
+          specialized expertise. The cost of databases today is in the
+          operations, not the code.
+        </p>
 
-      <p>
-        If databases are open source commodities, why can database vendors still charge
-        80% margins? It's because running production database clusters requires
-        specialized expertise. Said another way, the cost of databases today is in the
-        operations, not the code.
-      </p>
+        <hr class="border-border my-10" />
 
-      <p>
-        We can fix this imbalance. Thanks to object storage, we now have durable,
-        globally addressable storage that makes radically simpler database architectures
-        possible. What's more, the work needed to use object storage optimally is
-        substantially similar across modern databases. OpenData leverages this to build
-        multiple databases on a shared core. Bespoke operational know how disappears.
-        Fewer people are needed to run many databases. Operational costs collapse.
-      </p>
+        <h2 class="text-2xl font-bold text-text mt-12 mb-4">1. Object storage is a new primitive</h2>
 
-      <p>
-        OpenData is a collection of databases designed natively for object storage.
-        Each database is focused on one usecase. All databases share:
-      </p>
+        <p>
+          We can fix this imbalance. Thanks to object storage, we now have durable,
+          globally addressable storage that makes radically simpler database architectures
+          possible. S3, GCS, and Azure Blob provide 11 nines of durability, effectively
+          infinite capacity, and pay-per-use pricing — all without operational overhead.
+        </p>
 
-      <ul class="list-disc pl-6">
-        <li><b>a common core</b>, so operational expertise transfers across every database </li>
-        <li><b>common tooling</b>, so you have one operational model to learn </li>
-        <li><b>open data formats and MIT licensing</b>, so there is no vendor lock-in </li>
-      </ul>
+        <p>
+          This isn't just cheaper storage. It's a new architectural primitive. When your
+          storage layer is durable, available, and infinite by default, the entire database
+          design changes. Replication, failover, capacity planning — these become storage
+          concerns, handled by cloud infrastructure instead of database operators.
+        </p>
 
-      <p>
-        The future belongs to those who own their infrastructure without being owned by it.
-      </p>
+        {/* TODO: Expand with more specific examples of how object storage changes architecture */}
 
-      <div class="pt-4">
-        <p class="text-slate-400 italic">— The OpenData Contributors</p>
-        <div class="mt-3">
+        <h2 class="text-2xl font-bold text-text mt-12 mb-4">2. Focused databases beat monoliths</h2>
+
+        <p>
+          What's more, the work needed to use object storage optimally is substantially
+          similar across modern databases. The write-ahead log, the compaction engine,
+          the caching layer, the manifest system — it's the same problem solved slightly
+          differently each time.
+        </p>
+
+        <p>
+          OpenData leverages this insight to build multiple focused databases on a shared core.
+          Each database does one thing well. A log is a log. A TSDB is a TSDB. A vector
+          database is a vector database. But underneath, they share the same storage engine,
+          the same operational model, the same tooling.
+        </p>
+
+        <p>
+          Bespoke operational know-how disappears. Fewer people are needed to run many databases.
+          Operational costs collapse.
+        </p>
+
+        {/* TODO: Expand with comparison to monolithic database approaches */}
+
+        <h2 class="text-2xl font-bold text-text mt-12 mb-4">3. Open source, open data</h2>
+
+        <p>
+          These designs should be open source. OpenData uses open data formats and MIT licensing
+          so there is no vendor lock-in. Your data is stored in standard formats in your own
+          object storage bucket. You own it. You can read it with any compatible tool.
+        </p>
+
+        <p>
+          OpenData is a collection of databases designed natively for object storage.
+          Each database is focused on one use case. All databases share:
+        </p>
+
+        <ul class="space-y-2">
+          <li class="flex gap-2">
+            <span class="text-accent font-bold">&#x2022;</span>
+            <span><strong>A common core</strong> — so operational expertise transfers across every database</span>
+          </li>
+          <li class="flex gap-2">
+            <span class="text-accent font-bold">&#x2022;</span>
+            <span><strong>Common tooling</strong> — so you have one operational model to learn</span>
+          </li>
+          <li class="flex gap-2">
+            <span class="text-accent font-bold">&#x2022;</span>
+            <span><strong>Open data formats and MIT licensing</strong> — so there is no vendor lock-in</span>
+          </li>
+        </ul>
+
+        <hr class="border-border my-10" />
+
+        <p class="text-xl text-text font-medium">
+          The future belongs to those who own their infrastructure without being owned by it.
+        </p>
+
+        <div class="mt-8 pt-6 border-t border-border">
+          <p class="text-sm text-text-muted italic mb-3">— The OpenData Contributors</p>
           <Contributors />
         </div>
       </div>
-    </article>
-    <div class="flex flex-col gap-3 sm:flex-row">
-      <a
-        href="https://discord.gg/CsAQJ2AJGU"
-        target="_blank"
-        rel="noopener"
-        class="font-mono text-sm bg-black text-white px-4 py-2 rounded-full text-center hover:bg-slate-800 transition-colors"
-      >
-        Join us on Discord
-      </a>
-      <a
-        href="https://github.com/opendata-oss/opendata/edit/main/MANIFESTO_SIGNERS.md"
-        target="_blank"
-        rel="noopener"
-        class="font-mono text-sm border border-slate-300 text-slate-700 px-4 py-2 rounded-full text-center hover:bg-slate-50 transition-colors"
-      >
-        Sign the manifesto
-      </a>
+
+      <div class="mt-12 flex flex-col sm:flex-row gap-3">
+        <a
+          href="https://discord.gg/CsAQJ2AJGU"
+          target="_blank"
+          rel="noopener"
+          class="btn-primary"
+        >
+          Join us on Discord
+        </a>
+        <a
+          href="https://github.com/opendata-oss/opendata/edit/main/MANIFESTO_SIGNERS.md"
+          target="_blank"
+          rel="noopener"
+          class="btn-secondary"
+        >
+          Sign the manifesto
+        </a>
+      </div>
     </div>
-    <a
-      href="/"
-      class="font-mono text-sm text-slate-500 hover:text-slate-900 underline underline-offset-4 transition-colors"
-    >
-      &larr; back home
-    </a>
-  </div>
-</Base>
+  </section>
+</LandingLayout>

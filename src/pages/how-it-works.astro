@@ -1,0 +1,205 @@
+---
+import DocsLayout from '../layouts/DocsLayout.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+import TodoBadge from '../components/TodoBadge.astro';
+
+const toc = [
+  { label: 'The Object Storage Advantage', id: 'object-storage-advantage', level: 2 },
+  { label: 'Shared Storage Foundation', id: 'shared-storage-foundation', level: 2 },
+  { label: 'SlateDB', id: 'slatedb', level: 3 },
+  { label: 'WAL Implementation', id: 'wal-implementation', level: 3 },
+  { label: 'Manifest System', id: 'manifest-system', level: 3 },
+  { label: 'Common Architecture', id: 'common-architecture', level: 2 },
+  { label: 'Data Flow', id: 'data-flow', level: 3 },
+  { label: 'Shared Operations', id: 'shared-operations', level: 2 },
+  { label: 'Deployment Models', id: 'deployment-models', level: 2 },
+];
+
+const dataFlowCode = `<span class="text-[#89b4fa]">Write Path:</span>
+<span class="text-[#cdd6f4]">  Client → Ingestor → WAL (object storage) → Memtable</span>
+<span class="text-[#cdd6f4]">                                              ↓</span>
+<span class="text-[#cdd6f4]">                                         SST Flush</span>
+<span class="text-[#cdd6f4]">                                              ↓</span>
+<span class="text-[#cdd6f4]">                                    Compactor (background)</span>
+<span class="text-[#cdd6f4]">                                              ↓</span>
+<span class="text-[#cdd6f4]">                                    Optimized SST files</span>
+
+<span class="text-[#89b4fa]">Read Path:</span>
+<span class="text-[#cdd6f4]">  Client → Query Executor → Local Cache (SSD)</span>
+<span class="text-[#cdd6f4]">                                  ↓ (miss)</span>
+<span class="text-[#cdd6f4]">                           Object Storage</span>`;
+---
+
+<DocsLayout
+  title="How It Works — OpenData"
+  description="Deep dive into OpenData's architecture: object storage foundation, SlateDB, shared infrastructure."
+  toc={toc}
+  breadcrumbs={[{ label: 'How It Works' }]}
+>
+  <h1 class="text-3xl font-bold mb-2">How It Works</h1>
+  <p class="text-text-secondary text-lg mb-8">
+    A deep dive into the architecture that makes OpenData databases radically simpler to operate.
+  </p>
+
+  <h2 id="object-storage-advantage">The Object Storage Advantage</h2>
+
+  <p>
+    Object storage services like Amazon S3, Google Cloud Storage, and Azure Blob Storage
+    have fundamentally changed what is possible in database architecture. They provide:
+  </p>
+
+  <ul>
+    <li><strong>11 nines of durability</strong> (99.999999999%) &mdash; your data is replicated across multiple
+      availability zones automatically</li>
+    <li><strong>High availability</strong> &mdash; designed for 99.99% availability with no operational overhead</li>
+    <li><strong>Effectively infinite capacity</strong> &mdash; no need to provision, resize, or manage storage volumes</li>
+    <li><strong>Pay-per-use pricing</strong> &mdash; no pre-provisioned IOPS or reserved capacity</li>
+    <li><strong>Decoupled compute and storage</strong> &mdash; scale reads and writes independently</li>
+  </ul>
+
+  <p>
+    Traditional databases were designed when storage was a local, finite, and fragile resource.
+    They carry the complexity of that era: manual replication, consensus protocols, and careful
+    capacity planning. Object storage eliminates these problems at the infrastructure layer,
+    but building performant databases on top of it requires solving a specific set of challenges.
+  </p>
+
+  <h2 id="shared-storage-foundation">Shared Storage Foundation</h2>
+
+  <h3 id="slatedb">SlateDB</h3>
+
+  <p>
+    At the base of every OpenData database is <a href="https://slatedb.io" target="_blank" rel="noopener" class="text-accent hover:underline">SlateDB</a> &mdash;
+    an object-store-native LSM tree storage engine. SlateDB handles the hard problems of building
+    on object storage:
+  </p>
+
+  <ul>
+    <li><strong>Write batching</strong> &mdash; groups writes for efficient object storage puts</li>
+    <li><strong>Tiered caching</strong> &mdash; local SSD cache for hot data, object storage for everything else</li>
+    <li><strong>Compaction</strong> &mdash; background optimization of stored data for read performance</li>
+    <li><strong>Snapshot isolation</strong> &mdash; consistent reads through atomic manifest updates</li>
+  </ul>
+
+  <h3 id="wal-implementation">WAL Implementation</h3>
+
+  <p>
+    SlateDB's write-ahead log (WAL) writes to object storage, providing durability guarantees
+    that traditionally required local disk replication. Because the WAL is in object storage,
+    any node can pick up where another left off &mdash; enabling stateless compute nodes.
+  </p>
+
+  <div class="my-6">
+    <TodoBadge label="TODO: WAL architecture diagram" />
+  </div>
+
+  <h3 id="manifest-system">Manifest System</h3>
+
+  <p>
+    The manifest is an atomic pointer to the current database state stored in object storage.
+    Updates to the manifest use conditional writes (S3 conditional PUTs) to provide
+    optimistic concurrency control without distributed locks. This gives each database
+    snapshot isolation &mdash; readers see a consistent view of data even while writers are
+    actively ingesting.
+  </p>
+
+  <div class="my-6">
+    <TodoBadge label="TODO: Manifest lifecycle diagram" />
+  </div>
+
+  <h2 id="common-architecture">Common Architecture</h2>
+
+  <p>
+    Every OpenData database follows the same architectural pattern, adapted for its specific
+    data model:
+  </p>
+
+  <ul>
+    <li><strong>Ingestor</strong> &mdash; receives writes, batches them, and writes to the WAL in object storage</li>
+    <li><strong>Compactor</strong> &mdash; background process that optimizes data layout for read performance</li>
+    <li><strong>Query executor</strong> &mdash; serves reads from the cached and compacted data</li>
+  </ul>
+
+  <p>
+    This pattern means the same operational knowledge applies everywhere. Monitoring an ingestor,
+    tuning compaction, or scaling query executors works the same way across Log, Timeseries,
+    and Vector databases.
+  </p>
+
+  <h3 id="data-flow">Data Flow</h3>
+
+  <div class="my-6">
+    <CodeBlock title="data-flow" code={dataFlowCode} />
+  </div>
+
+  <h2 id="shared-operations">Shared Operations</h2>
+
+  <p>
+    Because all OpenData databases share the same foundation, operational knowledge transfers
+    completely between them:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Operation</th>
+        <th>Shared Across All Databases</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Configuration</td>
+        <td>Same TOML config format, same storage keys, same cache settings</td>
+      </tr>
+      <tr>
+        <td>Monitoring</td>
+        <td>Same Prometheus metrics endpoint, same Grafana dashboards</td>
+      </tr>
+      <tr>
+        <td>Scaling</td>
+        <td>Same <code>opendata scale</code> CLI, same reader/writer model</td>
+      </tr>
+      <tr>
+        <td>Deployment</td>
+        <td>Same container images, same Kubernetes operator, same Helm charts</td>
+      </tr>
+      <tr>
+        <td>Backup</td>
+        <td>Data is in object storage &mdash; backup is object storage replication</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="deployment-models">Deployment Models</h2>
+
+  <p>
+    OpenData databases support multiple deployment models, all using the same data stored
+    in object storage:
+  </p>
+
+  <ul>
+    <li>
+      <strong>Embedded (in-process)</strong> &mdash; Use the Rust library directly in your application.
+      Data is written to object storage and is accessible from any deployment model.
+    </li>
+    <li>
+      <strong>Standalone service</strong> &mdash; Run as a single Docker container with HTTP API.
+      Ideal for development and small-to-medium workloads.
+    </li>
+    <li>
+      <strong>Distributed (Kubernetes)</strong> &mdash; Deploy with the OpenData operator for
+      horizontal scaling. Separate writer and reader pods, automatic compaction,
+      built-in monitoring.
+    </li>
+  </ul>
+
+  <p>
+    The key insight: because data lives in object storage, you can start with embedded mode
+    during development, move to standalone for staging, and deploy distributed for production &mdash;
+    all reading the same data.
+  </p>
+
+  <div class="my-6">
+    <TodoBadge label="TODO: Deployment model comparison diagram" />
+  </div>
+</DocsLayout>
