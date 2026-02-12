@@ -15,14 +15,14 @@ select_component() {
 
     draw() {
         if [ "$current" = "0" ]; then
-            printf '  \033[36m> opendata-log\033[0m          - query log files with SQL\033[K\r\n' > /dev/tty
+            printf '  \033[36m> opendata-log\033[0m\033[K\r\n' > /dev/tty
         else
-            printf '    opendata-log          - query log files with SQL\033[K\r\n' > /dev/tty
+            printf '    opendata-log\033[K\r\n' > /dev/tty
         fi
         if [ "$current" = "1" ]; then
-            printf '  \033[36m> opendata-timeseries\033[0m  - query time series data with SQL\033[K\r\n' > /dev/tty
+            printf '  \033[36m> opendata-timeseries\033[0m\033[K\r\n' > /dev/tty
         else
-            printf '    opendata-timeseries  - query time series data with SQL\033[K\r\n' > /dev/tty
+            printf '    opendata-timeseries\033[K\r\n' > /dev/tty
         fi
         printf '\033[K\r\n  \033[2mArrow keys to move, Enter to select\033[0m\033[K' > /dev/tty
     }
