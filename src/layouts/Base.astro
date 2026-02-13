@@ -1,5 +1,6 @@
 ---
 import Analytics from '@vercel/analytics/astro';
+import Navbar from '../components/Navbar.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -31,6 +32,7 @@ const { title, description, ogImage = '/images/opengraph.png' } = Astro.props;
     <Analytics />
   </head>
   <body>
+    <Navbar />
     <slot />
   </body>
 </html>
