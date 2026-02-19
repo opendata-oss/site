@@ -1,4 +1,4 @@
-name: Update Contributors
+name: Update Dynamic Content
 
 on:
   schedule:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  update-contributors:
+  update-dynamic-content:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Update contributors
+      - name: Update dynamic content
         run: node scripts/update-contributors.mjs
 
       - name: Commit changes
@@ -26,5 +26,5 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add src/components/Contributors.astro
-          git diff --staged --quiet || git commit -m "chore: update contributors"
+          git diff --staged --quiet || git commit -m "chore: update dynamic content"
           git push
