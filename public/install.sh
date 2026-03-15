@@ -24,6 +24,11 @@ select_component() {
         else
             printf '    opendata-timeseries\033[K\r\n' > /dev/tty
         fi
+        if [ "$current" = "2" ]; then
+            printf '  \033[36m> opendata-vector\033[0m\033[K\r\n' > /dev/tty
+        else
+            printf '    opendata-vector\033[K\r\n' > /dev/tty
+        fi
         printf '\033[K\r\n  \033[2mArrow keys to move, Enter to select\033[0m\033[K' > /dev/tty
     }
 
@@ -51,9 +56,9 @@ select_component() {
             c3=${c3%.}
             case "$c3" in
                 A) [ "$current" -gt 0 ] && current=$((current - 1)) ;;
-                B) [ "$current" -lt 1 ] && current=$((current + 1)) ;;
+                B) [ "$current" -lt 2 ] && current=$((current + 1)) ;;
             esac
-            printf '\033[3A\r' > /dev/tty
+            printf '\033[4A\r' > /dev/tty
             draw
         fi
     done
@@ -67,6 +72,7 @@ select_component() {
     case "$current" in
         0) printf "log" ;;
         1) printf "timeseries" ;;
+        2) printf "vector" ;;
     esac
 }
 
@@ -79,9 +85,9 @@ main() {
     fi
 
     case "$NAME" in
-        log|timeseries) ;;
+        log|timeseries|vector) ;;
         *)
-            echo "Error: unknown component '$NAME'. Must be 'log' or 'timeseries'." >&2
+            echo "Error: unknown component '$NAME'. Must be 'log', 'timeseries', or 'vector'." >&2
             exit 1
             ;;
     esac
