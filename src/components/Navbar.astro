@@ -36,14 +36,14 @@ const currentPath = Astro.url.pathname;
   >
     home
   </a>
-  <a
-    href="/manifesto"
+<a
+    href="/blog"
     class:list={[
       'transition-colors',
-      currentPath === '/manifesto' ? 'text-slate-900' : 'text-slate-400 hover:text-slate-900',
+      currentPath.startsWith('/blog') ? 'text-slate-900' : 'text-slate-400 hover:text-slate-900',
     ]}
   >
-    manifesto
+    blog
   </a>
   <a
     href="/docs"
