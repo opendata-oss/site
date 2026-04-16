@@ -13,7 +13,7 @@ The most compelling validations of this approach are [WarpStream](https://www.wa
 
 Surprisingly, the Prometheus-compatible TSDBs that power modern observability stacks have not made this transition yet. As a result, self-hosting Prometheus-compatible systems at scale means operating another unforgiving distributed storage system, which justifies paying the brutally expensive hosted observability providers.
 
-[OpenData Timeseries](https://www.opendata.dev/docs/timeseries) fills that gap. It is an MIT-licensed, Prometheus-compatible timeseries database built on [SlateDB](https://www.slatedb.io/), an object-store-native LSM tree. It supports PromQL, Prometheus scraping, Prometheus remote write, and OTLP metrics ingest. It brings the operating model and cost structure of object-store-native systems to the Prometheus and Grafana ecosystem.
+[OpenData Timeseries](https://www.opendata.dev/docs/timeseries) fills that gap. It is an MIT-licensed, Prometheus-compatible timeseries database built on [SlateDB](https://www.slatedb.io/), an object-store-native LSM tree. It supports PromQL, Prometheus scraping, Prometheus remote write, and OTLP metrics ingest. OpenData Timeseries can power your Grafana dashboards and alerts for a fraction of the price of managed offerings: our internal benchmarks show that you can serve 4.7B samples/day over 3.3M active series for $500/month of compute costs.
 
 ## A simpler storage model for timeseries
 
