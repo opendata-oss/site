@@ -7,7 +7,7 @@ tags: ["timeseries", "prometheus", "slatedb", "announcement"]
 draft: false
 ---
 
-Over the last few years, one of the big developments in the database world has been the emergence of object-store-native databases. If object storage is the only persistence layer, compute can be effectively stateless, which makes the system much simpler to operate. They are also much cheaper, because they don't pay inter-az networking costs to replicate data, and because storing cold data on object storage is 80-90% cheaper than storing it on disks.
+Over the last few years, one of the big developments in the database world has been the emergence of object-store-native databases. If object storage is the only persistence layer, compute can be effectively stateless, which makes these systems much simpler to operate. They are also much cheaper, because they don't pay inter-az networking costs to replicate data, and because storing cold data on object storage is 80-90% cheaper than storing it on disks.
 
 The most compelling validations of this approach are [WarpStream](https://www.warpstream.com/blog/kafka-is-dead-long-live-kafka) and [turbopuffer](https://turbopuffer.com/blog/turbopuffer). They applied object-store-native designs to streaming and vector databases and showed that these designs deliver a winning performance and cost combination.
 
@@ -98,7 +98,7 @@ Additionally, the optional [stateless ingestor](https://github.com/opendata-oss/
 
 LSM trees have emerged as the de facto standard for performant object-store-native systems, evidenced by [WarpStream](https://www.warpstream.com/blog/the-road-to-100pibs-and-hundreds-of-thousands-of-partitions-goldsky-case-study#warpstream-storage-v2-aka-big-clusters), [QuickWit](https://quickwit.io/docs/overview/architecture), and [turbopuffer](https://turbopuffer.com/docs/concepts#log-structured-merge-lsm-tree)'s custom LSM tree implementations. Object storage works best when writes are batched into large immutable files rather than applied as fine-grained mutations. LSM trees are built around exactly that pattern: they absorb small writes in memory, flush them as immutable SSTs, compact them in the background, and keep hot blocks cached locally.
 
-The problem is that existing LSM implementations are deeply coupled with local filesystems, which is why each pioneer in the space implements it anew. We've tackled this problem head on and spent the last two years building [SlateDB](https://www.slatedb.io/), the first OSS project designed to implement an LSM natively on object storage. This battle hardened foundation has accelerated the development of new object-store-native data systems, with a budding community of open source systems like S2, ZeroFS and our OpenData project.
+The problem is that existing LSM implementations are deeply coupled with local filesystems, which is why every object-store-native database implements it anew. We've tackled this problem head on and spent the last two years building [SlateDB](https://www.slatedb.io/), the first open source project implementing an LSM tree natively on object storage. This battle hardened foundation has accelerated the development of new object-store-native data systems, with a budding community of open source systems like S2, ZeroFS and our OpenData project.
 
 LSM trees are also a perfect fit for timeseries databases. The two main operations, indexing series and loading samples, map naturally to an LSM tree's put/get/scan operations. Additionally, LSM trees are excellent at high volume ingestion, which is also one of the main requirements of an observability workload. You can learn more about the exact data structures and how we mapped timeseries indexes into a key-value model in this [design note](https://github.com/opendata-oss/opendata/blob/main/timeseries/rfcs/0001-tsdb-storage.md).
 
@@ -165,7 +165,7 @@ For cold queries, [proactive metadata warming](https://github.com/opendata-oss/o
 
 ## What's next
 
-OpenData Timeseries replaces the half-dozen services, quorum replication, and shard management of a traditional timeseries database stack with one write server, zero or more read replicas and an object store bucket. That is a meaningful reduction in operational complexity, and it comes with attractive economics: you can monitor 3.9 million active series for about $200/month of compute.
+OpenData Timeseries replaces the half-dozen services, quorum replication, and shard management of a traditional timeseries database stack with one write server, zero or more read replicas and an object store bucket. That is a meaningful reduction in operational complexity, and it comes with attractive economics: you can monitor 3.3 million active series for about $500/month of compute.
 
 OpenData Timeseries is also one proof point for a bigger idea. If object storage and SlateDB can remove this much complexity from a timeseries database, then the same foundation should apply to other databases too. Growing application stacks rarely run just one database. The OpenData project's goal is to bring the same simplified operating model and cost benefits to the other database categories modern applications depend on, and meaningfully reduce the cost and complexity of the typical application stack.
 
