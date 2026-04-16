@@ -10,6 +10,8 @@ interface Props {
 }
 
 const { title, description, ogImage = '/images/opengraph.png' } = Astro.props;
+const ogImageUrl = new URL(ogImage, Astro.site).href;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 ---
 
 <!doctype html>
@@ -20,15 +22,17 @@ const { title, description, ogImage = '/images/opengraph.png' } = Astro.props;
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/images/icon.svg" />
     <title>{title}</title>
+    <link rel="canonical" href={canonicalUrl} />
     <!-- Open Graph / Social Preview -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={ogImageUrl} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image" content={ogImageUrl} />
     <Analytics />
   </head>
   <body class="font-sans text-slate-700 antialiased">
