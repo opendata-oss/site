@@ -19,7 +19,7 @@ const { Content } = await render(post);
 <Base
   title={`${post.data.title} | OpenData`}
   description={post.data.description}
-  ogImage="/images/opengraph.png"
+  ogImage={`/blog/${post.id}/og.png`}
 >
   <div
     class="bg-white min-h-screen flex flex-col items-center gap-6 px-4 pt-24 pb-12"

@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.14",
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.1.18",
     "@vercel/analytics": "^1.6.1",
     "astro": "^5.16.6",
+    "satori": "^0.26.0",
     "tailwindcss": "^4.1.18"
   }
 }
