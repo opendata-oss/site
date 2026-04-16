@@ -21,7 +21,7 @@ To see what object-store-native architectures simplify, look at what a productio
 
 The [Cortex architecture](https://cortexmetrics.io/docs/architecture/) specs out a half dozen required services just to get writes durable, queries served, and blocks compacted. Queries have to stitch together recent ingester state with historical object-store state through store-gateways.
 
-Here is the minimal architecture of the system:
+Here is the minimal architecture of Cortex:
 
 ```
                                                                                      ┌─ ─ ─ ─ ─ ─┐
