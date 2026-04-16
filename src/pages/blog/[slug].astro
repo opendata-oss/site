@@ -24,8 +24,8 @@ const { Content } = await render(post);
   <div
     class="bg-white min-h-screen flex flex-col items-center gap-6 px-4 pt-24 pb-12"
   >
-    <article class="font-mono text-slate-700 max-w-2xl w-full space-y-6">
-      <header class="space-y-2">
+    <article class="post text-slate-700 max-w-2xl w-full space-y-6">
+      <header class="space-y-3">
         <h1 class="text-2xl text-slate-900">{post.data.title}</h1>
         <div class="flex items-center gap-3 text-sm text-slate-400">
           <time>{post.data.date.toISOString().slice(0, 10)}</time>

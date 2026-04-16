@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.14",
+    "@fontsource-variable/geist": "^5.2.8",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.1.18",
     "@vercel/analytics": "^1.6.1",

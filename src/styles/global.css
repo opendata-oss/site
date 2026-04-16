@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@fontsource-variable/geist";
 
 @font-face {
   font-family: "JetBrains Mono";
@@ -17,7 +18,18 @@
 }
 
 @theme {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* Blog post scoping: headings + post header use mono, body text stays sans. */
+.post h1,
+.post h2,
+.post h3,
+.post h4,
+.post header {
+  font-family: var(--font-mono);
+  letter-spacing: -0.025em;
 }
 
 .prose-opendata h2 {
@@ -29,7 +41,7 @@
 }
 
 .prose-opendata p {
-  @apply text-slate-700 mb-4 leading-relaxed;
+  @apply text-slate-700 mb-4 leading-relaxed text-[17px];
 }
 
 .prose-opendata ul {
