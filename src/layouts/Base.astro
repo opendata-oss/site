@@ -31,7 +31,7 @@ const { title, description, ogImage = '/images/opengraph.png' } = Astro.props;
     <meta name="twitter:image" content={ogImage} />
     <Analytics />
   </head>
-  <body>
+  <body class="font-sans text-slate-700 antialiased">
     <Navbar />
     <slot />
   </body>
