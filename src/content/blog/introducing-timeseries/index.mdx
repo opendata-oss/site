@@ -130,7 +130,7 @@ To measure ingestion, we ran [p8s-bench](https://github.com/responsivedev/p8s-be
 
 For this workload, OpenData Timeseries sustained the ingestion of about **55k samples/sec, or 4.7B samples/day** on the single `m5.xlarge` node while flushing data durably to S3:
 
-![Soak chart showing sustained ingestion rate over time](./introducing-timeseries/img/soak_chart.png)
+![Soak chart showing sustained ingestion rate over time](./img/soak_chart.png)
 
 An m5.xlarge costs about $140/month of compute before storage and request charges. Assuming 2 `r5d.xlarge` reader nodes with a 140GB local NVMe at about $210/mo, **the total compute cost of an OpenData Timeseries cluster ingesting 3.3M unique series and 4.7B samples/day is $560**.
 
@@ -153,7 +153,7 @@ None of these numbers are exact, but the structural gap is clear: a handful of n
 
 Query latency depends mostly on how much data the query has to touch, and whether that data is already in the SlateDB block cache. Here is a chart of cold and warm query latency as a function of the number of series that are matched and scanned over a 6 hour time range:
 
-![Cold vs warm query latency by number of series scanned](./introducing-timeseries/img/query-latency-bar-chart.png)
+![Cold vs warm query latency by number of series scanned](./img/query-latency-bar-chart.png)
 
 The warm numbers are the ones that matter for day-to-day use, since alerts and active dashboards will naturally keep their data warm. Once recent data is in the block cache, queries stop paying object-store round trips. On the benchmark `r5d.xlarge` node, roughly 8 GB of RAM plus about 140 GB of NVMe-backed disk cache are enough to keep several weeks of data locally warm, assuming 1-2 bytes per sample for Gorilla-compressed blocks.
 
