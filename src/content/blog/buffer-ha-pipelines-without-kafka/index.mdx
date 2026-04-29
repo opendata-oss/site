@@ -71,7 +71,7 @@ This simple architecture nails the most important requirements for a buffered in
 2. **At-least-once delivery:** The manifest is atomically updated only after data is durably acknowledged, so you get at-least-once semantics for ingestion. Ordering is guaranteed within a single ingestor.
 3. **Collector fencing:** Each collector couples an epoch with its operations on the manifest, allowing detection and fencing of zombie collectors to avoid split-brain situations.
 
-The details are in the [OpenData Buffer README](https://github.com/opendata-oss/opendata/tree/main/ingest), the [Buffer design RFC](https://github.com/opendata-oss/opendata/blob/main/ingest/rfcs/0001-stateless-ingest.md), and the [Timeseries ingest-consumer RFC](https://github.com/opendata-oss/opendata/blob/main/timeseries/rfcs/0006-ingest-consumer.md).
+The details are in the [OpenData Buffer README](https://github.com/opendata-oss/opendata/tree/main/buffer), the [Buffer design RFC](https://github.com/opendata-oss/opendata/blob/main/buffer/rfcs/0001-stateless-buffer.md), and the [Timeseries ingest-consumer RFC](https://github.com/opendata-oss/opendata/blob/main/timeseries/rfcs/0006-buffer-consumer.md).
 
 ## Tradeoffs
 
@@ -117,4 +117,4 @@ The next step is fleshing out the first party integrations. We already have an O
 
 If you're building a system that can integrate, join our [Discord](https://discord.gg/2Awkh6YVpP) and chat with us. We'd love to onboard your use case onto our ecosystem.
 
-*Buffer* is MIT-licensed and available today as part of [OpenData](https://github.com/opendata-oss/opendata/). You can read the [design RFC](https://github.com/opendata-oss/opendata/blob/main/ingest/rfcs/0001-stateless-ingest.md) and try it through the [OpenData Timeseries quickstart](https://www.opendata.dev/docs/timeseries/quickstart).
+*Buffer* is MIT-licensed and available today as part of [OpenData](https://github.com/opendata-oss/opendata/). You can read the [design RFC](https://github.com/opendata-oss/opendata/blob/main/buffer/rfcs/0001-stateless-buffer.md) and try it through the [OpenData Timeseries quickstart](https://www.opendata.dev/docs/timeseries/quickstart).
