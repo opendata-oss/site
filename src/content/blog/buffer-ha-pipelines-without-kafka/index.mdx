@@ -90,7 +90,7 @@ In practice, these limitations are often both acceptable even for high-throughpu
 
 *Buffer* batches writes to limit your object storage API requests, and therefore cost exposure. On the read side, the manifest is polled at a configurable frequency. This two-S3-hop design is structurally slower than replicating data in-memory before serving it as Apache Kafka does.
 
-In practice "slower" still means *p99 latencies of under 1s*, which is acceptable for many high-throughput workloads (particularly in telemetry and observability). Furthermore, the latency/cost tradeoff is configurable. Increasing the frequency of flushes and polls will lower your latency (to a floor of approximately 50-100ms) at increased object storage request costs.
+In practice "slower" still means *p99 latencies of under 2s*, which is acceptable for many high-throughput workloads (particularly in telemetry and observability). Furthermore, the latency/cost tradeoff is configurable. Increasing the frequency of flushes and polls will lower your latency (to a floor of approximately 50-100ms) at increased object storage request costs.
 
 ## Benchmarks: what Buffer can do today
 
