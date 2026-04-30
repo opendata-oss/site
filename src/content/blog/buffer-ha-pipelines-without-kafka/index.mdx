@@ -15,7 +15,7 @@ This pattern is popular because it builds resilience into your system architectu
 
 The price of this resilience is operating (or paying for) an additional complicated distributed system.
 
-Today we're announcing OpenData *Buffer* to make that additional system braindead simple and cheap.
+Today we're announcing OpenData *Buffer* to make that additional system braindead simple and cheap. True to its name, Buffer is a stateless library that implements a protocol for buffering high throughput data on object storage by separating data files and metadata management.
 
 For $90/mo, we ran a benchmark pushing ~30 MiB/s of metrics data via *Buffer*. Using public pricing calculators, the equivalent Kafka service cost roughly [$1,300/month](https://www.warpstream.com/pricing) for managed WarpStream and [$8,500/month](https://2minutestreaming.com/tools/apache-kafka-calculator/) for self-hosted Apache Kafka.
 
