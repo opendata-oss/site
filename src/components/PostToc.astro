@@ -1,0 +1,207 @@
+---
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+const items = headings.filter((h) => h.depth >= 2 && h.depth <= 4);
+
+const lineWidth = (depth: number) => {
+  if (depth === 2) return "w-3";
+  if (depth === 3) return "w-2";
+  return "w-1.5";
+};
+
+const lineIndent = (depth: number) => {
+  if (depth === 2) return "pl-0";
+  if (depth === 3) return "pl-1";
+  return "pl-2";
+};
+
+---
+
+{items.length > 0 && (
+  <div
+    class="post-toc-wrap pointer-events-none fixed top-1/2 left-0 -translate-y-1/2 z-40 hidden lg:block"
+  >
+    <nav
+      aria-label="Table of contents"
+      aria-expanded="false"
+      data-post-toc
+      data-open="false"
+      class="post-toc group pointer-events-auto ml-3 inline-flex flex-col items-start rounded-lg p-2 transition-all duration-150"
+    >
+      <div
+        class="toc-header text-[0px] leading-none opacity-0 tracking-wider font-semibold uppercase text-slate-400 transition-all duration-150"
+      >
+        Contents
+      </div>
+      <ul class="toc-list flex flex-col gap-1">
+        {items.map((h) => (
+          <li class={lineIndent(h.depth)}>
+            <a
+              href={`#${h.slug}`}
+              data-toc-link
+              data-slug={h.slug}
+              data-depth={h.depth}
+              class="group/item flex items-center py-1"
+            >
+              <span
+                class={`toc-line ${lineWidth(h.depth)} h-[2px] rounded-full bg-slate-300 transition-all duration-150`}
+              ></span>
+              <span
+                class="toc-label whitespace-nowrap text-slate-500 text-[0px] leading-none opacity-0 transition-all duration-150"
+              >
+                {h.text}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+)}
+
+<style>
+  .post-toc {
+    cursor: pointer;
+  }
+  .post-toc[data-open="false"]:hover {
+    background-color: rgb(241 245 249 / 0.7); /* slate-100/70 */
+  }
+  .post-toc[data-open="true"] {
+    cursor: default;
+    padding: 1.25rem; /* p-5 */
+    background-color: rgb(255 255 255);
+    box-shadow:
+      0 10px 15px -3px rgb(0 0 0 / 0.1),
+      0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-lg */
+    --tw-ring-color: rgb(226 232 240 / 0.7);
+    box-shadow:
+      0 10px 15px -3px rgb(0 0 0 / 0.1),
+      0 4px 6px -4px rgb(0 0 0 / 0.1),
+      0 0 0 1px rgb(226 232 240 / 0.7);
+  }
+  .post-toc[data-open="true"] .toc-list {
+    gap: 0.375rem; /* gap-1.5 */
+  }
+  .post-toc[data-open="true"] .toc-header {
+    font-size: 11px;
+    opacity: 1;
+    margin-bottom: 0.75rem; /* mb-3 */
+  }
+  .post-toc[data-open="true"] .toc-line {
+    width: 0;
+    opacity: 0;
+  }
+  .post-toc[data-open="true"] .toc-label {
+    font-size: 0.875rem; /* text-sm */
+    line-height: 1.25rem;
+    opacity: 1;
+  }
+  .post-toc[data-open="true"] [data-toc-link][data-depth="3"] .toc-label {
+    margin-left: 1rem; /* ml-4 */
+  }
+  .post-toc[data-open="true"] [data-toc-link][data-depth="4"] .toc-label {
+    margin-left: 2rem; /* ml-8 */
+  }
+  .post-toc[data-open="true"] [data-toc-link] {
+    cursor: pointer;
+  }
+  .post-toc[data-open="true"] [data-toc-link]:hover .toc-label {
+    color: rgb(15 23 42);
+  }
+  .post-toc [data-toc-link][data-active="true"] .toc-line {
+    background-color: rgb(15 23 42); /* slate-900 */
+  }
+  .post-toc[data-open="true"] [data-toc-link][data-active="true"] .toc-label {
+    color: rgb(15 23 42);
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  const toc = document.querySelector<HTMLElement>("[data-post-toc]");
+  if (toc) {
+    const links = Array.from(
+      toc.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"),
+    );
+    const slugs = links.map((l) => l.dataset.slug!).filter(Boolean);
+    const headings = slugs
+      .map((s) => document.getElementById(s))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const setActive = (slug: string | null) => {
+      for (const link of links) {
+        link.dataset.active = link.dataset.slug === slug ? "true" : "false";
+      }
+    };
+
+    const setOpen = (open: boolean) => {
+      toc.dataset.open = open ? "true" : "false";
+      toc.setAttribute("aria-expanded", open ? "true" : "false");
+    };
+
+    toc.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest<HTMLAnchorElement>("[data-toc-link]");
+      const isOpen = toc.dataset.open === "true";
+      if (!isOpen) {
+        // Closed: clicking anywhere opens the panel; suppress link navigation.
+        e.preventDefault();
+        setOpen(true);
+      } else if (link) {
+        // Open: link clicks navigate normally and close the panel.
+        setOpen(false);
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (toc.dataset.open !== "true") return;
+      if (!toc.contains(e.target as Node)) setOpen(false);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && toc.dataset.open === "true") setOpen(false);
+    });
+
+    // Track which headings are "above the trigger line" (e.g. 30% from top).
+    // The active one is the last heading above that line.
+    const visible = new Map<string, boolean>();
+
+    const update = () => {
+      const triggerY = window.innerHeight * 0.3;
+      let activeSlug: string | null = null;
+      for (const h of headings) {
+        const rect = h.getBoundingClientRect();
+        if (rect.top <= triggerY) {
+          activeSlug = h.id;
+        } else {
+          break;
+        }
+      }
+      // If nothing is above the trigger (we're scrolled above the first
+      // heading), still mark the first heading as active.
+      if (!activeSlug && headings.length > 0) {
+        activeSlug = headings[0].id;
+      }
+      setActive(activeSlug);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          visible.set(entry.target.id, entry.isIntersecting);
+        }
+        update();
+      },
+      { rootMargin: "0px 0px -60% 0px", threshold: 0 },
+    );
+
+    for (const h of headings) observer.observe(h);
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+  }
+</script>

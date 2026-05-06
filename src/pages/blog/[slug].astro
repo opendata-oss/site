@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import PostToc from "../../components/PostToc.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -13,7 +14,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
 
 <Base
@@ -21,6 +22,7 @@ const { Content } = await render(post);
   description={post.data.description}
   ogImage={`/blog/${post.id}/og.png`}
 >
+  <PostToc headings={headings} />
   <div
     class="bg-white min-h-screen flex flex-col items-center gap-6 px-4 pt-24 pb-12"
   >
