@@ -58,7 +58,7 @@
 .prose-opendata h2,
 .prose-opendata h3,
 .prose-opendata h4 {
-  @apply relative;
+  @apply relative scroll-mt-24;
 }
 
 .prose-opendata h2 {
