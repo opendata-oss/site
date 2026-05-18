@@ -132,7 +132,7 @@ For this workload, OpenData Timeseries sustained the ingestion of about **55k sa
 
 ![Soak chart showing sustained ingestion rate over time](./img/soak_chart.png)
 
-An m5.xlarge costs about $140/month of compute before storage and request charges. Assuming 2 `r5d.xlarge` reader nodes with a 140GB local NVMe at about $210/mo, **the total compute cost of an OpenData Timeseries cluster ingesting 3.3M unique series and 4.7B samples/day is $560**.
+An m5.xlarge costs about $140/month of compute before storage and request charges. Assuming 2 `r5d.xlarge` reader nodes with a 140GB local NVMe at about $210/mo, **the total compute cost of an OpenData Timeseries cluster ingesting 3.3M unique series and 4.7B samples/day is $560**. The benchmark ran with SlateDB's WAL disabled, which is acceptable for many timeseries workloads, particularly those paired with a durable upstream log like [OpenData Buffer](https://www.opendata.dev/blog/buffer-ha-pipelines-without-kafka). At this configuration, S3 charges land at roughly $5-12/month for PUT requests plus a few dollars more for sample storage at standard S3 rates.
 
 This number answers a very practical question: what does one box buy me? Our benchmarks show that, even today, OpenData Timeseries can handle meaningful data volumes efficiently.
 

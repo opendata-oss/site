@@ -161,6 +161,8 @@ The chart above shows the ingest throughput over the preceding 5 minutes while r
 
 Vector sustains between ~1K and ~12K vector writes/second, depending on dataset size and vector dimensions. Ingestion is bottlenecked on (1) traversal of the centroid index to assign Vectors to postings and (2) computing new clusters when centroids are split by the indexer when running LIRE. More vectors means more centroids to search, and more dimensions makes distance computation more expensive.
 
+S3 charges sit outside the $346/mo compute figure but stay small. Vector batches writes into roughly one SlateDB write per second, keeping PUT costs in the tens of dollars per month. Storage for SIFT100M lands at 200-500GB after attributes and LSM space amplification, or about $5-12/month at standard S3 rates.
+
 ## What's next
 
 We have a number of enhancements on the roadmap to improve retrieval and increase performance.
