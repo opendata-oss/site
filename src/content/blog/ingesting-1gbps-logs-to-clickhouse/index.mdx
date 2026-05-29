@@ -1,5 +1,5 @@
 ---
-title: "Ingesting 1Gbps of logs to ClickHouse for $180/month"
+title: "Ingesting 1Gbps of logs into ClickHouse for $180/month"
 description: "New pipelined producer and consumer clients for OpenData Buffer, plus a ClickHouse integration with batch deduplication, move 1.1 Gbps of logs from an OTel Gateway to ClickHouse via S3 for $180/mo."
 date: 2026-05-29
 author: "Apurva Mehta"
@@ -21,7 +21,7 @@ These changes taken together allowed us to transfer 1.1 Gbps of log data from an
   <tbody>
     <tr>
       <th scope="row" style="border-bottom:1px solid #f1f5f9;padding-right:3rem">Throughput</th>
-      <td>1.1 Gbps</td>
+      <td>1.1 Gbps compressed</td>
     </tr>
     <tr>
       <th scope="row" style="border-bottom:1px solid #f1f5f9;padding-right:3rem">p50 E2E Latency</th>
@@ -53,7 +53,7 @@ We measured end-to-end latency from two timestamps added to each record as it tr
 - `_odb_gateway_received_at`: stamped by the OTel exporter the moment the gateway received the record.
 - `_odb_clickhouse_inserted_at`: stamped at INSERT time when the ClickHouse sink wrote the row.
 
-Throughput and latency held stable, with the system transferring 1.1 Gbps of compressed data throughout.
+Throughput and latency held stable, with the system transferring 1.1 Gbps of compressed data. 
 
 ![Throughput and end-to-end latency over the benchmark run](./img/throughput_e2e_latency.png)
 
@@ -67,7 +67,7 @@ The S3 costs for this run break down as follows:
 | **Network** — in-region via S3 Gateway endpoint | — | $0 | $0 |
 | **Total** | | | **~$180** |
 
-Since S3 completely replaces a system like Kafka, it's meaningful to compare those $180/mo S3 costs with Kafka. Using the popular [AKalculator](https://2minutestreaming.com/tools/apache-kafka-calculator/), this workload would cost $24,667/mo on Apache Kafka. WarpStream would cost $3,096/mo at the Fundamentals Tier.
+Since S3 completely replaces a system like Kafka, it's meaningful to compare those $180/mo S3 costs with Kafka. Using the popular [AKalculator](https://2minutestreaming.com/tools/apache-kafka-calculator/), this workload would cost $24,667/mo on Apache Kafka. WarpStream would cost $8,867/mo at the Fundamentals Tier.
 
 ### Batching, Pipelining, and Parallelizing IO
 
