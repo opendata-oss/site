@@ -1,6 +1,6 @@
 ---
-title: "Ingesting 1Gbps of logs to ClickHouse for $180/mo"
-description: "New pipelined producer and consumer clients for OpenData Buffer, plus a ClickHouse integration with aligned batch deduplication, move 1.1 Gbps of logs from an OTel Gateway to ClickHouse via S3 for $180/mo."
+title: "Ingesting 1Gbps of logs to ClickHouse for $180/month"
+description: "New pipelined producer and consumer clients for OpenData Buffer, plus a ClickHouse integration with batch deduplication, move 1.1 Gbps of logs from an OTel Gateway to ClickHouse via S3 for $180/mo."
 date: 2026-05-28
 author: "Apurva Mehta"
 tags: ["buffer", "clickhouse", "object-storage", "otel", "announcement"]
@@ -17,12 +17,30 @@ Today, we're announcing a few extensions for *Buffer*:
 
 These changes taken together allowed us to transfer 1.1 Gbps of log data from an OTel Gateway to ClickHouse via S3:
 
-| Throughput | 1.1 Gbps |
-| --- | --- |
-| p50 E2E Latency | ~2.8s |
-| p99 E2E Latency | ~10s |
-| Monthly Cost (S3) | $180 |
-| Producer/Consumer Nodes | 2x (4vCPU + 8GB RAM) |
+<table style="width:auto">
+  <tbody>
+    <tr>
+      <th scope="row" style="border-bottom:1px solid #f1f5f9;padding-right:3rem">Throughput</th>
+      <td>1.1 Gbps</td>
+    </tr>
+    <tr>
+      <th scope="row" style="border-bottom:1px solid #f1f5f9;padding-right:3rem">p50 E2E Latency</th>
+      <td>~2.8s</td>
+    </tr>
+    <tr>
+      <th scope="row" style="border-bottom:1px solid #f1f5f9;padding-right:3rem">p99 E2E Latency</th>
+      <td>~10s</td>
+    </tr>
+    <tr>
+      <th scope="row" style="border-bottom:1px solid #f1f5f9;padding-right:3rem">Monthly Cost (S3)</th>
+      <td>$180</td>
+    </tr>
+    <tr>
+      <th scope="row" style="border-bottom:1px solid #f1f5f9;padding-right:3rem">Producer/Consumer Nodes</th>
+      <td>2x (4vCPU + 8GB RAM)</td>
+    </tr>
+  </tbody>
+</table>
 
 The new Buffer clients also have at-least-once delivery semantics with sink-side deduplication: every data batch has a unique identifier which is stable across retries. This provides the basic mechanism for sinks to deduplicate retried data, which is something the ClickHouse sink leverages.
 
