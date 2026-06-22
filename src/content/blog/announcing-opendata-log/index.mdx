@@ -160,17 +160,17 @@ For the full details on the storage implementation, check out the [RFC on GitHub
 
 ### Scaling without Partitions
 
-While partitions are a suboptimal data modeling concept, some type of data distribution is a requirement for scaling out beyond a single machine. The first strategy available for scaling horizontally is deploying multiple readers. This allows log to scale without shuffling any data, and you can spin up as many read replicas as you want since data is pulled directly from S3.
+While partitions are a suboptimal data modeling concept, some type of data distribution is a requirement for scaling out beyond a single machine. The first strategy available for scaling *Log* horizontally is deploying multiple readers. You can spin up as many read replicas as you want since data is pulled directly from S3. 
 
-Deploying readers that are scoped to a single target key range has the extra benefit of improving the cache locality of reads. As opposed to hash/random partitioning, queries for keys that are lexicographically proximal on a range-scoped reader means it's likely a cold miss will pull data from object storage that will be subsequently read by another client that queries the same range-scoped reader (and vice versa, you don't thrash the cache with blocks from other ranges).
+Deploying readers that are scoped to a single target key range has the extra benefit of improving the cache locality of reads, thus reducing read amplification. As opposed to hash/random partitioning, queries for keys that are lexicographically proximal on a range-scoped reader means it’s likely a cold miss will pull data from object storage that will be subsequently read by another client that queries the same reader (and vice versa, you don’t thrash the cache with blocks from other ranges).
 
 <RangeVsRandomSharding />
 
-In addition to scaling readers, *Log*'s architecture builds on SlateDB and inherits the ability to scale out and in without shuffling data. You can split a node with a metadata-only operation. Old data remains on object storage untouched until it eventually is compacted, codifying the split operation.
+*Log*’s architecture builds on SlateDB and thus inherits the ability to scale out and in without shuffling data. You can split a node with a metadata-only operation. Old data remains on object storage untouched until it eventually is compacted, codifying the split operation.
 
 The consequence of this is that rescaling operations are nearly transparent to consumers. You can point them to a new *Log* instance and they can resume from the same exact offset they left off.
 
-If you're curious about the details [read the docs](https://slatedb.io/docs/design/clones/) to get a good grip on how this mechanism works.
+If you’re curious about the details [read the docs](https://slatedb.io/docs/design/clones/) to get a good grip on how this mechanism works.
 
 ### Cost
 
