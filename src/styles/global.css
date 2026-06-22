@@ -139,7 +139,7 @@
 }
 
 .prose-opendata img {
-  @apply rounded-lg border border-slate-200 my-6 max-w-full h-auto;
+  @apply rounded-lg border border-slate-200 my-6 max-w-full h-auto bg-white p-4;
 }
 
 .prose-opendata table {

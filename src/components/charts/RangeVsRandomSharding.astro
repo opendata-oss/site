@@ -1,0 +1,123 @@
+---
+// Range-scoped readers cut read amplification; random sharding doesn't.
+// The stepper picks a reader fan-out P; the chart and the stat readout react.
+// Self-contained, dependency-free, black-on-white with ASCII-style texture fills.
+---
+
+<figure class="rvs" data-rvs>
+  <figcaption class="rvs-frame">
+    <span class="rvs-tag">FIG — SCALING READERS</span>
+    <h4 class="rvs-title">Scoping readers to ranges reduces read amplification</h4>
+  </figcaption>
+
+  <div class="rvs-controls" role="group" aria-label="Reader fan-out">
+    <span class="rvs-controls-label">reader ranges&nbsp;P</span>
+    <div class="rvs-seg" data-steps>
+      <button type="button" class="rvs-step" data-i="0">1</button>
+      <button type="button" class="rvs-step" data-i="1">2</button>
+      <button type="button" class="rvs-step" data-i="2">4</button>
+      <button type="button" class="rvs-step" data-i="3">8</button>
+      <button type="button" class="rvs-step is-active" data-i="4">16</button>
+    </div>
+  </div>
+
+  <div class="rvs-plot">
+    <svg class="rvs-svg" viewBox="0 0 680 320" role="img" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="rvs-tip" hidden></div>
+  </div>
+
+  <div class="rvs-legend">
+    <span class="rvs-key">
+      <svg class="rvs-glyph" viewBox="0 0 26 14" aria-hidden="true">
+        <line x1="1" y1="7" x2="25" y2="7" stroke="#111" stroke-width="2.4"></line>
+        <rect x="8" y="2" width="10" height="10" fill="#fff" stroke="#111" stroke-width="1.8"></rect>
+      </svg>
+      range-split
+    </span>
+    <span class="rvs-key">
+      <svg class="rvs-glyph" viewBox="0 0 26 14" aria-hidden="true">
+        <line x1="1" y1="7" x2="25" y2="7" stroke="#111" stroke-width="1.6" stroke-dasharray="4 3"></line>
+        <circle cx="13" cy="7" r="5" fill="#fff" stroke="#111" stroke-width="1.8"></circle>
+      </svg>
+      random sharding
+    </span>
+  </div>
+
+  <table class="rvs-stats">
+    <thead>
+      <tr><th></th><th>read-amp</th><th>GETs / poll</th><th>poll p50</th></tr>
+    </thead>
+    <tbody>
+      <tr data-row="range"><th>range</th><td data-amp></td><td data-gets></td><td data-p50></td></tr>
+      <tr data-row="random"><th>random</th><td data-amp></td><td data-gets></td><td data-p50></td></tr>
+    </tbody>
+  </table>
+
+  <p class="rvs-caption">
+    Range readers each scan a contiguous 1/P slice of the keyspace, so read
+    amplification falls as you add readers scoped to smaller ranges.
+  </p>
+</figure>
+
+<style>
+  .rvs {
+    --ink: #111;
+    --paper: #fff;
+    margin: 2.25rem 0;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    color: var(--ink);
+  }
+  .rvs-frame { border-bottom: 1.5px solid var(--ink); padding: 0.7rem 0.95rem 0.8rem; }
+  .rvs-tag { font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: #555; }
+  .rvs-title {
+    font-family: var(--font-mono, ui-monospace, monospace) !important;
+    font-size: 0.95rem; font-weight: 700; margin: 0.25rem 0 0;
+    letter-spacing: -0.01em; line-height: 1.25;
+  }
+  .rvs-controls { display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 0.95rem 0; flex-wrap: wrap; }
+  .rvs-controls-label { font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: #555; }
+  .rvs-seg { display: inline-flex; border: 1.5px solid var(--ink); }
+  .rvs-step {
+    appearance: none; background: var(--paper); color: var(--ink);
+    border: 0; border-right: 1.5px solid var(--ink);
+    padding: 0.3rem 0.7rem; font: inherit; font-size: 0.74rem; cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+  .rvs-step:last-child { border-right: 0; }
+  .rvs-step:hover { background: #ececec; }
+  .rvs-step.is-active { background: var(--ink); color: var(--paper); }
+  .rvs-plot { position: relative; padding: 0.6rem 0.6rem 0; }
+  .rvs-legend {
+    display: flex; flex-wrap: wrap; gap: 0.3rem 1.2rem;
+    padding: 0.5rem 0.95rem 0; font-size: 0.7rem; color: #333;
+  }
+  .rvs-key { display: inline-flex; align-items: center; gap: 0.45rem; }
+  .rvs-glyph { width: 26px; height: 14px; flex: none; display: inline-block; }
+  .rvs-svg { width: 100%; height: auto; display: block; }
+  .rvs-svg text { font-family: var(--font-mono, ui-monospace, monospace); }
+  .rvs-tip {
+    position: absolute; pointer-events: none; background: var(--ink); color: var(--paper);
+    font-size: 0.66rem; line-height: 1.35; padding: 0.3rem 0.45rem; white-space: nowrap;
+    transform: translate(-50%, -115%); z-index: 2;
+  }
+  .rvs-stats {
+    width: calc(100% - 1.9rem); margin: 0.9rem 0.95rem 0;
+    border-collapse: collapse; font-size: 0.72rem;
+  }
+  .rvs-stats th, .rvs-stats td {
+    border: 1px solid #ccc; padding: 0.28rem 0.5rem; text-align: right;
+  }
+  .rvs-stats thead th { color: #555; font-weight: 500; text-transform: uppercase; font-size: 0.6rem; letter-spacing: 0.08em; }
+  .rvs-stats tbody th { text-align: left; font-weight: 700; }
+  .rvs-stats tr[data-row="range"] { background: #f4f4f4; }
+  .rvs-caption {
+    font-size: 0.78rem !important; line-height: 1.5; color: #333 !important;
+    margin: 0.7rem 0 0 !important; padding: 0 0.95rem 0.9rem; min-height: 2.6em;
+  }
+</style>
+
+<script>
+  import "./rangeVsRandomSharding.client.ts";
+</script>

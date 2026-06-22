@@ -1,0 +1,101 @@
+---
+// The null result: poll latency holds flat as key cardinality grows (at fixed
+// ingest). Self-contained, dependency-free. The client module finds every
+// instance on the page and draws it. Black-on-white with ASCII-style texture
+// fills.
+---
+
+<figure class="rac" data-rac>
+  <figcaption class="rac-frame">
+    <span class="rac-tag">FIG — POLL LATENCY</span>
+    <h4 class="rac-title">Poll latency holds flat across key cardinality</h4>
+  </figcaption>
+
+  <div class="rac-plot">
+    <svg class="rac-svg" viewBox="0 0 680 380" role="img" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="rac-tip" hidden></div>
+  </div>
+
+  <p class="rac-caption">
+    At a fixed 20&nbsp;MB/s ingest, increasing the key count from 100K&nbsp;→&nbsp;1M
+    does not degrade p50 poll latency when reading the log for a single key.
+  </p>
+
+  <div class="rac-legend">
+    <span class="rac-key"><span class="rac-swatch" data-tex="p50"></span> p50 latency</span>
+  </div>
+</figure>
+
+<style>
+  .rac {
+    --ink: #111;
+    --paper: #fff;
+    margin: 2.25rem 0;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    color: var(--ink);
+  }
+  .rac-frame {
+    border-bottom: 1.5px solid var(--ink);
+    padding: 0.7rem 0.95rem 0.8rem;
+  }
+  .rac-tag {
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #555;
+  }
+  .rac-title {
+    font-family: var(--font-mono, ui-monospace, monospace) !important;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0.25rem 0 0;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+  .rac-plot { position: relative; padding: 0.9rem 0.6rem 0; }
+  .rac-svg { width: 100%; height: auto; display: block; }
+  .rac-svg text { font-family: var(--font-mono, ui-monospace, monospace); }
+  .rac-tip {
+    position: absolute;
+    pointer-events: none;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.66rem;
+    line-height: 1.35;
+    padding: 0.3rem 0.45rem;
+    white-space: nowrap;
+    transform: translate(-50%, -115%);
+    z-index: 2;
+  }
+  .rac-caption {
+    font-size: 0.78rem !important;
+    line-height: 1.5;
+    color: #333 !important;
+    margin: 0 !important;
+    padding: 0.7rem 0.95rem 0;
+  }
+  .rac-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.1rem;
+    padding: 0.7rem 0.95rem 0.9rem;
+    font-size: 0.7rem;
+    color: #333;
+  }
+  .rac-key { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .rac-swatch {
+    width: 15px; height: 15px;
+    border: 1.5px solid var(--ink);
+    display: inline-block;
+  }
+  .rac-swatch[data-tex="p50"] {
+    background-image: radial-gradient(var(--ink) 1px, transparent 1.2px);
+    background-size: 4px 4px;
+  }
+</style>
+
+<script>
+  import "./latencyVsCardinality.client.ts";
+</script>

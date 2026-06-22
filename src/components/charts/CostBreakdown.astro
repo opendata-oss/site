@@ -1,0 +1,181 @@
+---
+// Static cost "receipt" for the worked example: one read-serving node, fully
+// loaded, 1 day of retention. The monthly total is the hero. No client script —
+// the figure is static markup; scoped styles mirror the .rac / .rvs chart
+// components (black-on-white, monospace, ASCII-texture swatch) so it reads as a
+// sibling of the benchmark charts. Numbers come from the post's cost model:
+// compute $0.238/hr × 730 ≈ $174; S3 PUT ≈ 1.0M/mo @ $0.005/1k ≈ $10; storage
+// 20 MB/s = 1.73 TB/day × $0.023/GB ≈ $40 per day of retention.
+---
+
+<figure class="cb">
+  <figcaption class="cb-frame">
+    <span class="cb-tag">FIG — WHAT ONE BOX COSTS</span>
+    <h4 class="cb-title">One read-serving node, every charge on the bill</h4>
+  </figcaption>
+
+  <table class="cb-rcpt">
+    <thead>
+      <tr>
+        <th>Line item</th>
+        <th>Driver</th>
+        <th class="num">Est.&nbsp;/&nbsp;mo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Compute</td>
+        <td class="driver">1× m5n.xlarge, on-demand</td>
+        <td class="num">$174</td>
+      </tr>
+      <tr>
+        <td>S3 writes</td>
+        <td class="driver">flush every ~2–3&nbsp;s ≈ 1.0M PUT</td>
+        <td class="num">~$10</td>
+      </tr>
+      <tr>
+        <td>S3 storage</td>
+        <td class="driver">1.73&nbsp;TB/day × 1 day</td>
+        <td class="num">~$40</td>
+      </tr>
+      <tr class="total-row">
+        <td class="lbl">Total</td>
+        <td class="driver">compute + S3</td>
+        <td class="num"><span class="cb-total">~$224<span class="per">&nbsp;/mo</span></span></td>
+      </tr>
+      <tr class="excl">
+        <td colspan="3">
+          <span class="cb-excl">
+            <span class="cb-swatch" aria-hidden="true"></span>
+            <span>+ GETs for your read pattern — most reads hit the 8&nbsp;GB cache, so this stays workload-dependent and sits outside the total.</span>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="cb-caption">
+    <b>Buys:</b> 20&nbsp;MB/s ingest · 50,000 concurrent followers · 1M keys.
+    Compute is the whole bill; S3 is a rounding error. Add a reader for another
+    ~50k followers at +$174/mo.
+  </p>
+</figure>
+
+<style>
+  .cb {
+    --ink: #111;
+    --paper: #fff;
+    margin: 2.25rem 0;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    color: var(--ink);
+  }
+  .cb-frame {
+    border-bottom: 1.5px solid var(--ink);
+    padding: 0.7rem 0.95rem 0.8rem;
+  }
+  .cb-tag {
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #555;
+  }
+  .cb-title {
+    font-family: var(--font-mono, ui-monospace, monospace) !important;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0.25rem 0 0;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+
+  /* receipt table — scoped class selectors outrank .prose-opendata td/th/table */
+  .cb-rcpt {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    font-size: 0.76rem;
+  }
+  .cb-rcpt th,
+  .cb-rcpt td {
+    padding: 0.42rem 0.95rem;
+    text-align: left;
+    vertical-align: middle;
+  }
+  .cb-rcpt thead th {
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #555;
+    border-bottom: 1px solid #ccc;
+  }
+  .cb-rcpt .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .cb-rcpt tbody td {
+    border-bottom: 1px dotted #ddd;
+    color: var(--ink);
+  }
+  .cb-rcpt .driver { color: #666; }
+
+  .cb-rcpt .total-row td {
+    border-top: 2px solid var(--ink);
+    border-bottom: 0;
+    background: #f4f4f4;
+    padding-top: 0.6rem;
+    padding-bottom: 0.7rem;
+  }
+  .cb-rcpt .total-row .lbl {
+    font-weight: 700;
+    font-size: 0.82rem;
+  }
+  .cb-total {
+    display: inline-block;
+    font-size: 2.05rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .cb-total .per {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #555;
+  }
+
+  .cb-rcpt .excl td {
+    font-size: 0.7rem;
+    color: #777;
+    border-bottom: 0;
+    padding-top: 0.55rem;
+    padding-bottom: 0.25rem;
+  }
+  .cb-excl {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    line-height: 1.45;
+  }
+  .cb-swatch {
+    width: 13px;
+    height: 13px;
+    flex: none;
+    margin-top: 1px;
+    border: 1.5px dashed #999;
+    background: var(--paper);
+    display: inline-block;
+  }
+
+  .cb-caption {
+    font-size: 0.78rem !important;
+    line-height: 1.5 !important;
+    color: #333 !important;
+    margin: 0 !important;
+    padding: 0.8rem 0.95rem 0.9rem !important;
+    border-top: 1px solid #ededed;
+  }
+  .cb-caption b { font-weight: 700; }
+</style>

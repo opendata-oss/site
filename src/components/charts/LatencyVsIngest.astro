@@ -1,0 +1,81 @@
+---
+// The positive control: poll latency climbs with ingest rate (at fixed
+// cardinality). Pairs with the flat-vs-cardinality chart to make the full point
+// — latency tracks ingest, not key count. Self-contained, dependency-free; the
+// client module draws every instance. Black-on-white, ASCII-style texture fills.
+---
+
+<figure class="lvi" data-lvi>
+  <figcaption class="lvi-frame">
+    <span class="lvi-tag">FIG — LATENCY vs INGEST</span>
+    <h4 class="lvi-title">Poll latency scales with ingest rate</h4>
+  </figcaption>
+
+  <div class="lvi-plot">
+    <svg class="lvi-svg" viewBox="0 0 680 380" role="img" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="lvi-tip" hidden></div>
+  </div>
+
+  <p class="lvi-caption">
+    Fixed key count with increasing ingest. While the live tail fits in cache
+    (below ~5&nbsp;MB/s) polls are quick and past that point reads spill to object
+    storage so latency climbs with every added MB/s.
+  </p>
+
+  <div class="lvi-legend">
+    <span class="lvi-key"><span class="lvi-swatch" data-tex="p99"></span> p99 latency</span>
+    <span class="lvi-key"><span class="lvi-swatch" data-tex="p50"></span> p50 latency</span>
+    <span class="lvi-key"><span class="lvi-swatch lvi-swatch--band"></span> p50–p99 band</span>
+  </div>
+</figure>
+
+<style>
+  .lvi {
+    --ink: #111;
+    --paper: #fff;
+    margin: 2.25rem 0;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    color: var(--ink);
+  }
+  .lvi-frame { border-bottom: 1.5px solid var(--ink); padding: 0.7rem 0.95rem 0.8rem; }
+  .lvi-tag { font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: #555; }
+  .lvi-title {
+    font-family: var(--font-mono, ui-monospace, monospace) !important;
+    font-size: 0.95rem; font-weight: 700; margin: 0.25rem 0 0;
+    letter-spacing: -0.01em; line-height: 1.25;
+  }
+  .lvi-plot { position: relative; padding: 0.9rem 0.6rem 0; }
+  .lvi-svg { width: 100%; height: auto; display: block; }
+  .lvi-svg text { font-family: var(--font-mono, ui-monospace, monospace); }
+  .lvi-tip {
+    position: absolute; pointer-events: none; background: var(--ink); color: var(--paper);
+    font-size: 0.66rem; line-height: 1.35; padding: 0.3rem 0.45rem; white-space: nowrap;
+    transform: translate(-50%, -115%); z-index: 2;
+  }
+  .lvi-caption {
+    font-size: 0.78rem !important; line-height: 1.5; color: #333 !important;
+    margin: 0 !important; padding: 0.7rem 0.95rem 0;
+  }
+  .lvi-legend {
+    display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem;
+    padding: 0.7rem 0.95rem 0.9rem; font-size: 0.7rem; color: #333;
+  }
+  .lvi-key { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .lvi-swatch { width: 15px; height: 15px; border: 1.5px solid var(--ink); display: inline-block; }
+  .lvi-swatch[data-tex="p99"] {
+    background-image: repeating-linear-gradient(45deg, var(--ink) 0 1.5px, transparent 1.5px 4px);
+  }
+  .lvi-swatch[data-tex="p50"] {
+    background-image: radial-gradient(var(--ink) 1px, transparent 1.2px); background-size: 4px 4px;
+  }
+  .lvi-swatch--band {
+    border-color: #bbb;
+    background-image: repeating-linear-gradient(45deg, #c4c4c4 0 1px, transparent 1px 5px);
+  }
+</style>
+
+<script>
+  import "./latencyVsIngest.client.ts";
+</script>
