@@ -79,14 +79,89 @@ const initialPanel = panelsHTML(DEFAULT_SELECTION);
 
     <!-- three benefits -->
     <div class="sec sec-why">
-      <div class="abox abox-bare max-w-[860px] mx-auto grid grid-cols-1 gap-6 lg:grid-cols-[max-content_1fr] lg:gap-16">
-        <span class="abox-title-side">why opendata</span>
-        <div class="max-w-[620px]">
+      <div class="abox abox-bare max-w-[620px] mx-auto">
+        <div>
           <p class="text-[15px] leading-[1.8] text-[#444] mb-5">Running production databases requires specialized expertise, which is why databases are expensive.</p>
-          <p class="text-[15px] leading-[1.8] text-[#444] mb-5">Object storage promises to change that. It gives us durable, globally addressable storage that makes radically simpler database architectures possible. What's more, the engineering needed to use object storage optimally is substantially similar across databases.</p>
-          <p class="text-[15px] leading-[1.8] text-[#444] mb-5">That's why every OpenData database shares <b class="text-[#1a1a1a] font-semibold">a objectstore-native storage engine</b>, <b class="text-[#1a1a1a] font-semibold">common tooling</b>, and <b class="text-[#1a1a1a] font-semibold">open formats under an MIT license</b>. With OpenData, there is one operational model to learn across databases, and there is no vendor lock-in.</p>
+          <p class="text-[15px] leading-[1.8] text-[#444] mb-8">Object storage promises to change that. It gives us durable, globally addressable storage that makes radically simpler database architectures possible. What's more, the engineering needed to use object storage optimally is substantially similar across databases. That's why every OpenData database shares:</p>
+
+          <!-- the three pillars, broken out from the prose so the section reads as
+               structured benefits rather than a floating paragraph. -->
+          <div class="why-grid">
+            <div class="why-pillar">
+              <div class="why-pillar-n">01</div>
+              <div class="why-pillar-h">Object native</div>
+              <p class="why-pillar-p">Infinite storage with high durability and excellent unit economics.</p>
+            </div>
+            <div class="why-pillar">
+              <div class="why-pillar-n">02</div>
+              <div class="why-pillar-h">Common tooling</div>
+              <p class="why-pillar-p">One operational model to learn with a common configuration.</p>
+            </div>
+            <div class="why-pillar">
+              <div class="why-pillar-n">03</div>
+              <div class="why-pillar-h">MIT licensed</div>
+              <p class="why-pillar-p">Open formats and a permissive license prevent vendor lock-in.</p>
+            </div>
+          </div>
+
           <a href="/blog/manifesto" class="inline-flex items-center gap-1 text-[14px] font-medium text-[#4971ab] hover:text-[#375481] transition-colors">Read the manifesto &rarr;</a>
         </div>
+      </div>
+    </div>
+
+    <!-- install terminal -->
+    <div class="sec sec-term">
+      <div class="abox-bare max-w-[620px] mx-auto">
+        <div class="term">
+        <!-- pure-CSS tabs: hidden radios drive both the tab highlight and the
+             visible command line via :checked sibling selectors -->
+        <input class="term-radio" type="radio" name="term-tab" id="term-log" checked />
+        <input class="term-radio" type="radio" name="term-tab" id="term-timeseries" />
+        <input class="term-radio" type="radio" name="term-tab" id="term-vector" />
+        <input class="term-radio" type="radio" name="term-tab" id="term-buffer" />
+
+        <div class="term-bar">
+          <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <div class="term-tabs" role="tablist">
+            <label class="term-tab" for="term-log">log</label>
+            <label class="term-tab" for="term-timeseries">timeseries</label>
+            <label class="term-tab" for="term-vector">vector</label>
+            <label class="term-tab" for="term-buffer">buffer</label>
+          </div>
+        </div>
+
+        <div class="term-body">
+          <div class="term-block term-block-log">
+            <pre class="term-cmd"><span class="term-prompt">$</span> curl -fsSL https://www.opendata.dev/install.sh | sh -s -- log</pre>
+            <span class="term-out">&rarr; installed opendata-log</span>
+            <a class="term-out term-link" href="/docs/log/quickstart">&rarr; read the log quickstart</a>
+          </div>
+          <div class="term-block term-block-timeseries">
+            <pre class="term-cmd"><span class="term-prompt">$</span> curl -fsSL https://www.opendata.dev/install.sh | sh -s -- timeseries</pre>
+            <span class="term-out">&rarr; installed opendata-timeseries</span>
+            <a class="term-out term-link" href="/docs/timeseries/quickstart">&rarr; read the timeseries quickstart</a>
+          </div>
+          <div class="term-block term-block-vector">
+            <pre class="term-cmd"><span class="term-prompt">$</span> curl -fsSL https://www.opendata.dev/install.sh | sh -s -- vector</pre>
+            <span class="term-out">&rarr; installed opendata-vector</span>
+            <a class="term-out term-link" href="/docs/vector/quickstart">&rarr; read the vector quickstart</a>
+          </div>
+          <div class="term-block term-block-buffer">
+            <pre class="term-cmd term-comment"># Buffer is an embedded library &mdash; no install needed</pre>
+            <a class="term-out term-link" href="/docs/buffer">&rarr; read the buffer docs</a>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- built on slatedb -->
+    <div class="sec sec-slate">
+      <div class="slate-row">
+        <span class="slate-label">powered by</span>
+        <a href="https://slatedb.io" target="_blank" rel="noopener" class="slate-logo-link">
+          <img src="/images/slatedb-logo-full.svg" alt="SlateDB" class="slate-logo" />
+        </a>
       </div>
     </div>
 
@@ -223,7 +298,7 @@ const initialPanel = panelsHTML(DEFAULT_SELECTION);
 
   /* Framed sections: double border with a title tab */
   .abox { position: relative; border: 3px double #d0d0d0; background: #fff; padding: 48px 32px 40px; }
-  .abox-title { position: absolute; top: -13px; left: 22px; background: #fff; padding: 0 10px; font-family: var(--font-mono); font-size: 16px; font-weight: 700; letter-spacing: .3px; color: #4971ab; }
+  .abox-title { position: absolute; top: -13px; left: 22px; background: #fff; padding: 0 10px; font-family: var(--font-sans); font-size: 16px; font-weight: 700; letter-spacing: .3px; color: #4971ab; }
 
   /* Borderless variant (why opendata): no frame, label flush-left. */
   .abox-bare { border: none; padding-left: 0; padding-right: 0; }
@@ -265,8 +340,137 @@ const initialPanel = panelsHTML(DEFAULT_SELECTION);
   .sec { max-width: 1280px; margin-left: auto; margin-right: auto; padding-left: 24px; padding-right: 24px; }
   .sec-family { padding-top: 16px; padding-bottom: 64px; }
   .sec-why { padding-top: 12px; padding-bottom: 76px; }
+
+  /* Three pillars: stacked on small screens, a three-up row once there's room.
+     Each card matches the family dialog — hairline border, a blue accent on the
+     left edge, and the same offset drop shadow — so the trio reads as structured
+     benefits that share the page's visual language. */
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+    margin-bottom: 30px;
+  }
+  @media (min-width: 640px) { .why-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; } }
+  .why-pillar {
+    position: relative;
+    background: #fff;
+    border: 1px solid rgba(20, 24, 40, .08);
+    border-left: 3px solid #4971ab;
+    box-shadow: 6px 6px 0 0 #d6d7d9;
+    padding: 20px 18px 16px;
+  }
+  /* Number sits as a tab on the top border, like the dialog's title tab. */
+  .why-pillar-n {
+    position: absolute; top: -9px; left: 14px;
+    background: #fff; padding: 0 6px;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: .5px; color: #4971ab;
+  }
+  .why-pillar-h { font-family: var(--font-sans); font-size: 14px; font-weight: 700; line-height: 1.35; color: #1a1a1a; }
+  .why-pillar-p { margin-top: 8px; font-size: 13px; line-height: 1.6; color: #6a6a6a; }
+
+  /* Install terminal: a mock terminal window with the pantheon backdrop and
+     CSS-only tabs that swap the visible curl command. */
+  .sec-term { padding-top: 12px; padding-bottom: 76px; }
+  /* The pantheon backdrop spans the whole window; the header sits over it and
+     blurs its slice, the body shows it through a light scrim. */
+  .term {
+    position: relative;
+    border: 1px solid rgba(20, 24, 40, .12);
+    box-shadow: 6px 6px 0 0 #d6d7d9;
+    background:
+      linear-gradient(rgba(247, 243, 234, .78), rgba(247, 243, 234, .78)),
+      url('/images/pantheon.png') center center / cover no-repeat,
+      #f7f3ea;
+    overflow: hidden;
+  }
+  /* Radios drive the tabs; hidden but kept in flow for label association. */
+  .term-radio { position: absolute; opacity: 0; pointer-events: none; }
+  /* Title/tab bar: translucent so the backdrop bleeds in, blurred for a frosted
+     header over the image. */
+  .term-bar {
+    display: flex; align-items: stretch; gap: 14px;
+    padding: 0 12px;
+    background: rgba(236, 231, 219, .55);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    border-bottom: 1px solid rgba(20, 24, 40, .12);
+  }
+  .term-dots { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+  .term-dots i { width: 11px; height: 11px; border-radius: 50%; background: #cdbfa3; }
+  .term-dots i:nth-child(1) { background: #d98c7a; }
+  .term-dots i:nth-child(2) { background: #d9c27a; }
+  .term-dots i:nth-child(3) { background: #9fb08a; }
+  .term-tabs { display: flex; align-self: stretch; }
+  /* Tabs fill the full header height. */
+  .term-tab {
+    display: flex; align-items: center;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+    color: #6a6a6a; cursor: pointer;
+    padding: 9px 14px;
+    border-left: 1px solid transparent; border-right: 1px solid transparent;
+    transition: color .15s ease, background .15s ease;
+  }
+  .term-tab:hover { color: #1a1a1a; }
+  /* Active tab styling, keyed off each radio's :checked state. */
+  #term-log:checked ~ .term-bar .term-tab[for="term-log"],
+  #term-timeseries:checked ~ .term-bar .term-tab[for="term-timeseries"],
+  #term-vector:checked ~ .term-bar .term-tab[for="term-vector"],
+  #term-buffer:checked ~ .term-bar .term-tab[for="term-buffer"] {
+    color: #4971ab; font-weight: 700;
+    background: rgba(255, 255, 255, .55);
+    border-left-color: rgba(20, 24, 40, .1);
+    border-right-color: rgba(20, 24, 40, .1);
+  }
+  /* Terminal body */
+  .term-body {
+    position: relative;
+    padding: 26px 22px;
+    /* Sized to the tallest tab (3 lines) so switching to buffer (2 lines)
+       doesn't shrink the window. */
+    min-height: 124px;
+    display: flex; align-items: center;
+  }
+  .term-block { display: none; }
+  .term-cmd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 13px; line-height: 1.6;
+    color: #2a2a2a;
+    white-space: pre-wrap;          /* wrap the long command on narrow screens */
+    word-break: break-all;
+  }
+  .term-prompt { color: #4971ab; font-weight: 700; margin-right: 8px; }
+  /* Terminal "output" lines, each on its own line. */
+  .term-out {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 13px; line-height: 1.6;
+    color: #6a6a6a;
+    text-decoration: none;
+  }
+  .term-cmd + .term-out { margin-top: 8px; }
+  /* The final output line links to that database's quickstart. */
+  .term-link { color: #4971ab; transition: color .15s ease; }
+  .term-link:hover { color: #375481; text-decoration: underline; text-underline-offset: 2px; }
+  /* Show only the block matching the checked tab. */
+  #term-log:checked ~ .term-body .term-block-log,
+  #term-timeseries:checked ~ .term-body .term-block-timeseries,
+  #term-vector:checked ~ .term-body .term-block-vector,
+  #term-buffer:checked ~ .term-body .term-block-buffer { display: block; }
+  /* Comment-style line for tabs without an install command (e.g. buffer). */
+  .term-comment { color: #8a8a8a; font-style: italic; }
+  @media (max-width: 640px) { .term-cmd, .term-out { font-size: 12px; } }
+
+  /* Built on SlateDB: a quiet attribution strip above the footer. */
+  .sec-slate { padding-top: 8px; padding-bottom: 80px; }
+  .slate-row { display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; }
+  .slate-label { font-family: var(--font-sans); font-size: 14px; font-weight: 700; letter-spacing: .3px; color: #9a9a9a; }
+  .slate-logo-link { display: inline-flex; opacity: .85; transition: opacity .15s ease; }
+  .slate-logo-link:hover { opacity: 1; }
+  .slate-logo { height: 30px; width: auto; }
   .lead { margin-bottom: 28px; }
-  .lead-h { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+  .lead-h { font-family: var(--font-mono); font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
   .lead-p { margin-top: 12px; font-size: 14px; line-height: 1.6; color: #6a6a6a; }
 
   /* Inline links in body copy read as links (accent blue + underline);

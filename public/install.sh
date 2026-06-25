@@ -137,7 +137,11 @@ main() {
 
     if [ -z "$VERSION" ]; then
         echo "Fetching latest version for ${FULL_NAME}..."
-        RELEASES_URL="https://api.github.com/repos/opendata-oss/opendata/releases"
+        # Use the releases Atom feed (github.com) instead of the REST API
+        # (api.github.com), which rate-limits unauthenticated requests to
+        # 60/hour per IP and returns 403 once exhausted. The feed lists
+        # releases newest-first with URL-encoded tags (e.g. opendata-log%2Fv1.0.0).
+        RELEASES_URL="https://github.com/opendata-oss/opendata/releases.atom"
 
         if command -v curl >/dev/null 2>&1; then
             RELEASES=$(curl -sSf "$RELEASES_URL")
@@ -148,14 +152,14 @@ main() {
             exit 1
         fi
 
-        TAG=$(printf '%s' "$RELEASES" | grep -o "\"tag_name\": *\"${FULL_NAME}/v[^\"]*\"" | head -1 | grep -o "${FULL_NAME}/v[^\"]*")
+        TAG=$(printf '%s' "$RELEASES" | grep -o "${FULL_NAME}%2[Ff]v[0-9][^\"<]*" | head -1)
 
         if [ -z "$TAG" ]; then
             echo "Error: could not find a release for ${FULL_NAME}." >&2
             exit 1
         fi
 
-        VERSION=$(echo "$TAG" | sed "s|${FULL_NAME}/v||")
+        VERSION=$(printf '%s' "$TAG" | sed "s|${FULL_NAME}%2[Ff]v||")
         echo "Latest version: ${VERSION}"
     fi
 
