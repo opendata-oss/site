@@ -12,7 +12,7 @@ const initialPanel = panelHTML(0);
 
 <LandingLayout
   title="OpenData — Open Source Object Store Native Databases"
-  description="A family of open-source, object-store native databases that all run on the same storage engine built on SlateDB."
+  description="A family of open-source, object-store native databases built on SlateDB."
   ogImage="/images/opengraph.png"
 >
   <div class="min-h-screen">
@@ -30,9 +30,9 @@ const initialPanel = panelHTML(0);
     <div class="hero-wrap">
       <div class="hero-grid"></div>
       <div class="hero-inner max-w-[1180px] mx-auto px-5 sm:px-8 pt-[72px] pb-[80px] sm:pt-[96px] sm:pb-[104px] text-center">
-        <h1 class="text-[34px] sm:text-[46px] leading-[1.1] font-bold tracking-[-1.5px]">One foundation.<br />Every database.</h1>
+        <h1 class="text-[34px] sm:text-[46px] leading-[1.1] font-bold tracking-[-1.5px]">Many Databases,<br />One Foundation.</h1>
         <p class="max-w-[600px] mx-auto mt-[26px] text-[15px] leading-[1.65] text-[#5a5a5a]">
-          A family of open-source databases that all run on the <b class="text-[#1a1a1a]">same object-storage engine</b> &mdash; so the more of them you adopt, the simpler and cheaper your whole stack gets.
+        OpenData is a family of open-source databases built on a shared storage architecture. The more databases you adopt, the simpler and cheaper your whole stack gets.
         </p>
         <div class="flex flex-col sm:flex-row gap-[14px] justify-center mt-[34px]">
           <a href="#family" class="bg-[#1a1a1a] text-white text-[13px] font-medium px-[24px] py-[14px] rounded-[8px] hover:bg-black transition-colors">Explore the databases &darr;</a>
@@ -45,10 +45,10 @@ const initialPanel = panelHTML(0);
     <div id="family" class="scroll-mt-24 bg-white">
       <div class="sec sec-family">
         <div class="abox">
-          <span class="abox-title">the databases</span>
+          <span class="abox-title">our databases</span>
           <div class="lead">
-            <div class="lead-h">Multiple databases, one storage engine</div>
-            <p class="lead-p">All OpenData databases run on a shared storage foundation built on <a href="https://www.slatedb.io/" target="_blank" rel="noopener">SlateDB</a>.</p>
+            <div class="lead-h">Start with one DB. Easily add the rest.</div>
+            <p class="lead-p">All OpenData databases are built on <a href="https://www.slatedb.io/" target="_blank" rel="noopener">SlateDB</a>.  So once you know how to operate the first, you know how to operate the rest.</p>
           </div>
 
           <div class="grid grid-cols-1 gap-10 lg:gap-12 lg:grid-cols-[max-content_1fr] lg:items-center mt-11">
@@ -93,7 +93,7 @@ const initialPanel = panelHTML(0);
     <!-- OSS strip -->
     <div class="bg-[#1a1a1a]">
       <div class="max-w-[1180px] mx-auto px-5 sm:px-8 py-[30px] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <span class="text-[13px] text-white font-medium">Open-source &middot; contributors welcome</span>
+        <span class="text-[13px] text-white font-medium">MIT-licensed &middot; contributors welcome</span>
         <div class="flex gap-[14px]">
           <a href={GH} target="_blank" rel="noopener" class="text-[12px] text-[#cfcfcf] border border-[#3a3a3a] rounded-[7px] px-[15px] py-[9px] hover:border-[#666] transition-colors">&#9733; Star on GitHub</a>
           <a href={DISCORD} target="_blank" rel="noopener" class="text-[12px] text-[#cfcfcf] border border-[#3a3a3a] rounded-[7px] px-[15px] py-[9px] hover:border-[#666] transition-colors">Join Discord</a>
@@ -106,7 +106,6 @@ const initialPanel = panelHTML(0);
 <style is:global>
   html { scroll-behavior: smooth; }
   @keyframes pulseBlink { 0%, 100% { opacity: 0.3 } 50% { opacity: 1 } }
-  @keyframes famFadeUp { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
   .fam-anim { animation: pulseBlink 1.4s ease-in-out infinite; }
 
   /* Diagram: fixed 13px monospace on desktop; scales down to fit its container
@@ -116,6 +115,11 @@ const initialPanel = panelHTML(0);
     .fam-diag { container-type: inline-size; }
     #family-diagram { font-size: min(13px, 2.15cqi); }
   }
+
+  /* Uniform detail-panel height so switching databases doesn't resize it.
+     Tiered for the two desktop column widths (panel wraps more as it narrows). */
+  @media (min-width: 1024px) { #family-panel > div { min-height: 585px; } }
+  @media (min-width: 1180px) { #family-panel > div { min-height: 420px; } }
 
   /* Framed sections: double border with a title tab */
   .abox { position: relative; border: 3px double #d0d0d0; background: #fff; padding: 48px 32px 40px; }

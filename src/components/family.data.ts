@@ -61,11 +61,11 @@ export const databases: Database[] = [
     name: 'Log',
     full: 'OpenData Log',
     desc:
-      'A durable, append-only log and streaming substrate that writes directly to object storage — no brokers and no local disks to manage.',
+      'A durable event streaming database for millions of ordered, keyed streams. Built directly on object storage.',
     facets: [
-      'Exactly-once append semantics',
-      'Replays straight from your bucket',
-      'Throughput scales with the object store',
+      'Route events by key, not partitions',
+      'Serve millions of keys and tens of thousands of followers from one node',
+      'Give every key its own isolated and durable stream',
     ],
     href: '/blog/announcing-opendata-log',
   },
@@ -74,11 +74,11 @@ export const databases: Database[] = [
     name: 'Vector',
     full: 'OpenData Vector',
     desc:
-      'Vector search and embedding indexes that live in your bucket, so similarity search rides the same storage economics as everything else.',
+      'An open-source vector database for fast ANN and full-text search on object storage.',
     facets: [
-      'ANN indexes persisted to object storage',
-      'Metadata filtering built in',
-      'No separate vector cluster to run',
+      'Serve vector search from stateless nodes',
+      'Get low-latency queries at 100M-vector scale',
+      'Run production search for hundreds, not thousands, per month',
     ],
     href: '/blog/introducing-vector',
   },
@@ -87,11 +87,11 @@ export const databases: Database[] = [
     name: 'Buffer',
     full: 'OpenData Buffer',
     desc:
-      'A high-throughput ingestion buffer backed by object storage — absorb bursts and smooth out writes without an in-memory tier to babysit.',
+      'A durable ingestion buffer for high-throughput data pipelines. No Kafka required.',
     facets: [
-      'Backpressure-aware ingestion',
-      'Durable by default',
-      'Drains into Log, Timeseries & more',
+      'Build HA pipelines with stateless producers and consumers',
+      'Use object storage as the durable handoff between systems',
+      'Cut broker infrastructure from your ingestion path',
     ],
     href: '/blog/buffer-ha-pipelines-without-kafka',
   },
@@ -100,11 +100,11 @@ export const databases: Database[] = [
     name: 'Timeseries',
     full: 'OpenData Timeseries',
     desc:
-      'Time-series metrics and events stored at object-storage cost, with fast range scans over compacted columnar blocks.',
+      'A Prometheus-compatible metrics database that keeps the architecture simple, even at high cardinality.',
     facets: [
-      'Columnar, time-partitioned blocks',
-      'Downsampling & retention policies',
-      'Cheap long-term history',
+      'Ingest metrics with one writer and stateless readers',
+      'Handle millions of active series without a distributed cluster',
+      'Query with PromQL, Grafana, Prometheus, and OpenTelemetry',
     ],
     href: '/blog/introducing-timeseries',
   },
@@ -290,16 +290,16 @@ export function panelHTML(active: number): string {
   // Smooth blue border + blue tint + offset shadow, echoing the selected box
   // in the diagram (blue border, blue-tinted drop shadow).
   return (
-    `<div style="animation:famFadeUp .35s ease;border:1px solid #3a66d6;background:#fff;box-shadow:5px 5px 0 0 #c8d1ef;padding:26px 26px 24px">` +
+    `<div style="display:flex;flex-direction:column;border:1px solid #3a66d6;background:#fff;box-shadow:5px 5px 0 0 #c8d1ef;padding:26px 26px 24px">` +
     `<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">` +
     iconTile(act.key, 34, 18) +
     `<div style="font-size:20px;font-weight:700;letter-spacing:-0.5px">${esc(act.full)}</div>` +
     `</div>` +
     `<div style="font-size:14px;line-height:1.65;color:#555;margin-bottom:20px">${esc(act.desc)}</div>` +
-    `<div style="border-top:1px dashed #cdd6ee;padding-top:16px;margin-bottom:20px">${facets}</div>` +
-    `<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">` +
-    `<a href="${act.href}" style="font-family:var(--font-mono);border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;font-size:12px;font-weight:500;padding:10px 16px;text-decoration:none">[ read the ${esc(act.name)} post → ]</a>` +
-    `<a href="/docs" style="font-family:var(--font-mono);color:#3a66d6;font-size:12px;text-decoration:none">view docs →</a>` +
+    `<div style="border-top:1px dashed #cdd6ee;padding-top:16px">${facets}</div>` +
+    `<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:auto;padding-top:20px">` +
+    `<a href="${act.href}" style="font-family:var(--font-mono);border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;font-size:12px;font-weight:500;padding:10px 16px;text-decoration:none">[ read about ${esc(act.name)} → ]</a>` +
+    `<a href="/docs/${act.key}" style="font-family:var(--font-mono);color:#3a66d6;font-size:12px;text-decoration:none">view docs →</a>` +
     `</div>` +
     `</div>`
   );
