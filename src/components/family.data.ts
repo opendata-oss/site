@@ -32,6 +32,16 @@ export const ICONS: Record<string, Icon> = {
     vb: '0 0 512 512',
     path: 'M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64L0 400c0 44.2 35.8 80 80 80l400 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L80 416c-8.8 0-16-7.2-16-16L64 64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z',
   },
+  // fa-layer-group
+  engine: {
+    vb: '0 0 576 512',
+    path: 'M264.5 5.2c14.9-6.9 32.1-6.9 47 0l218.6 101c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 149.8C37.4 145.8 32 137.3 32 128s5.4-17.9 13.9-21.8L264.5 5.2zM476.9 209.6l53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 277.8C37.4 273.8 32 265.3 32 256s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0l152-70.2zm-152 198.2l152-70.2 53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 405.8C37.4 401.8 32 393.3 32 384s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0z',
+  },
+  // fa-cloud
+  storage: {
+    vb: '0 0 640 512',
+    path: 'M0 336c0 79.5 64.5 144 144 144l368 0c70.7 0 128-57.3 128-128c0-61.9-44-113.6-102.4-125.4c4.1-10.7 6.4-22.4 6.4-34.6c0-53-43-96-96-96c-19.7 0-38.1 6-53.3 16.2C367 64.2 315.3 32 256 32C167.6 32 96 103.6 96 192c0 2.7 .1 5.4 .2 8.1C40.2 219.8 0 273.2 0 336z',
+  },
 };
 
 export type Database = {
@@ -55,20 +65,10 @@ export function iconTile(key: string, tile: number, glyph: number): string {
   );
 }
 
+// Order is left-to-right in the diagram. Log sits rightmost — nearest the
+// detail panel — and is the default selection, so the box↔panel link reads on
+// load (see DEFAULT_SELECTION).
 export const databases: Database[] = [
-  {
-    key: 'log',
-    name: 'Log',
-    full: 'OpenData Log',
-    desc:
-      'A durable event streaming database for millions of ordered, keyed streams. Built directly on object storage.',
-    facets: [
-      'Route events by key, not partitions',
-      'Serve millions of keys and tens of thousands of followers from one node',
-      'Give every key its own isolated and durable stream',
-    ],
-    href: '/blog/announcing-opendata-log',
-  },
   {
     key: 'vector',
     name: 'Vector',
@@ -108,20 +108,54 @@ export const databases: Database[] = [
     ],
     href: '/blog/introducing-timeseries',
   },
+  {
+    key: 'log',
+    name: 'Log',
+    full: 'OpenData Log',
+    desc:
+      'A durable event streaming database for millions of ordered, keyed streams. Built directly on object storage.',
+    facets: [
+      'Route events by key, not partitions',
+      'Serve millions of keys and tens of thousands of followers from one node',
+      'Give every key its own isolated and durable stream',
+    ],
+    href: '/blog/announcing-opendata-log',
+  },
 ];
 
 const COLORS = {
   active: '#3a66d6',
-  gray: '#aeb4bd',
-  rail: '#c4cad3',
-  shadow: '#bcc3ce',
+  // Unselected boxes sit back as a muted gray so the one blue selected box
+  // clearly pops — the monospace stand-in for the mockup's focus scrim.
+  gray: '#878f9c',
+  rail: '#cdd2da',
+  shadow: '#dde1e8',
   shadowActive: '#c8d1ef',
-  engine: '#3a66d6',
   engineDim: '#89a3df',
-  os: '#1a1a1a',
 };
 
-type Seg = { t: string; c?: string; b?: boolean; anim?: boolean; click?: number };
+// A selection is the key of the box currently highlighted in the diagram:
+// a database key ('log' | 'vector' | 'buffer' | 'timeseries'), or one of the
+// two foundation boxes ('engine' | 'storage'). Exactly one is selected.
+export type Selection = string;
+export const DEFAULT_SELECTION: Selection = 'log';
+
+// Diagram row layout (shared across the grid builder).
+const RAIL = 7, ENG = 11, OS = 21;
+const DIAG_ROWS = 26;          // total grid rows (must match H in buildDiagramLines)
+const ROW_PX = 13;             // row height = #family-diagram font-size (line-height: 1)
+const DB_CENTER_ROW = 2;       // a database box spans rows 0–4; its name sits on row 2
+
+// Vertical offset (px) from the diagram's center to the center of the given
+// box row. The dialog's notch uses this to point back at the selected box. It
+// holds on the desktop two-column layout, where the diagram and the (taller)
+// panel are co-centered; on the stacked mobile layout the notch falls back to
+// centered (see .fam-notch in index.astro).
+function notchOffset(centerRow: number): string {
+  return `${Math.round((centerRow + 0.5 - DIAG_ROWS / 2) * ROW_PX)}px`;
+}
+
+type Seg = { t: string; c?: string; b?: boolean; anim?: boolean; click?: string };
 
 const ctr = (s: string, n: number) => {
   if (s.length >= n) return s.slice(0, n);
@@ -130,7 +164,7 @@ const ctr = (s: string, n: number) => {
   return ' '.repeat(l) + s + ' '.repeat(t - l);
 };
 
-type Cell = { ch: string; col: string | null; b: boolean; anim: boolean; click: number | null };
+type Cell = { ch: string; col: string | null; b: boolean; anim: boolean; click: string | null };
 
 // Run-length groups each grid row into styled segments, trimming trailing blanks.
 function gridToLines(grid: Cell[][]): Seg[][] {
@@ -163,13 +197,13 @@ function gridToLines(grid: Cell[][]): Seg[][] {
 // Builds the diagram by painting onto a fixed character grid, so double-border
 // boxes, drop shadows, and the active highlight path can be placed by exact
 // coordinate. The active database lights a path: box → drop → rail → trunk.
-export function buildDiagramLines(active: number): Seg[][] {
+export function buildDiagramLines(active: Selection): Seg[][] {
   const C = COLORS;
-  const W = 74, H = 26, TRUNK = 37;
+  const W = 74, H = DIAG_ROWS, TRUNK = 37;
   const grid: Cell[][] = Array.from({ length: H }, () =>
     Array.from({ length: W }, () => ({ ch: ' ', col: null, b: false, anim: false, click: null }))
   );
-  type Opt = { b?: boolean; anim?: boolean; click?: number | null };
+  type Opt = { b?: boolean; anim?: boolean; click?: string | null };
   const set = (r: number, c: number, ch: string, col: string | null, o: Opt = {}) => {
     if (r < 0 || r >= H || c < 0 || c >= W) return;
     grid[r][c] = { ch, col, b: !!o.b, anim: !!o.anim, click: o.click == null ? null : o.click };
@@ -186,70 +220,73 @@ export function buildDiagramLines(active: number): Seg[][] {
   //  5 shadow+drop · 6 drop · 7 rail · 8-10 trunk
   //  11 eng top · 12 pad · 13 title · 14 gap · 15 sub · 16 pad · 17 eng bottom(┬)
   //  18-20 trunk · 21 os top · 22 pad · 23 os text · 24 pad · 25 os bottom
-  const RAIL = 7, ENG = 11, OS = 21;
 
   // ── database boxes (double border + drop shadow) ───────────────────────
+  // Every box is clickable (tagged with its selection key) and renders neutral
+  // gray unless it is the selected box, which lights blue + bold.
   databases.forEach((d, i) => {
     const left = 2 + i * 18;
-    const on = i === active;
+    const on = d.key === active;
     const col = on ? C.active : C.gray;
     const conn = left + 8;
+    const o: Opt = { b: on, click: d.key };
     // box (5 rows tall: top, pad, name, pad, bottom)
-    set(0, left, '╔', col, { b: on, click: i }); row(0, left + 1, left + 14, '═', col, { b: on, click: i }); set(0, left + 15, '╗', col, { b: on, click: i });
+    set(0, left, '╔', col, o); row(0, left + 1, left + 14, '═', col, o); set(0, left + 15, '╗', col, o);
     const lines = ['', d.name, ''];
     for (let k = 0; k < 3; k++) {
       const r = 1 + k;
-      set(r, left, '║', col, { b: on, click: i });
-      row(r, left + 1, left + 14, ' ', col, { click: i });
-      if (lines[k]) put(r, left + 1, ctr(lines[k], 14), col, { b: on, click: i });
-      set(r, left + 15, '║', col, { b: on, click: i });
+      set(r, left, '║', col, o);
+      row(r, left + 1, left + 14, ' ', col, { click: d.key });
+      if (lines[k]) put(r, left + 1, ctr(lines[k], 14), col, o);
+      set(r, left + 15, '║', col, o);
     }
-    set(4, left, '╚', col, { b: on, click: i }); row(4, left + 1, left + 7, '═', col, { b: on, click: i }); set(4, left + 8, '┬', col, { b: on, click: i }); row(4, left + 9, left + 14, '═', col, { b: on, click: i }); set(4, left + 15, '╝', col, { b: on, click: i });
+    set(4, left, '╚', col, o); row(4, left + 1, left + 7, '═', col, o); set(4, left + 8, '┬', col, o); row(4, left + 9, left + 14, '═', col, o); set(4, left + 15, '╝', col, o);
     // drop shadow — thin solid half-block strips hugging the box (right + below),
     // matching the dialog's tight `5px 5px 0` offset box-shadow.
     const sh = on ? C.shadowActive : C.shadow;
     for (let r = 1; r <= 4; r++) set(r, left + 16, '▌', sh);
     row(5, left + 1, left + 15, '▀', sh);
     set(5, left + 16, '▘', sh);
-    // drop connector down to the rail
-    set(5, conn, '│', on ? C.active : C.rail, { b: on });
-    set(6, conn, '│', on ? C.active : C.rail, { b: on });
+    // drop connector down to the rail (structural — stays neutral)
+    set(5, conn, '│', C.rail);
+    set(6, conn, '│', C.rail);
   });
 
-  // ── manifold rail ──────────────────────────────────────────────────────
+  // ── manifold rail + trunk (structural plumbing — always neutral) ─────────
   row(RAIL, 10, 64, '─', C.rail);
   set(RAIL, 10, '└', C.rail); set(RAIL, 28, '┴', C.rail); set(RAIL, TRUNK, '┬', C.rail); set(RAIL, 46, '┴', C.rail); set(RAIL, 64, '┘', C.rail);
-  // highlight the active database's path into the trunk
-  const connA = 10 + active * 18;
-  for (let c = Math.min(connA, TRUNK); c <= Math.max(connA, TRUNK); c++) {
-    grid[RAIL][c].col = C.active;
-    grid[RAIL][c].b = false;
-  }
   // trunk down to the engine
-  set(8, TRUNK, '│', C.active); set(9, TRUNK, '│', C.active); set(10, TRUNK, '│', C.active);
+  set(8, TRUNK, '│', C.rail); set(9, TRUNK, '│', C.rail); set(10, TRUNK, '│', C.rail);
 
   // ── storage engine (heavy border, 7 rows: title + gap + subtitle) ────────
   {
     const L = 12, R = 61;
-    set(ENG, L, '┏', C.engine); row(ENG, L + 1, R - 1, '━', C.engine); set(ENG, TRUNK, '▼', C.engine); set(ENG, R, '┓', C.engine);
-    set(ENG + 1, L, '┃', C.engine); set(ENG + 1, R, '┃', C.engine);
-    set(ENG + 2, L, '┃', C.engine); put(ENG + 2, L + 1, ctr('OpenData Storage Engine', R - L - 1), C.engine, { b: true }); set(ENG + 2, R, '┃', C.engine);
-    set(ENG + 3, L, '┃', C.engine); set(ENG + 3, R, '┃', C.engine);
-    set(ENG + 4, L, '┃', C.engine); put(ENG + 4, L + 1, ctr('built on SlateDB', R - L - 1), C.engineDim); set(ENG + 4, R, '┃', C.engine);
-    set(ENG + 5, L, '┃', C.engine); set(ENG + 5, R, '┃', C.engine);
-    set(ENG + 6, L, '┗', C.engine); row(ENG + 6, L + 1, R - 1, '━', C.engine); set(ENG + 6, TRUNK, '┬', C.engine); set(ENG + 6, R, '┛', C.engine);
+    const on = active === 'engine';
+    const col = on ? C.active : C.gray;
+    const sub = on ? C.engineDim : C.gray;
+    const e: Opt = { click: 'engine' };
+    set(ENG, L, '┏', col, e); row(ENG, L + 1, R - 1, '━', col, e); set(ENG, TRUNK, '▼', C.rail, e); set(ENG, R, '┓', col, e);
+    set(ENG + 1, L, '┃', col, e); row(ENG + 1, L + 1, R - 1, ' ', col, e); set(ENG + 1, R, '┃', col, e);
+    set(ENG + 2, L, '┃', col, e); row(ENG + 2, L + 1, R - 1, ' ', col, e); put(ENG + 2, L + 1, ctr('OpenData Storage Engine', R - L - 1), col, { b: true, click: 'engine' }); set(ENG + 2, R, '┃', col, e);
+    set(ENG + 3, L, '┃', col, e); row(ENG + 3, L + 1, R - 1, ' ', col, e); set(ENG + 3, R, '┃', col, e);
+    set(ENG + 4, L, '┃', col, e); row(ENG + 4, L + 1, R - 1, ' ', col, e); put(ENG + 4, L + 1, ctr('built on SlateDB', R - L - 1), sub, e); set(ENG + 4, R, '┃', col, e);
+    set(ENG + 5, L, '┃', col, e); row(ENG + 5, L + 1, R - 1, ' ', col, e); set(ENG + 5, R, '┃', col, e);
+    set(ENG + 6, L, '┗', col, e); row(ENG + 6, L + 1, R - 1, '━', col, e); set(ENG + 6, TRUNK, '┬', C.rail, e); set(ENG + 6, R, '┛', col, e);
   }
   // trunk down to object storage
-  set(18, TRUNK, '│', C.active); set(19, TRUNK, '│', C.active); set(20, TRUNK, '│', C.active);
+  set(18, TRUNK, '│', C.rail); set(19, TRUNK, '│', C.rail); set(20, TRUNK, '│', C.rail);
 
   // ── object storage (double border, 5 rows) ──────────────────────────────
   {
     const L = 10, R = 63;
-    set(OS, L, '╔', C.os); row(OS, L + 1, R - 1, '═', C.os); set(OS, TRUNK, '▼', C.engine, { anim: true }); set(OS, R, '╗', C.os);
-    set(OS + 1, L, '║', C.os); set(OS + 1, R, '║', C.os);
-    set(OS + 2, L, '║', C.os); put(OS + 2, L + 1, ctr('Object Storage   ·   S3 · GCS · R2', R - L - 1), C.os, { b: true }); set(OS + 2, R, '║', C.os);
-    set(OS + 3, L, '║', C.os); set(OS + 3, R, '║', C.os);
-    set(OS + 4, L, '╚', C.os); row(OS + 4, L + 1, R - 1, '═', C.os); set(OS + 4, R, '╝', C.os);
+    const on = active === 'storage';
+    const col = on ? C.active : C.gray;
+    const s: Opt = { click: 'storage' };
+    set(OS, L, '╔', col, s); row(OS, L + 1, R - 1, '═', col, s); set(OS, TRUNK, '▼', C.rail, { anim: true, click: 'storage' }); set(OS, R, '╗', col, s);
+    set(OS + 1, L, '║', col, s); row(OS + 1, L + 1, R - 1, ' ', col, s); set(OS + 1, R, '║', col, s);
+    set(OS + 2, L, '║', col, s); row(OS + 2, L + 1, R - 1, ' ', col, s); put(OS + 2, L + 1, ctr('Object Storage   ·   S3 · GCS · R2', R - L - 1), col, { b: true, click: 'storage' }); set(OS + 2, R, '║', col, s);
+    set(OS + 3, L, '║', col, s); row(OS + 3, L + 1, R - 1, ' ', col, s); set(OS + 3, R, '║', col, s);
+    set(OS + 4, L, '╚', col, s); row(OS + 4, L + 1, R - 1, '═', col, s); set(OS + 4, R, '╝', col, s);
   }
 
   return gridToLines(grid);
@@ -258,7 +295,7 @@ export function buildDiagramLines(active: number): Seg[][] {
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-export function diagramHTML(active: number): string {
+export function diagramHTML(active: Selection): string {
   let out = '';
   for (const line of buildDiagramLines(active)) {
     for (const s of line) {
@@ -274,10 +311,17 @@ export function diagramHTML(active: number): string {
   return out;
 }
 
-export function panelHTML(active: number): string {
-  const act = databases[active];
+type PanelSpec = {
+  iconKey: string;
+  title: string;
+  desc: string;
+  facets: string[];
+  buttons: { href: string; label: string; primary: boolean }[];
+  notchOffset: string;
+};
 
-  const facets = act.facets
+function renderPanel(p: PanelSpec): string {
+  const facets = p.facets
     .map(
       (f) =>
         `<div style="display:flex;gap:10px;margin-bottom:9px">` +
@@ -287,20 +331,76 @@ export function panelHTML(active: number): string {
     )
     .join('');
 
-  // Smooth blue border + blue tint + offset shadow, echoing the selected box
-  // in the diagram (blue border, blue-tinted drop shadow).
+  const buttons = p.buttons
+    .map((b) =>
+      b.primary
+        ? `<a href="${b.href}" style="font-family:var(--font-mono);border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;font-size:12px;font-weight:500;padding:10px 16px;text-decoration:none">${esc(b.label)}</a>`
+        : `<a href="${b.href}" style="font-family:var(--font-mono);color:#3a66d6;font-size:12px;text-decoration:none">${esc(b.label)}</a>`
+    )
+    .join('');
+
+  // Dark card with a bold blue spine on the edge that faces the diagram — left
+  // on the desktop two-column layout, top once the panel stacks below the
+  // diagram on mobile (see .fam-panel in index.astro) — the accent that ties
+  // the panel to the selected (blue) box, plus a small notch nodding back.
   return (
-    `<div style="display:flex;flex-direction:column;border:1px solid #3a66d6;background:#fff;box-shadow:5px 5px 0 0 #c8d1ef;padding:26px 26px 24px">` +
+    `<div class="fam-panel" style="position:relative;display:flex;flex-direction:column;background:#fff;box-shadow:5px 5px 0 0 #c8d1ef;padding:26px 26px 24px">` +
+    `<div class="fam-notch" style="--notch-offset:${p.notchOffset};position:absolute;left:-16px;transform:translateY(-50%);width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-right:10px solid #3a66d6"></div>` +
     `<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">` +
-    iconTile(act.key, 34, 18) +
-    `<div style="font-size:20px;font-weight:700;letter-spacing:-0.5px">${esc(act.full)}</div>` +
+    iconTile(p.iconKey, 34, 18) +
+    `<div style="font-size:20px;font-weight:700;letter-spacing:-0.5px">${esc(p.title)}</div>` +
     `</div>` +
-    `<div style="font-size:14px;line-height:1.65;color:#555;margin-bottom:20px">${esc(act.desc)}</div>` +
+    `<div style="font-size:14px;line-height:1.65;color:#555;margin-bottom:20px">${esc(p.desc)}</div>` +
     `<div style="border-top:1px dashed #cdd6ee;padding-top:16px">${facets}</div>` +
-    `<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:auto;padding-top:20px">` +
-    `<a href="${act.href}" style="font-family:var(--font-mono);border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;font-size:12px;font-weight:500;padding:10px 16px;text-decoration:none">[ read about ${esc(act.name)} → ]</a>` +
-    `<a href="/docs/${act.key}" style="font-family:var(--font-mono);color:#3a66d6;font-size:12px;text-decoration:none">view docs →</a>` +
-    `</div>` +
+    `<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:auto;padding-top:20px">${buttons}</div>` +
     `</div>`
   );
+}
+
+// Panel content for the two foundation boxes (the databases come from `databases`).
+const FOUNDATION: Record<string, PanelSpec> = {
+  engine: {
+    iconKey: 'engine',
+    title: 'OpenData Storage Engine',
+    desc:
+      'The shared database core behind every OpenData system. Every database compiles down to ordered SlateDB records, so every product inherits the same operating model.',
+    facets: [
+      'One storage engine for data, indexes, compaction, and checkpoints',
+      'Scale readers independently from writers',
+      'Learn one operational model',
+    ],
+    buttons: [{ href: '/docs/overview/architecture', label: '[ learn more → ]', primary: true }],
+    notchOffset: notchOffset(ENG + 3), // engine box spans rows 11–17 → center row 14
+  },
+  storage: {
+    iconKey: 'storage',
+    title: 'Object Storage',
+    desc:
+      'The durable foundation underneath every OpenData database. Your bucket becomes the source of truth, while compute stays simple, replaceable, and easy to scale.',
+    facets: [
+      'Store durable state in your own bucket in S3, GCS, and others',
+      'Object Storage solves replication, durability, and storage availability',
+      'Elastically scale compute without moving data',
+    ],
+    buttons: [{ href: '/docs/overview/storage', label: '[ learn more → ]', primary: true }],
+    notchOffset: notchOffset(OS + 2), // object storage box spans rows 21–25 → center row 23
+  },
+};
+
+export function panelHTML(active: Selection): string {
+  const found = FOUNDATION[active];
+  if (found) return renderPanel(found);
+
+  const act = databases.find((d) => d.key === active) ?? databases[0];
+  return renderPanel({
+    iconKey: act.key,
+    title: act.full,
+    desc: act.desc,
+    facets: act.facets,
+    buttons: [
+      { href: act.href, label: `[ read about ${act.name} → ]`, primary: true },
+      { href: `/docs/${act.key}`, label: 'view docs →', primary: false },
+    ],
+    notchOffset: notchOffset(DB_CENTER_ROW),
+  });
 }
