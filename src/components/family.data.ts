@@ -234,7 +234,7 @@ export function buildDiagramLines(active: number): Seg[][] {
     set(ENG, L, '┏', C.engine); row(ENG, L + 1, R - 1, '━', C.engine); set(ENG, TRUNK, '▼', C.engine); set(ENG, R, '┓', C.engine);
     set(ENG + 1, L, '┃', C.engine); set(ENG + 1, R, '┃', C.engine);
     set(ENG + 2, L, '┃', C.engine); put(ENG + 2, L + 1, ctr('OpenData Storage Engine', R - L - 1), C.engine, { b: true }); set(ENG + 2, R, '┃', C.engine);
-    set(ENG + 3, L, '┃', C.engine); put(ENG + 3, L + 1, ctr('shared by all four databases', R - L - 1), C.engineDim); set(ENG + 3, R, '┃', C.engine);
+    set(ENG + 3, L, '┃', C.engine); put(ENG + 3, L + 1, ctr('built on SlateDB', R - L - 1), C.engineDim); set(ENG + 3, R, '┃', C.engine);
     set(ENG + 4, L, '┃', C.engine); set(ENG + 4, R, '┃', C.engine);
     set(ENG + 5, L, '┗', C.engine); row(ENG + 5, L + 1, R - 1, '━', C.engine); set(ENG + 5, TRUNK, '┬', C.engine); set(ENG + 5, R, '┛', C.engine);
   }

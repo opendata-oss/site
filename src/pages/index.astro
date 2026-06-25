@@ -189,7 +189,6 @@ const initialPanel = panelHTML(0);
     <div class="hero-wrap">
       <div class="hero-grid"></div>
       <div class="hero-inner max-w-[1180px] mx-auto px-5 sm:px-8 pt-[72px] pb-[80px] sm:pt-[96px] sm:pb-[104px] text-center">
-        <div class="text-[12px] tracking-[1.5px] text-[#9a9a9a] mb-6">OPEN-SOURCE &middot; OBJECT-STORE NATIVE</div>
         <h1 class="text-[34px] sm:text-[46px] leading-[1.1] font-bold tracking-[-1.5px]">One foundation.<br />Every database.</h1>
         <p class="max-w-[600px] mx-auto mt-[26px] text-[15px] leading-[1.65] text-[#5a5a5a]">
           A family of open-source databases that all run on the <b class="text-[#1a1a1a]">same object-storage engine</b> &mdash; so the more of them you adopt, the simpler and cheaper your whole stack gets.
@@ -205,10 +204,10 @@ const initialPanel = panelHTML(0);
     <div id="family" class="scroll-mt-24 bg-white">
       <div class="sec sec-family">
         <div class="abox">
-          <span class="abox-title">the family</span>
+          <span class="abox-title">the databases</span>
           <div class="lead">
-            <div class="lead-h">Four databases, one storage engine</div>
-            <p class="lead-p">Select a database in the diagram to see how it sits on the shared foundation.</p>
+            <div class="lead-h">Multiple databases, one storage engine</div>
+            <p class="lead-p">All OpenData databases run on a shared storage foundation built on <a href="https://www.slatedb.io/" target="_blank" rel="noopener">SlateDB</a>.</p>
           </div>
 
           <div class="grid grid-cols-1 gap-10 lg:gap-12 lg:grid-cols-[max-content_1fr] lg:items-center mt-11">
@@ -286,6 +285,11 @@ const initialPanel = panelHTML(0);
   .lead { margin-bottom: 28px; }
   .lead-h { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
   .lead-p { max-width: 560px; margin-top: 12px; font-size: 14px; line-height: 1.6; color: #6a6a6a; }
+
+  /* Inline links in body copy read as links (accent blue + underline);
+     scoped to paragraphs so nav/button anchors are unaffected. */
+  p a { color: #3a66d6; text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; transition: color .15s ease; }
+  p a:hover { color: #2a4fb0; }
   .bnum { font-size: 44px; font-weight: 700; color: #ececec; line-height: 1; letter-spacing: -1px; margin-bottom: 12px; }
   @media (max-width: 640px) { .abox { padding: 42px 20px 34px; } .sec { padding-left: 18px; padding-right: 18px; } }
 
