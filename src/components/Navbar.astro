@@ -29,8 +29,7 @@ const DISCORD = 'https://discord.gg/CsAQJ2AJGU';
 
 // Active-link highlighting based on the current path.
 const path = Astro.url.pathname;
-const isManifesto = path === '/blog/manifesto';
-const isBlog = path.startsWith('/blog') && !isManifesto;
+const isBlog = path.startsWith('/blog');
 const isDocs = path.startsWith('/docs');
 
 const linkBase = 'text-[13px] transition-colors';
@@ -87,7 +86,6 @@ const idle = 'text-[#6a6a6a] hover:text-[#1a1a1a]';
         </div>
       </div>
       <a href="/docs" class:list={[linkBase, isDocs ? active : idle]}>Docs</a>
-      <a href="/blog/manifesto" class:list={[linkBase, isManifesto ? active : idle]}>Manifesto</a>
       <a href="/blog" class:list={[linkBase, isBlog ? active : idle]}>Blog</a>
       <div class="flex gap-[10px] ml-[6px]">
         <a
@@ -154,7 +152,6 @@ const idle = 'text-[#6a6a6a] hover:text-[#1a1a1a]';
     </div>
     <div class="grid gap-1 border-t border-[#f0f0f0] pt-3">
       <a href="/docs" class:list={['py-1.5 text-[13px]', isDocs ? active : 'text-[#6a6a6a]']}>Docs</a>
-      <a href="/blog/manifesto" class:list={['py-1.5 text-[13px]', isManifesto ? active : 'text-[#6a6a6a]']}>Manifesto</a>
       <a href="/blog" class:list={['py-1.5 text-[13px]', isBlog ? active : 'text-[#6a6a6a]']}>Blog</a>
     </div>
     <div class="flex gap-[10px] mt-3">

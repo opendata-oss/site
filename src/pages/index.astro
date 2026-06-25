@@ -70,22 +70,10 @@ const initialPanel = panelHTML(0);
     <div class="sec sec-why">
       <div class="abox">
         <span class="abox-title">why opendata</span>
-        <div class="grid gap-10 md:grid-cols-3">
-          <div>
-            <div class="bnum">01</div>
-            <div class="text-[17px] font-bold mb-[10px]">Simpler to operate</div>
-            <p class="text-[13px] leading-[1.65] text-[#6a6a6a]">One storage layer, one mental model. Learn it once and every database in the family works the same way.</p>
-          </div>
-          <div>
-            <div class="bnum">02</div>
-            <div class="text-[17px] font-bold mb-[10px]">Cheaper in aggregate</div>
-            <p class="text-[13px] leading-[1.65] text-[#6a6a6a]">Pay object-storage prices instead of overprovisioned disks. Costs compound downward as you add more databases.</p>
-          </div>
-          <div>
-            <div class="bnum">03</div>
-            <div class="text-[17px] font-bold mb-[10px]">Impossible to outgrow</div>
-            <p class="text-[13px] leading-[1.65] text-[#6a6a6a]">Capacity scales with your object store. No re-sharding, no migrations, no ceiling.</p>
-          </div>
+        <div class="max-w-[620px] mx-auto">
+          <p class="text-[15px] leading-[1.8] text-[#444] mb-5">Running production databases requires specialized expertise, which is why databases are expensive.</p>
+          <p class="text-[15px] leading-[1.8] text-[#444] mb-5">Object storage promises to change that. It gives us durable, globally addressable storage that makes radically simpler database architectures possible. What's more, the work needed to use object storage optimally is substantially similar across databases.</p>
+          <p class="text-[15px] leading-[1.8] text-[#444] mb-5">That's why every OpenData database shares <b class="text-[#1a1a1a] font-semibold">a objectstore-native storage engine</b>, <b class="text-[#1a1a1a] font-semibold">common tooling</b>, and <b class="text-[#1a1a1a] font-semibold">open formats under an MIT license</b>. With OpenData, there is one operational model to learn across databases, and there is no vendor lock-in.</p>
         </div>
       </div>
     </div>
@@ -135,7 +123,6 @@ const initialPanel = panelHTML(0);
      scoped to paragraphs so nav/button anchors are unaffected. */
   p a { color: #3a66d6; text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; transition: color .15s ease; }
   p a:hover { color: #2a4fb0; }
-  .bnum { font-size: 44px; font-weight: 700; color: #ececec; line-height: 1; letter-spacing: -1px; margin-bottom: 12px; }
   @media (max-width: 640px) { .abox { padding: 42px 20px 34px; } .sec { padding-left: 18px; padding-right: 18px; } }
 
   /* Hero with masked blue grid backdrop */
