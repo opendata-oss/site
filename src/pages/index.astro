@@ -1,13 +1,13 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
 import Navbar from '../components/Navbar.astro';
-import { diagramHTML, panelHTML } from '../components/family.data';
+import { diagramHTML, panelHTML, DEFAULT_SELECTION } from '../components/family.data';
 
 const GH = 'https://github.com/opendata-oss/opendata';
 const DISCORD = 'https://discord.gg/CsAQJ2AJGU';
 
-const initialDiagram = diagramHTML(0);
-const initialPanel = panelHTML(0);
+const initialDiagram = diagramHTML(DEFAULT_SELECTION);
+const initialPanel = panelHTML(DEFAULT_SELECTION);
 ---
 
 <LandingLayout
@@ -102,6 +102,25 @@ const initialPanel = panelHTML(0);
   @media (max-width: 1023px) {
     .fam-diag { container-type: inline-size; }
     #family-diagram { font-size: min(13px, 2.15cqi); }
+  }
+
+  /* Dialog accent spine sits on the edge facing the diagram: top while the
+     panel is stacked below the diagram (mobile), left once they sit side by
+     side (desktop two-column layout). */
+  .fam-panel { border: 1px solid #1a1a1a; border-top: 6px solid #3a66d6; }
+  @media (min-width: 1024px) {
+    .fam-panel { border: 1px solid #1a1a1a; border-left: 6px solid #3a66d6; }
+  }
+
+  /* Dialog notch: only on the two-column desktop layout, where the diagram sits
+     beside the panel. The diagram and (taller) panel are co-centered there, so
+     offsetting from the panel center by --notch-offset lines the notch up with
+     the selected box's row. On the stacked mobile layout the diagram is above
+     the panel, so a left-pointing notch would point at nothing — hide it and
+     let the blue left spine carry the accent. */
+  .fam-notch { display: none; }
+  @media (min-width: 1024px) {
+    .fam-notch { display: block; top: calc(50% + var(--notch-offset, 0px)); }
   }
 
   /* Uniform detail-panel height so switching databases doesn't resize it.
