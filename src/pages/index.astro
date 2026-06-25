@@ -100,7 +100,11 @@ const initialPanel = panelHTML(DEFAULT_SELECTION);
      on narrow/stacked screens so the whole diagram is visible without scrolling. */
   #family-diagram { font-size: 13px; }
   @media (max-width: 1023px) {
-    .fam-diag { container-type: inline-size; }
+    /* Stacked single-column: the diagram caps at 13px so it stays continuous
+       with the desktop layout, which leaves it narrower than the full-width
+       panel below. Center it so the figure sits balanced between the
+       left-aligned lead copy and the panel rather than hugging the left edge. */
+    .fam-diag { container-type: inline-size; text-align: center; }
     #family-diagram { font-size: min(13px, 2.15cqi); }
   }
 
