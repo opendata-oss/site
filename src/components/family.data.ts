@@ -38,8 +38,6 @@ export type Database = {
   key: string;
   name: string;
   full: string;
-  approx: string;
-  status: 'STABLE' | 'BETA';
   desc: string;
   facets: string[];
   href: string;
@@ -62,8 +60,6 @@ export const databases: Database[] = [
     key: 'log',
     name: 'Log',
     full: 'OpenData Log',
-    approx: 'Kafka',
-    status: 'STABLE',
     desc:
       'A durable, append-only log and streaming substrate that writes directly to object storage — no brokers and no local disks to manage.',
     facets: [
@@ -77,8 +73,6 @@ export const databases: Database[] = [
     key: 'vector',
     name: 'Vector',
     full: 'OpenData Vector',
-    approx: 'Pinecone',
-    status: 'BETA',
     desc:
       'Vector search and embedding indexes that live in your bucket, so similarity search rides the same storage economics as everything else.',
     facets: [
@@ -92,8 +86,6 @@ export const databases: Database[] = [
     key: 'buffer',
     name: 'Buffer',
     full: 'OpenData Buffer',
-    approx: 'Redis',
-    status: 'BETA',
     desc:
       'A high-throughput ingestion buffer backed by object storage — absorb bursts and smooth out writes without an in-memory tier to babysit.',
     facets: [
@@ -107,8 +99,6 @@ export const databases: Database[] = [
     key: 'timeseries',
     name: 'Timeseries',
     full: 'OpenData Timeseries',
-    approx: 'InfluxDB',
-    status: 'STABLE',
     desc:
       'Time-series metrics and events stored at object-storage cost, with fast range scans over compacted columnar blocks.',
     facets: [
@@ -125,7 +115,7 @@ const COLORS = {
   gray: '#aeb4bd',
   rail: '#c4cad3',
   shadow: '#bcc3ce',
-  shadowActive: '#7385c2',
+  shadowActive: '#c8d1ef',
   engine: '#3a66d6',
   engineDim: '#89a3df',
   os: '#1a1a1a',
@@ -175,7 +165,7 @@ function gridToLines(grid: Cell[][]): Seg[][] {
 // coordinate. The active database lights a path: box → drop → rail → trunk.
 export function buildDiagramLines(active: number): Seg[][] {
   const C = COLORS;
-  const W = 74, H = 17, TRUNK = 37;
+  const W = 74, H = 25, TRUNK = 37;
   const grid: Cell[][] = Array.from({ length: H }, () =>
     Array.from({ length: W }, () => ({ ch: ' ', col: null, b: false, anim: false, click: null }))
   );
@@ -191,54 +181,74 @@ export function buildDiagramLines(active: number): Seg[][] {
     for (let k = 0; k < s.length; k++) set(r, c + k, s[k], col, o);
   };
 
+  // Vertical layout (line-height is 1, so half-block shadows tile flush). Rows:
+  //  0 top · 1 pad · 2 name · 3 pad · 4 bottom(┬)
+  //  5 shadow+drop · 6 drop · 7 rail · 8-10 trunk
+  //  11 eng top · 12 pad · 13 title · 14 sub · 15 pad · 16 eng bottom(┬)
+  //  17-19 trunk · 20 os top · 21 pad · 22 os text · 23 pad · 24 os bottom
+  const RAIL = 7, ENG = 11, OS = 20;
+
   // ── database boxes (double border + drop shadow) ───────────────────────
   databases.forEach((d, i) => {
     const left = 2 + i * 18;
     const on = i === active;
     const col = on ? C.active : C.gray;
     const conn = left + 8;
-    // drop shadow (offset +1,+1, denser ▒ for emphasis; blue-tinted when selected)
-    const sh = on ? C.shadowActive : C.shadow;
-    set(1, left + 16, '▒', sh); set(2, left + 16, '▒', sh); set(3, left + 16, '▒', sh);
-    row(4, left + 1, left + 16, '▒', sh);
-    // box
+    // box (5 rows tall: top, pad, name, pad, bottom)
     set(0, left, '╔', col, { b: on, click: i }); row(0, left + 1, left + 14, '═', col, { b: on, click: i }); set(0, left + 15, '╗', col, { b: on, click: i });
-    set(1, left, '║', col, { b: on, click: i }); put(1, left + 1, ctr(d.name, 14), col, { b: on, click: i }); set(1, left + 15, '║', col, { b: on, click: i });
-    set(2, left, '║', col, { b: on, click: i }); put(2, left + 1, ctr('≈ ' + d.approx, 14), col, { b: on, click: i }); set(2, left + 15, '║', col, { b: on, click: i });
-    set(3, left, '╚', col, { b: on, click: i }); row(3, left + 1, left + 7, '═', col, { b: on, click: i }); set(3, left + 8, '┬', col, { b: on, click: i }); row(3, left + 9, left + 14, '═', col, { b: on, click: i }); set(3, left + 15, '╝', col, { b: on, click: i });
-    // drop connector
-    set(4, conn, '│', on ? C.active : C.rail, { b: on });
+    const lines = ['', d.name, ''];
+    for (let k = 0; k < 3; k++) {
+      const r = 1 + k;
+      set(r, left, '║', col, { b: on, click: i });
+      row(r, left + 1, left + 14, ' ', col, { click: i });
+      if (lines[k]) put(r, left + 1, ctr(lines[k], 14), col, { b: on, click: i });
+      set(r, left + 15, '║', col, { b: on, click: i });
+    }
+    set(4, left, '╚', col, { b: on, click: i }); row(4, left + 1, left + 7, '═', col, { b: on, click: i }); set(4, left + 8, '┬', col, { b: on, click: i }); row(4, left + 9, left + 14, '═', col, { b: on, click: i }); set(4, left + 15, '╝', col, { b: on, click: i });
+    // drop shadow — thin solid half-block strips hugging the box (right + below),
+    // matching the dialog's tight `5px 5px 0` offset box-shadow.
+    const sh = on ? C.shadowActive : C.shadow;
+    for (let r = 1; r <= 4; r++) set(r, left + 16, '▌', sh);
+    row(5, left + 1, left + 15, '▀', sh);
+    set(5, left + 16, '▘', sh);
+    // drop connector down to the rail
+    set(5, conn, '│', on ? C.active : C.rail, { b: on });
+    set(6, conn, '│', on ? C.active : C.rail, { b: on });
   });
 
   // ── manifold rail ──────────────────────────────────────────────────────
-  row(5, 10, 64, '─', C.rail);
-  set(5, 10, '└', C.rail); set(5, 28, '┴', C.rail); set(5, TRUNK, '┬', C.rail); set(5, 46, '┴', C.rail); set(5, 64, '┘', C.rail);
+  row(RAIL, 10, 64, '─', C.rail);
+  set(RAIL, 10, '└', C.rail); set(RAIL, 28, '┴', C.rail); set(RAIL, TRUNK, '┬', C.rail); set(RAIL, 46, '┴', C.rail); set(RAIL, 64, '┘', C.rail);
   // highlight the active database's path into the trunk
   const connA = 10 + active * 18;
   for (let c = Math.min(connA, TRUNK); c <= Math.max(connA, TRUNK); c++) {
-    grid[5][c].col = C.active;
-    grid[5][c].b = false;
+    grid[RAIL][c].col = C.active;
+    grid[RAIL][c].b = false;
   }
   // trunk down to the engine
-  set(6, TRUNK, '│', C.active); set(7, TRUNK, '│', C.active);
+  set(8, TRUNK, '│', C.active); set(9, TRUNK, '│', C.active); set(10, TRUNK, '│', C.active);
 
-  // ── storage engine (heavy border) ───────────────────────────────────────
+  // ── storage engine (heavy border, 6 rows) ───────────────────────────────
   {
     const L = 12, R = 61;
-    set(8, L, '┏', C.engine); row(8, L + 1, R - 1, '━', C.engine); set(8, TRUNK, '▼', C.engine); set(8, R, '┓', C.engine);
-    set(9, L, '┃', C.engine); put(9, L + 1, ctr('OpenData Storage Engine', R - L - 1), C.engine, { b: true }); set(9, R, '┃', C.engine);
-    set(10, L, '┃', C.engine); put(10, L + 1, ctr('shared by all four databases', R - L - 1), C.engineDim); set(10, R, '┃', C.engine);
-    set(11, L, '┗', C.engine); row(11, L + 1, R - 1, '━', C.engine); set(11, TRUNK, '┬', C.engine); set(11, R, '┛', C.engine);
+    set(ENG, L, '┏', C.engine); row(ENG, L + 1, R - 1, '━', C.engine); set(ENG, TRUNK, '▼', C.engine); set(ENG, R, '┓', C.engine);
+    set(ENG + 1, L, '┃', C.engine); set(ENG + 1, R, '┃', C.engine);
+    set(ENG + 2, L, '┃', C.engine); put(ENG + 2, L + 1, ctr('OpenData Storage Engine', R - L - 1), C.engine, { b: true }); set(ENG + 2, R, '┃', C.engine);
+    set(ENG + 3, L, '┃', C.engine); put(ENG + 3, L + 1, ctr('shared by all four databases', R - L - 1), C.engineDim); set(ENG + 3, R, '┃', C.engine);
+    set(ENG + 4, L, '┃', C.engine); set(ENG + 4, R, '┃', C.engine);
+    set(ENG + 5, L, '┗', C.engine); row(ENG + 5, L + 1, R - 1, '━', C.engine); set(ENG + 5, TRUNK, '┬', C.engine); set(ENG + 5, R, '┛', C.engine);
   }
   // trunk down to object storage
-  set(12, TRUNK, '│', C.active); set(13, TRUNK, '│', C.active);
+  set(17, TRUNK, '│', C.active); set(18, TRUNK, '│', C.active); set(19, TRUNK, '│', C.active);
 
-  // ── object storage (double border) ──────────────────────────────────────
+  // ── object storage (double border, 5 rows) ──────────────────────────────
   {
     const L = 10, R = 63;
-    set(14, L, '╔', C.os); row(14, L + 1, R - 1, '═', C.os); set(14, TRUNK, '▼', C.engine, { anim: true }); set(14, R, '╗', C.os);
-    set(15, L, '║', C.os); put(15, L + 1, ctr('Object Storage   ·   S3 · GCS · R2', R - L - 1), C.os, { b: true }); set(15, R, '║', C.os);
-    set(16, L, '╚', C.os); row(16, L + 1, R - 1, '═', C.os); set(16, R, '╝', C.os);
+    set(OS, L, '╔', C.os); row(OS, L + 1, R - 1, '═', C.os); set(OS, TRUNK, '▼', C.engine, { anim: true }); set(OS, R, '╗', C.os);
+    set(OS + 1, L, '║', C.os); set(OS + 1, R, '║', C.os);
+    set(OS + 2, L, '║', C.os); put(OS + 2, L + 1, ctr('Object Storage   ·   S3 · GCS · R2', R - L - 1), C.os, { b: true }); set(OS + 2, R, '║', C.os);
+    set(OS + 3, L, '║', C.os); set(OS + 3, R, '║', C.os);
+    set(OS + 4, L, '╚', C.os); row(OS + 4, L + 1, R - 1, '═', C.os); set(OS + 4, R, '╝', C.os);
   }
 
   return gridToLines(grid);
@@ -265,34 +275,30 @@ export function diagramHTML(active: number): string {
 
 export function panelHTML(active: number): string {
   const act = databases[active];
-  const stable = act.status === 'STABLE';
-  const statusColor = stable ? '#3a66d6' : '#b8860b';
-  const statusBg = stable ? '#eef2fb' : '#fbf3e2';
-  const idx = String(active + 1).padStart(2, '0');
 
   const facets = act.facets
     .map(
-      (f, i) =>
-        `<div style="display:flex;gap:11px;margin-bottom:11px">` +
-        `<span style="font-size:11px;color:#3a66d6;font-weight:700">[${String(i + 1).padStart(2, '0')}]</span>` +
-        `<span style="font-size:13px;color:#555;line-height:1.5">${esc(f)}</span>` +
+      (f) =>
+        `<div style="display:flex;gap:10px;margin-bottom:9px">` +
+        `<span style="font-family:var(--font-mono);color:#3a66d6;font-weight:700">&gt;</span>` +
+        `<span style="font-size:13px;color:#555;line-height:1.55">${esc(f)}</span>` +
         `</div>`
     )
     .join('');
 
+  // Smooth blue border + blue tint + offset shadow, echoing the selected box
+  // in the diagram (blue border, blue-tinted drop shadow).
   return (
-    `<div style="animation:famFadeUp .35s ease">` +
-    `<div style="font-size:11px;color:#9a9a9a;letter-spacing:.5px;margin-bottom:14px">DATABASE ${idx} / 04</div>` +
-    `<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">` +
-    iconTile(act.key, 38, 20) +
-    `<div style="font-size:22px;font-weight:700;letter-spacing:-0.5px">${esc(act.full)}</div>` +
-    `<span style="font-size:10px;color:${statusColor};background:${statusBg};padding:4px 9px;border-radius:6px;font-weight:700;letter-spacing:.5px">${act.status}</span>` +
+    `<div style="animation:famFadeUp .35s ease;border:1px solid #3a66d6;background:#fff;box-shadow:5px 5px 0 0 #c8d1ef;padding:26px 26px 24px">` +
+    `<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">` +
+    iconTile(act.key, 34, 18) +
+    `<div style="font-size:20px;font-weight:700;letter-spacing:-0.5px">${esc(act.full)}</div>` +
     `</div>` +
-    `<div style="font-size:14px;line-height:1.65;color:#555;margin-bottom:22px">${esc(act.desc)}</div>` +
-    `<div style="border-top:1px solid #f0f0f0;padding-top:18px;margin-bottom:22px">${facets}</div>` +
-    `<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">` +
-    `<a href="${act.href}" style="background:#1a1a1a;color:#fff;font-size:12px;font-weight:500;padding:12px 18px;border-radius:8px;text-decoration:none">Read the ${esc(act.name)} post →</a>` +
-    `<a href="/docs" style="color:#3a66d6;font-size:12px;text-decoration:none">View docs →</a>` +
+    `<div style="font-size:14px;line-height:1.65;color:#555;margin-bottom:20px">${esc(act.desc)}</div>` +
+    `<div style="border-top:1px dashed #cdd6ee;padding-top:16px;margin-bottom:20px">${facets}</div>` +
+    `<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">` +
+    `<a href="${act.href}" style="font-family:var(--font-mono);border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;font-size:12px;font-weight:500;padding:10px 16px;text-decoration:none">[ read the ${esc(act.name)} post → ]</a>` +
+    `<a href="/docs" style="font-family:var(--font-mono);color:#3a66d6;font-size:12px;text-decoration:none">view docs →</a>` +
     `</div>` +
     `</div>`
   );

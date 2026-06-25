@@ -48,7 +48,7 @@ const initialPanel = panelHTML(0);
     </a>
 
     <!-- nav (sticky) -->
-    <div class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-[#efefef]">
+    <div id="site-nav" class="sticky top-0 z-40 bg-white/90 backdrop-blur-md">
       <div class="max-w-[1180px] mx-auto flex items-center justify-between px-5 sm:px-8 py-4">
         <a href="/" class="flex items-center gap-[9px]" aria-label="OpenData home">
           <img src="/images/icon.svg" alt="" width="22" height="22" class="block w-[22px] h-[22px]" />
@@ -80,15 +80,11 @@ const initialPanel = panelHTML(0);
                       <span class="flex items-center justify-center w-[26px] h-[26px] bg-[#1a1a1a] rounded-[6px] shrink-0">
                         <svg viewBox={ICONS[d.key].vb} width="15" height="15" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d={ICONS[d.key].path} /></svg>
                       </span>
-                      <span class="block">
-                        <span class="block text-[13px] font-bold">{d.full}</span>
-                        <span class="block text-[11px] text-[#9a9a9a]">&asymp; {d.approx}</span>
-                      </span>
+                      <span class="block text-[13px] font-bold">{d.full}</span>
                     </a>
                   ))}
                 </div>
-                <div class="border-t border-[#f0f0f0] mt-[14px] pt-[13px] flex justify-between">
-                  <a href="/docs" class="text-[11px] text-[#3a66d6] hover:underline">Compare all databases &rarr;</a>
+                <div class="border-t border-[#f0f0f0] mt-[14px] pt-[13px] flex justify-end">
                   <a href="/docs" class="text-[11px] text-[#9a9a9a] hover:text-[#1a1a1a]">Docs home &rarr;</a>
                 </div>
               </div>
@@ -157,7 +153,6 @@ const initialPanel = panelHTML(0);
                 <svg viewBox={ICONS[d.key].vb} width="14" height="14" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d={ICONS[d.key].path} /></svg>
               </span>
               <span class="font-bold flex-1">{d.full}</span>
-              <span class="text-[11px] text-[#9a9a9a]">&asymp; {d.approx}</span>
             </a>
           ))}
         </div>
@@ -191,66 +186,66 @@ const initialPanel = panelHTML(0);
     </div>
 
     <!-- hero -->
-    <div class="max-w-[1180px] mx-auto px-5 sm:px-8 pt-[72px] pb-[64px] sm:pt-[92px] sm:pb-[84px] text-center">
-      <div class="text-[12px] tracking-[1.5px] text-[#9a9a9a] mb-6">OPEN-SOURCE &middot; OBJECT-STORE NATIVE</div>
-      <h1 class="text-[34px] sm:text-[46px] leading-[1.1] font-bold tracking-[-1.5px]">One foundation.<br />Every database.</h1>
-      <p class="max-w-[600px] mx-auto mt-[26px] text-[15px] leading-[1.65] text-[#5a5a5a]">
-        A family of open-source databases that all run on the <b class="text-[#1a1a1a]">same object-storage engine</b> &mdash; so the more of them you adopt, the simpler and cheaper your whole stack gets.
-      </p>
-      <div class="flex flex-col sm:flex-row gap-[14px] justify-center mt-[34px]">
-        <a href="#family" class="bg-[#1a1a1a] text-white text-[13px] font-medium px-[24px] py-[14px] rounded-[8px] hover:bg-black transition-colors">Explore the databases &darr;</a>
-        <a href="/docs" class="bg-white text-[#1a1a1a] text-[13px] font-medium px-[24px] py-[14px] rounded-[8px] border border-[#d6d6d6] hover:border-[#1a1a1a] transition-colors">Read the docs</a>
+    <div class="hero-wrap">
+      <div class="hero-grid"></div>
+      <div class="hero-inner max-w-[1180px] mx-auto px-5 sm:px-8 pt-[72px] pb-[80px] sm:pt-[96px] sm:pb-[104px] text-center">
+        <div class="text-[12px] tracking-[1.5px] text-[#9a9a9a] mb-6">OPEN-SOURCE &middot; OBJECT-STORE NATIVE</div>
+        <h1 class="text-[34px] sm:text-[46px] leading-[1.1] font-bold tracking-[-1.5px]">One foundation.<br />Every database.</h1>
+        <p class="max-w-[600px] mx-auto mt-[26px] text-[15px] leading-[1.65] text-[#5a5a5a]">
+          A family of open-source databases that all run on the <b class="text-[#1a1a1a]">same object-storage engine</b> &mdash; so the more of them you adopt, the simpler and cheaper your whole stack gets.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-[14px] justify-center mt-[34px]">
+          <a href="#family" class="bg-[#1a1a1a] text-white text-[13px] font-medium px-[24px] py-[14px] rounded-[8px] hover:bg-black transition-colors">Explore the databases &darr;</a>
+          <a href="/docs" class="bg-white text-[#1a1a1a] text-[13px] font-medium px-[24px] py-[14px] rounded-[8px] border border-[#d6d6d6] hover:border-[#1a1a1a] transition-colors">Read the docs</a>
+        </div>
       </div>
     </div>
 
     <!-- interactive family diagram -->
-    <div id="family" class="scroll-mt-24 bg-[#fafafa] border-y border-[#efefef] px-5 sm:px-8 pt-[64px] pb-[72px] sm:pt-[72px] sm:pb-[84px]">
-      <div class="max-w-[1180px] mx-auto">
-        <div class="text-center mb-[14px]">
-          <div class="text-[12px] tracking-[1.5px] text-[#9a9a9a] mb-[14px]">THE FAMILY &middot; ONE FOUNDATION</div>
-          <div class="text-[24px] sm:text-[28px] font-bold tracking-[-0.5px]">Four databases, one storage engine</div>
-          <p class="max-w-[560px] mx-auto mt-3 text-[14px] leading-[1.6] text-[#6a6a6a]">Select a database in the diagram to see how it sits on the shared foundation.</p>
-        </div>
-
-        <div class="grid grid-cols-1 gap-10 lg:gap-12 lg:grid-cols-[max-content_1fr] lg:items-center mt-11">
-          <div class="overflow-x-auto">
-            <pre
-              id="family-diagram"
-              class="m-0 select-none"
-              style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;line-height:1.5;white-space:pre;display:inline-block;text-align:left"
-              set:html={initialDiagram}
-            />
+    <div id="family" class="scroll-mt-24 bg-white">
+      <div class="sec sec-family">
+        <div class="abox">
+          <span class="abox-title">the family</span>
+          <div class="lead">
+            <div class="lead-h">Four databases, one storage engine</div>
+            <p class="lead-p">Select a database in the diagram to see how it sits on the shared foundation.</p>
           </div>
-          <div
-            id="family-panel"
-            class="bg-white border border-[#e7e7e7] rounded-[14px] p-[30px] shadow-[0_1px_3px_rgba(0,0,0,0.05)]"
-            set:html={initialPanel}
-          />
-        </div>
 
-        <div class="text-center mt-9">
-          <a href="/docs" class="text-[12px] text-[#3a66d6] hover:underline">Compare all databases &rarr;</a>
+          <div class="grid grid-cols-1 gap-10 lg:gap-12 lg:grid-cols-[max-content_1fr] lg:items-center mt-11">
+            <div class="fam-diag overflow-x-auto">
+              <pre
+                id="family-diagram"
+                class="m-0 select-none"
+                style="font-family:'JetBrains Mono',ui-monospace,monospace;line-height:1;white-space:pre;display:inline-block;text-align:left"
+                set:html={initialDiagram}
+              />
+            </div>
+            <div id="family-panel" set:html={initialPanel} />
+          </div>
         </div>
       </div>
     </div>
 
     <!-- three benefits -->
-    <div class="max-w-[1180px] mx-auto px-5 sm:px-8 py-[64px] sm:py-[80px]">
-      <div class="grid gap-10 md:grid-cols-3">
-        <div>
-          <div class="text-[13px] text-[#3a66d6] mb-[14px]">[ 01 ]</div>
-          <div class="text-[17px] font-bold mb-[10px]">Simpler to operate</div>
-          <p class="text-[13px] leading-[1.65] text-[#6a6a6a]">One storage layer, one mental model. Learn it once and every database in the family works the same way.</p>
-        </div>
-        <div>
-          <div class="text-[13px] text-[#3a66d6] mb-[14px]">[ 02 ]</div>
-          <div class="text-[17px] font-bold mb-[10px]">Cheaper in aggregate</div>
-          <p class="text-[13px] leading-[1.65] text-[#6a6a6a]">Pay object-storage prices instead of overprovisioned disks. Costs compound downward as you add more databases.</p>
-        </div>
-        <div>
-          <div class="text-[13px] text-[#3a66d6] mb-[14px]">[ 03 ]</div>
-          <div class="text-[17px] font-bold mb-[10px]">Impossible to outgrow</div>
-          <p class="text-[13px] leading-[1.65] text-[#6a6a6a]">Capacity scales with your object store. No re-sharding, no migrations, no ceiling.</p>
+    <div class="sec sec-why">
+      <div class="abox">
+        <span class="abox-title">why opendata</span>
+        <div class="grid gap-10 md:grid-cols-3">
+          <div>
+            <div class="bnum">01</div>
+            <div class="text-[17px] font-bold mb-[10px]">Simpler to operate</div>
+            <p class="text-[13px] leading-[1.65] text-[#6a6a6a]">One storage layer, one mental model. Learn it once and every database in the family works the same way.</p>
+          </div>
+          <div>
+            <div class="bnum">02</div>
+            <div class="text-[17px] font-bold mb-[10px]">Cheaper in aggregate</div>
+            <p class="text-[13px] leading-[1.65] text-[#6a6a6a]">Pay object-storage prices instead of overprovisioned disks. Costs compound downward as you add more databases.</p>
+          </div>
+          <div>
+            <div class="bnum">03</div>
+            <div class="text-[17px] font-bold mb-[10px]">Impossible to outgrow</div>
+            <p class="text-[13px] leading-[1.65] text-[#6a6a6a]">Capacity scales with your object store. No re-sharding, no migrations, no ceiling.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -273,6 +268,44 @@ const initialPanel = panelHTML(0);
   @keyframes pulseBlink { 0%, 100% { opacity: 0.3 } 50% { opacity: 1 } }
   @keyframes famFadeUp { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
   .fam-anim { animation: pulseBlink 1.4s ease-in-out infinite; }
+
+  /* Diagram: fixed 13px monospace on desktop; scales down to fit its container
+     on narrow/stacked screens so the whole diagram is visible without scrolling. */
+  #family-diagram { font-size: 13px; }
+  @media (max-width: 1023px) {
+    .fam-diag { container-type: inline-size; }
+    #family-diagram { font-size: min(13px, 2.15cqi); }
+  }
+
+  /* Framed sections: double border with a title tab */
+  .abox { position: relative; border: 3px double #d0d0d0; background: #fff; padding: 48px 32px 40px; }
+  .abox-title { position: absolute; top: -13px; left: 22px; background: #fff; padding: 0 10px; font-family: var(--font-mono); font-size: 16px; font-weight: 700; letter-spacing: .3px; color: #3a66d6; }
+  .sec { max-width: 1180px; margin-left: auto; margin-right: auto; padding-left: 24px; padding-right: 24px; }
+  .sec-family { padding-top: 48px; padding-bottom: 64px; }
+  .sec-why { padding-top: 12px; padding-bottom: 76px; }
+  .lead { margin-bottom: 28px; }
+  .lead-h { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+  .lead-p { max-width: 560px; margin-top: 12px; font-size: 14px; line-height: 1.6; color: #6a6a6a; }
+  .bnum { font-size: 44px; font-weight: 700; color: #ececec; line-height: 1; letter-spacing: -1px; margin-bottom: 12px; }
+  @media (max-width: 640px) { .abox { padding: 42px 20px 34px; } .sec { padding-left: 18px; padding-right: 18px; } }
+
+  /* Hero with masked blue grid backdrop */
+  .hero-wrap { position: relative; overflow: hidden; background: #fff; }
+  .hero-grid {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(to right, rgba(40, 86, 200, .07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(40, 86, 200, .07) 1px, transparent 1px);
+    background-size: 38px 38px; background-position: center top;
+    -webkit-mask-image: radial-gradient(115% 82% at 50% 46%, #000 0%, rgba(0, 0, 0, .4) 48%, transparent 74%);
+    mask-image: radial-gradient(115% 82% at 50% 46%, #000 0%, rgba(0, 0, 0, .4) 48%, transparent 74%);
+  }
+  .hero-inner { position: relative; z-index: 1; }
+
+  /* Sticky nav gains a bottom border once the page scrolls */
+  #site-nav { border-bottom: 1px solid transparent; transition: border-color .2s ease; }
+  #site-nav.nav-scrolled { border-bottom-color: #efefef; }
+
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .fam-anim { animation: none; }

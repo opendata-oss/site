@@ -45,5 +45,14 @@ function initMobileNav() {
   });
 }
 
+function initNavBorder() {
+  const nav = document.getElementById('site-nav');
+  if (!nav) return;
+  const update = () => nav.classList.toggle('nav-scrolled', window.scrollY > 4);
+  update();
+  window.addEventListener('scroll', update, { passive: true });
+}
+
 initFamily();
 initMobileNav();
+initNavBorder();
