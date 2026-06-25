@@ -284,12 +284,13 @@ export function buildDiagramLines(active: Selection): Seg[][] {
 // Horizontal variant for the stacked layout (small/medium viewports). Same
 // character-grid painter as buildDiagramLines: the four database boxes form a
 // 2×2 cluster on the left, a manifold bus collects them and taps right into the
-// storage engine, and object storage sits directly below the engine (the shared
-// foundation reads as a vertical base). Kept compact (no drop shadows or
-// per-box rails) since it renders below the panel.
+// storage engine (top row), and object storage sits below the engine (bottom
+// row) — so the whole diagram is just two box-rows tall, with the engine and
+// object storage row-aligned to the database boxes. Kept compact (no drop
+// shadows or per-box rails) since it renders below the panel.
 export function buildDiagramLinesHorizontal(active: Selection): Seg[][] {
   const C = COLORS;
-  const W = 61, H = 14;
+  const W = 61, H = 11;
   const grid: Cell[][] = Array.from({ length: H }, () =>
     Array.from({ length: W }, () => ({ ch: ' ', col: null, b: false, anim: false, click: null }))
   );
@@ -327,42 +328,46 @@ export function buildDiagramLinesHorizontal(active: Selection): Seg[][] {
   });
 
   // ── manifold: a vertical bus right of the cluster, spanning its full height
-  //    and tapping right into the engine. Structural, so always neutral. ─────
-  const BUS = 35;
+  //    and tapping right into the engine (at the top row's center). Structural,
+  //    so always neutral. ───────────────────────────────────────────────────
+  const BUS = 36;
   set(0, BUS, '╷', C.rail);
   for (let r = 1; r <= 9; r++) set(r, BUS, '│', C.rail);
   set(10, BUS, '╵', C.rail);
-  set(5, BUS, '├', C.rail);
-  row(5, BUS + 1, BUS + 2, '─', C.rail); set(5, BUS + 3, '►', C.rail);
+  set(2, BUS, '├', C.rail);
+  row(2, BUS + 1, BUS + 2, '─', C.rail); set(2, BUS + 3, '►', C.rail);
 
-  // ── storage engine (heavy border), centered on the bus tap (rows 3–7) ────
+  // Engine (top row) + object storage (bottom row), both in the right column so
+  // they sit row-aligned with the database boxes. TRUNK is their shared center.
   const L = 40, R = 60, TRUNK = 50;  // inner 41..59 (19 wide); trunk at center
+
+  // ── storage engine (heavy border, rows 0–4 = top row) ────────────────────
   {
     const on = active === 'engine';
     const col = on ? C.active : C.gray;
     const sub = on ? C.engineDim : C.gray;
     const e: Opt = { click: 'engine' };
-    set(3, L, '┏', col, e); row(3, L + 1, R - 1, '━', col, e); set(3, R, '┓', col, e);
-    for (let r = 4; r <= 6; r++) { set(r, L, '┃', col, e); row(r, L + 1, R - 1, ' ', col, e); set(r, R, '┃', col, e); }
-    put(4, L + 1, ctr('OpenData', R - L - 1), col, { click: 'engine' });
-    put(5, L + 1, ctr('Storage Engine', R - L - 1), col, { b: true, click: 'engine' });
-    put(6, L + 1, ctr('built on SlateDB', R - L - 1), sub, e);
-    set(7, L, '┗', col, e); row(7, L + 1, R - 1, '━', col, e); set(7, TRUNK, '┬', C.rail); set(7, R, '┛', col, e);
+    set(0, L, '┏', col, e); row(0, L + 1, R - 1, '━', col, e); set(0, R, '┓', col, e);
+    for (let r = 1; r <= 3; r++) { set(r, L, '┃', col, e); row(r, L + 1, R - 1, ' ', col, e); set(r, R, '┃', col, e); }
+    put(1, L + 1, ctr('OpenData', R - L - 1), col, { click: 'engine' });
+    put(2, L + 1, ctr('Storage Engine', R - L - 1), col, { b: true, click: 'engine' });
+    put(3, L + 1, ctr('built on SlateDB', R - L - 1), sub, e);
+    set(4, L, '┗', col, e); row(4, L + 1, R - 1, '━', col, e); set(4, TRUNK, '┬', C.rail); set(4, R, '┛', col, e);
   }
 
   // engine → object storage: trunk drops straight down (animated arrow in) ───
-  set(8, TRUNK, '│', C.rail);
+  set(5, TRUNK, '│', C.rail);
 
-  // ── object storage (double border, rows 9–13), directly below the engine ──
+  // ── object storage (double border, rows 6–10 = bottom row) ───────────────
   {
     const on = active === 'storage';
     const col = on ? C.active : C.gray;
     const s: Opt = { click: 'storage' };
-    set(9, L, '╔', col, s); row(9, L + 1, R - 1, '═', col, s); set(9, TRUNK, '▼', C.rail, { anim: true }); set(9, R, '╗', col, s);
-    for (let r = 10; r <= 12; r++) { set(r, L, '║', col, s); row(r, L + 1, R - 1, ' ', col, s); set(r, R, '║', col, s); }
-    put(10, L + 1, ctr('Object Storage', R - L - 1), col, { b: true, click: 'storage' });
-    put(12, L + 1, ctr('S3 · GCS · R2', R - L - 1), col, s);
-    set(13, L, '╚', col, s); row(13, L + 1, R - 1, '═', col, s); set(13, R, '╝', col, s);
+    set(6, L, '╔', col, s); row(6, L + 1, R - 1, '═', col, s); set(6, TRUNK, '▼', C.rail, { anim: true }); set(6, R, '╗', col, s);
+    for (let r = 7; r <= 9; r++) { set(r, L, '║', col, s); row(r, L + 1, R - 1, ' ', col, s); set(r, R, '║', col, s); }
+    put(7, L + 1, ctr('Object Storage', R - L - 1), col, { b: true, click: 'storage' });
+    put(9, L + 1, ctr('S3 · GCS · R2', R - L - 1), col, s);
+    set(10, L, '╚', col, s); row(10, L + 1, R - 1, '═', col, s); set(10, R, '╝', col, s);
   }
 
   return gridToLines(grid);
