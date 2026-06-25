@@ -72,7 +72,7 @@ const idle = 'text-[#6a6a6a] hover:text-[#1a1a1a]';
             <div class="grid grid-cols-2 gap-2">
               {databases.map((d) => (
                 <a
-                  href={d.href}
+                  href={`/docs/${d.key}`}
                   class="flex gap-[10px] items-center px-[10px] py-[9px] rounded-[8px] hover:bg-[#f5f7fd] transition-colors"
                 >
                   <span class="flex items-center justify-center w-[26px] h-[26px] bg-[#1a1a1a] rounded-[6px] shrink-0">
@@ -142,7 +142,7 @@ const idle = 'text-[#6a6a6a] hover:text-[#1a1a1a]';
     <div class="text-[10px] text-[#aaa] mb-2 tracking-[0.5px]">DATABASES</div>
     <div class="grid gap-1 mb-4">
       {databases.map((d) => (
-        <a href={d.href} class="flex items-center gap-[10px] py-1.5 text-[13px]">
+        <a href={`/docs/${d.key}`} class="flex items-center gap-[10px] py-1.5 text-[13px]">
           <span class="flex items-center justify-center w-[24px] h-[24px] bg-[#1a1a1a] rounded-[6px] shrink-0">
             <svg viewBox={ICONS[d.key].vb} width="14" height="14" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d={ICONS[d.key].path} /></svg>
           </span>
