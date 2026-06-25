@@ -165,7 +165,7 @@ function gridToLines(grid: Cell[][]): Seg[][] {
 // coordinate. The active database lights a path: box → drop → rail → trunk.
 export function buildDiagramLines(active: number): Seg[][] {
   const C = COLORS;
-  const W = 74, H = 25, TRUNK = 37;
+  const W = 74, H = 26, TRUNK = 37;
   const grid: Cell[][] = Array.from({ length: H }, () =>
     Array.from({ length: W }, () => ({ ch: ' ', col: null, b: false, anim: false, click: null }))
   );
@@ -184,9 +184,9 @@ export function buildDiagramLines(active: number): Seg[][] {
   // Vertical layout (line-height is 1, so half-block shadows tile flush). Rows:
   //  0 top · 1 pad · 2 name · 3 pad · 4 bottom(┬)
   //  5 shadow+drop · 6 drop · 7 rail · 8-10 trunk
-  //  11 eng top · 12 pad · 13 title · 14 sub · 15 pad · 16 eng bottom(┬)
-  //  17-19 trunk · 20 os top · 21 pad · 22 os text · 23 pad · 24 os bottom
-  const RAIL = 7, ENG = 11, OS = 20;
+  //  11 eng top · 12 pad · 13 title · 14 gap · 15 sub · 16 pad · 17 eng bottom(┬)
+  //  18-20 trunk · 21 os top · 22 pad · 23 os text · 24 pad · 25 os bottom
+  const RAIL = 7, ENG = 11, OS = 21;
 
   // ── database boxes (double border + drop shadow) ───────────────────────
   databases.forEach((d, i) => {
@@ -228,18 +228,19 @@ export function buildDiagramLines(active: number): Seg[][] {
   // trunk down to the engine
   set(8, TRUNK, '│', C.active); set(9, TRUNK, '│', C.active); set(10, TRUNK, '│', C.active);
 
-  // ── storage engine (heavy border, 6 rows) ───────────────────────────────
+  // ── storage engine (heavy border, 7 rows: title + gap + subtitle) ────────
   {
     const L = 12, R = 61;
     set(ENG, L, '┏', C.engine); row(ENG, L + 1, R - 1, '━', C.engine); set(ENG, TRUNK, '▼', C.engine); set(ENG, R, '┓', C.engine);
     set(ENG + 1, L, '┃', C.engine); set(ENG + 1, R, '┃', C.engine);
     set(ENG + 2, L, '┃', C.engine); put(ENG + 2, L + 1, ctr('OpenData Storage Engine', R - L - 1), C.engine, { b: true }); set(ENG + 2, R, '┃', C.engine);
-    set(ENG + 3, L, '┃', C.engine); put(ENG + 3, L + 1, ctr('built on SlateDB', R - L - 1), C.engineDim); set(ENG + 3, R, '┃', C.engine);
-    set(ENG + 4, L, '┃', C.engine); set(ENG + 4, R, '┃', C.engine);
-    set(ENG + 5, L, '┗', C.engine); row(ENG + 5, L + 1, R - 1, '━', C.engine); set(ENG + 5, TRUNK, '┬', C.engine); set(ENG + 5, R, '┛', C.engine);
+    set(ENG + 3, L, '┃', C.engine); set(ENG + 3, R, '┃', C.engine);
+    set(ENG + 4, L, '┃', C.engine); put(ENG + 4, L + 1, ctr('built on SlateDB', R - L - 1), C.engineDim); set(ENG + 4, R, '┃', C.engine);
+    set(ENG + 5, L, '┃', C.engine); set(ENG + 5, R, '┃', C.engine);
+    set(ENG + 6, L, '┗', C.engine); row(ENG + 6, L + 1, R - 1, '━', C.engine); set(ENG + 6, TRUNK, '┬', C.engine); set(ENG + 6, R, '┛', C.engine);
   }
   // trunk down to object storage
-  set(17, TRUNK, '│', C.active); set(18, TRUNK, '│', C.active); set(19, TRUNK, '│', C.active);
+  set(18, TRUNK, '│', C.active); set(19, TRUNK, '│', C.active); set(20, TRUNK, '│', C.active);
 
   // ── object storage (double border, 5 rows) ──────────────────────────────
   {
