@@ -1,30 +1,7 @@
 ---
 import LandingLayout from '../layouts/LandingLayout.astro';
-import { databases, diagramHTML, panelHTML, ICONS } from '../components/family.data';
-
-// Live GitHub stars + Discord members (resolved at build), mirroring Navbar.astro.
-let stars = 0;
-try {
-  const ghRes = await fetch('https://api.github.com/repos/opendata-oss/opendata');
-  if (ghRes.ok) {
-    const gh = await ghRes.json();
-    stars = gh.stargazers_count ?? 0;
-  }
-} catch {}
-
-let discordMembers = 0;
-try {
-  const dcRes = await fetch('https://discord.com/api/v9/invites/CsAQJ2AJGU?with_counts=true');
-  if (dcRes.ok) {
-    const dc = await dcRes.json();
-    discordMembers = dc.approximate_member_count ?? 0;
-  }
-} catch {}
-
-function formatCount(n: number): string {
-  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-  return String(n);
-}
+import Navbar from '../components/Navbar.astro';
+import { diagramHTML, panelHTML } from '../components/family.data';
 
 const GH = 'https://github.com/opendata-oss/opendata';
 const DISCORD = 'https://discord.gg/CsAQJ2AJGU';
@@ -34,8 +11,8 @@ const initialPanel = panelHTML(0);
 ---
 
 <LandingLayout
-  title="OpenData — One foundation. Every database."
-  description="A family of open-source, object-store native databases that all run on the same storage engine. Simple to operate. Impossible to outgrow."
+  title="OpenData — Open Source Object Store Native Databases"
+  description="A family of open-source, object-store native databases that all run on the same storage engine built on SlateDB."
   ogImage="/images/opengraph.png"
 >
   <div class="min-h-screen">
@@ -47,143 +24,7 @@ const initialPanel = panelHTML(0);
       <b>NEW</b> &middot; Introducing OpenData Vector &rarr; object-store native similarity search
     </a>
 
-    <!-- nav (sticky) -->
-    <div id="site-nav" class="sticky top-0 z-40 bg-white/90 backdrop-blur-md">
-      <div class="max-w-[1180px] mx-auto flex items-center justify-between px-5 sm:px-8 py-4">
-        <a href="/" class="flex items-center gap-[9px]" aria-label="OpenData home">
-          <img src="/images/icon.svg" alt="" width="22" height="22" class="block w-[22px] h-[22px]" />
-          <span class="text-[16px] font-bold">OpenData</span>
-        </a>
-
-        <!-- desktop nav -->
-        <div class="hidden md:flex items-center gap-[26px]">
-          <!-- Databases mega-menu -->
-          <div class="group relative">
-            <button
-              type="button"
-              class="flex items-center gap-[5px] text-[13px] font-medium cursor-pointer"
-              aria-haspopup="true"
-            >
-              Databases <span class="text-[9px] text-[#3a66d6]">&#9660;</span>
-            </button>
-            <div
-              class="invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-150 absolute top-full left-1/2 -translate-x-1/2 pt-[14px] z-50"
-            >
-              <div class="w-[440px] bg-white border border-[#ececec] rounded-[12px] shadow-[0_12px_36px_rgba(0,0,0,0.14)] p-[18px]">
-                <div class="text-[10px] text-[#aaa] mb-[13px] tracking-[0.5px]">DATABASES</div>
-                <div class="grid grid-cols-2 gap-2">
-                  {databases.map((d) => (
-                    <a
-                      href={d.href}
-                      class="flex gap-[10px] items-center px-[10px] py-[9px] rounded-[8px] hover:bg-[#f5f7fd] transition-colors"
-                    >
-                      <span class="flex items-center justify-center w-[26px] h-[26px] bg-[#1a1a1a] rounded-[6px] shrink-0">
-                        <svg viewBox={ICONS[d.key].vb} width="15" height="15" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d={ICONS[d.key].path} /></svg>
-                      </span>
-                      <span class="block text-[13px] font-bold">{d.full}</span>
-                    </a>
-                  ))}
-                </div>
-                <div class="border-t border-[#f0f0f0] mt-[14px] pt-[13px] flex justify-end">
-                  <a href="/docs" class="text-[11px] text-[#9a9a9a] hover:text-[#1a1a1a]">Docs home &rarr;</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <a href="/docs" class="text-[13px] text-[#6a6a6a] hover:text-[#1a1a1a] transition-colors">Docs</a>
-          <a href="/blog/manifesto" class="text-[13px] text-[#6a6a6a] hover:text-[#1a1a1a] transition-colors">Manifesto</a>
-          <a href="/blog" class="text-[13px] text-[#6a6a6a] hover:text-[#1a1a1a] transition-colors">Blog</a>
-          <div class="flex gap-[10px] ml-[6px]">
-            <a
-              href={GH}
-              target="_blank"
-              rel="noopener"
-              class="flex items-center gap-1.5 text-[12px] text-[#6a6a6a] border border-[#ddd] rounded-[6px] px-[10px] py-[6px] hover:border-[#1a1a1a] transition-colors"
-              aria-label="GitHub"
-            >
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
-              {stars > 0 && (
-                <span class="flex items-center gap-0.5">
-                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                    <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/>
-                  </svg>
-                  {formatCount(stars)}
-                </span>
-              )}
-            </a>
-            <a
-              href={DISCORD}
-              target="_blank"
-              rel="noopener"
-              class="flex items-center gap-1.5 text-[12px] text-white bg-[#1a1a1a] rounded-[6px] px-[12px] py-[6px] hover:bg-black transition-colors"
-              aria-label="Discord"
-            >
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/>
-              </svg>
-              {discordMembers > 0 ? formatCount(discordMembers) : 'Discord'}
-            </a>
-          </div>
-        </div>
-
-        <!-- mobile toggle -->
-        <button
-          id="nav-toggle"
-          type="button"
-          class="md:hidden flex items-center justify-center w-7 h-7 text-[#1a1a1a]"
-          aria-label="Toggle menu"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
-          </svg>
-        </button>
-      </div>
-
-      <!-- mobile menu -->
-      <div id="mobile-menu" class="hidden md:hidden border-t border-[#efefef] bg-white px-5 py-4">
-        <div class="text-[10px] text-[#aaa] mb-2 tracking-[0.5px]">DATABASES</div>
-        <div class="grid gap-1 mb-4">
-          {databases.map((d) => (
-            <a href={d.href} class="flex items-center gap-[10px] py-1.5 text-[13px]">
-              <span class="flex items-center justify-center w-[24px] h-[24px] bg-[#1a1a1a] rounded-[6px] shrink-0">
-                <svg viewBox={ICONS[d.key].vb} width="14" height="14" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d={ICONS[d.key].path} /></svg>
-              </span>
-              <span class="font-bold flex-1">{d.full}</span>
-            </a>
-          ))}
-        </div>
-        <div class="grid gap-1 border-t border-[#f0f0f0] pt-3">
-          <a href="/docs" class="py-1.5 text-[13px] text-[#6a6a6a]">Docs</a>
-          <a href="/blog/manifesto" class="py-1.5 text-[13px] text-[#6a6a6a]">Manifesto</a>
-          <a href="/blog" class="py-1.5 text-[13px] text-[#6a6a6a]">Blog</a>
-        </div>
-        <div class="flex gap-[10px] mt-3">
-          <a href={GH} target="_blank" rel="noopener" class="flex items-center gap-1.5 text-[12px] text-[#6a6a6a] border border-[#ddd] rounded-[6px] px-[10px] py-[6px]" aria-label="GitHub">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-            {stars > 0 && (
-              <span class="flex items-center gap-0.5">
-                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                  <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/>
-                </svg>
-                {formatCount(stars)}
-              </span>
-            )}
-          </a>
-          <a href={DISCORD} target="_blank" rel="noopener" class="flex items-center gap-1.5 text-[12px] text-white bg-[#1a1a1a] rounded-[6px] px-[12px] py-[6px]" aria-label="Discord">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/>
-            </svg>
-            {discordMembers > 0 ? formatCount(discordMembers) : 'Discord'}
-          </a>
-        </div>
-      </div>
-    </div>
+    <Navbar />
 
     <!-- hero -->
     <div class="hero-wrap">
@@ -306,10 +147,6 @@ const initialPanel = panelHTML(0);
     mask-image: radial-gradient(115% 82% at 50% 46%, #000 0%, rgba(0, 0, 0, .4) 48%, transparent 74%);
   }
   .hero-inner { position: relative; z-index: 1; }
-
-  /* Sticky nav gains a bottom border once the page scrolls */
-  #site-nav { border-bottom: 1px solid transparent; transition: border-color .2s ease; }
-  #site-nav.nav-scrolled { border-bottom-color: #efefef; }
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }

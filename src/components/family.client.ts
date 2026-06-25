@@ -1,6 +1,7 @@
-// Client interactivity for the homepage. The initial paint is server-rendered
-// (active = Log), so this only re-renders the diagram + panel on selection and
-// wires up the mobile nav toggle. See family.data.ts for the renderers.
+// Client interactivity for the homepage diagram. The initial paint is
+// server-rendered (active = Log), so this only re-renders the diagram + panel
+// on selection. See family.data.ts for the renderers. (Nav interactivity lives
+// in Navbar.astro.)
 import { diagramHTML, panelHTML } from './family.data';
 
 function initFamily() {
@@ -24,35 +25,4 @@ function initFamily() {
   });
 }
 
-function initMobileNav() {
-  const toggle = document.getElementById('nav-toggle');
-  const menu = document.getElementById('mobile-menu');
-  if (!toggle || !menu) return;
-
-  const setOpen = (open: boolean) => {
-    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    menu.classList.toggle('hidden', !open);
-  };
-
-  toggle.addEventListener('click', () => {
-    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
-  });
-  menu.addEventListener('click', (e) => {
-    if ((e.target as HTMLElement).closest('a')) setOpen(false);
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') setOpen(false);
-  });
-}
-
-function initNavBorder() {
-  const nav = document.getElementById('site-nav');
-  if (!nav) return;
-  const update = () => nav.classList.toggle('nav-scrolled', window.scrollY > 4);
-  update();
-  window.addEventListener('scroll', update, { passive: true });
-}
-
 initFamily();
-initMobileNav();
-initNavBorder();
