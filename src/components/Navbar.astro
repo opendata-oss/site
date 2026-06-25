@@ -1,5 +1,5 @@
 ---
-import { databases, ICONS } from './family.data';
+import { databases } from './family.data';
 
 // GitHub stars + Discord members, resolved at build (a point-in-time snapshot).
 let stars = 0;
@@ -38,7 +38,7 @@ const idle = 'text-[#6a6a6a] hover:text-[#1a1a1a]';
 ---
 
 <div id="site-nav" class="sticky top-0 z-40 bg-white/90 backdrop-blur-md font-mono">
-  <div class="max-w-[1180px] mx-auto flex items-center justify-between px-5 sm:px-8 py-4">
+  <div class="nav-row max-w-[1280px] mx-auto flex items-center justify-between px-5 sm:px-8">
     <a href="/" class="logo-link flex items-center" aria-label="OpenData home">
       <span class="logo-wrap block overflow-hidden h-6" style="width: 121.6px;">
         <svg class="logo-svg block h-6" viewBox="0 0 385 76" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 121.6px; max-width: none;" aria-hidden="true">
@@ -62,23 +62,19 @@ const idle = 'text-[#6a6a6a] hover:text-[#1a1a1a]';
           class="flex items-center gap-[5px] text-[13px] font-medium text-[#1a1a1a] cursor-pointer"
           aria-haspopup="true"
         >
-          Databases <span class="text-[9px] text-[#3a66d6]">&#9660;</span>
+          Databases <span class="text-[9px] text-[#4971ab]">&#9660;</span>
         </button>
         <div
-          class="invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-150 absolute top-full left-1/2 -translate-x-1/2 pt-[14px] z-50"
+          class="invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-150 absolute top-full left-0 pt-[14px] z-50"
         >
-          <div class="w-[440px] bg-white border border-[#ececec] rounded-[12px] shadow-[0_12px_36px_rgba(0,0,0,0.14)] p-[18px]">
-            <div class="text-[10px] text-[#aaa] mb-[13px] tracking-[0.5px]">DATABASES</div>
-            <div class="grid grid-cols-2 gap-2">
+          <div class="w-[200px] bg-white border border-[#ececec] shadow-[0_4px_12px_rgba(0,0,0,0.06)] p-[6px]">
+            <div class="grid grid-cols-1 gap-1">
               {databases.map((d) => (
                 <a
                   href={`/docs/${d.key}`}
-                  class="flex gap-[10px] items-center px-[10px] py-[9px] rounded-[8px] hover:bg-[#f5f7fd] transition-colors"
+                  class="flex gap-[10px] items-center px-[8px] py-[8px] hover:bg-[#f5f7fd] transition-colors"
                 >
-                  <span class="flex items-center justify-center w-[26px] h-[26px] bg-[#1a1a1a] rounded-[6px] shrink-0">
-                    <svg viewBox={ICONS[d.key].vb} width="15" height="15" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d={ICONS[d.key].path} /></svg>
-                  </span>
-                  <span class="block text-[13px] font-bold">{d.full}</span>
+                  <span class="block text-[13px]">{d.name}</span>
                 </a>
               ))}
             </div>
@@ -143,10 +139,7 @@ const idle = 'text-[#6a6a6a] hover:text-[#1a1a1a]';
     <div class="grid gap-1 mb-4">
       {databases.map((d) => (
         <a href={`/docs/${d.key}`} class="flex items-center gap-[10px] py-1.5 text-[13px]">
-          <span class="flex items-center justify-center w-[24px] h-[24px] bg-[#1a1a1a] rounded-[6px] shrink-0">
-            <svg viewBox={ICONS[d.key].vb} width="14" height="14" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d={ICONS[d.key].path} /></svg>
-          </span>
-          <span class="font-bold flex-1">{d.full}</span>
+          <span class="font-bold flex-1">{d.name}</span>
         </a>
       ))}
     </div>
@@ -179,6 +172,11 @@ const idle = 'text-[#6a6a6a] hover:text-[#1a1a1a]';
 </div>
 
 <style>
+  /* Roomier top padding at rest; tightens once the page scrolls. */
+  .nav-row { padding-top: 16px; padding-bottom: 10px; transition: padding-top 350ms cubic-bezier(0.4, 0, 0.2, 1); }
+  #site-nav.is-scrolled .nav-row { padding-top: 10px; }
+  #site-nav.preload .nav-row { transition: none; }
+
   /* Wordmark collapses to the "O" mark on scroll */
   .logo-wrap { transition: width 350ms cubic-bezier(0.4, 0, 0.2, 1); will-change: width; }
   .logo-text { transform-origin: 48px 38px; transition: transform 350ms cubic-bezier(0.4, 0, 0.2, 1), opacity 250ms ease; }

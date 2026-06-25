@@ -142,6 +142,12 @@
   @apply rounded-lg border border-slate-200 my-6 max-w-full h-auto bg-white p-4;
 }
 
+/* Contributor avatars opt out of the generic blog-image framing above
+   (no padding/auto-height) so they fill their circular border. */
+.prose-opendata .contributors img {
+  @apply w-10 h-10 rounded-full border-2 border-white my-0 p-0 bg-transparent max-w-none;
+}
+
 .prose-opendata table {
   @apply w-full text-sm mb-6 border-collapse;
 }

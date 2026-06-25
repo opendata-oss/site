@@ -124,14 +124,14 @@ export const databases: Database[] = [
 ];
 
 const COLORS = {
-  active: '#3a66d6',
+  active: '#4971ab',
   // Unselected boxes sit back as a muted gray so the one blue selected box
   // clearly pops — the monospace stand-in for the mockup's focus scrim.
   gray: '#878f9c',
   rail: '#cdd2da',
   shadow: '#dde1e8',
-  shadowActive: '#c8d1ef',
-  engineDim: '#89a3df',
+  shadowActive: '#d6d7d9',
+  engineDim: '#c2c3c6',
 };
 
 // A selection is the key of the box currently highlighted in the diagram:
@@ -143,17 +143,6 @@ export const DEFAULT_SELECTION: Selection = 'log';
 // Diagram row layout (shared across the grid builder).
 const RAIL = 7, ENG = 11, OS = 21;
 const DIAG_ROWS = 26;          // total grid rows (must match H in buildDiagramLines)
-const ROW_PX = 13;             // row height = #family-diagram font-size (line-height: 1)
-const DB_CENTER_ROW = 2;       // a database box spans rows 0–4; its name sits on row 2
-
-// Vertical offset (px) from the diagram's center to the center of the given
-// box row. The dialog's notch uses this to point back at the selected box. It
-// holds on the desktop two-column layout, where the diagram and the (taller)
-// panel are co-centered; on the stacked mobile layout the notch falls back to
-// centered (see .fam-notch in index.astro).
-function notchOffset(centerRow: number): string {
-  return `${Math.round((centerRow + 0.5 - DIAG_ROWS / 2) * ROW_PX)}px`;
-}
 
 type Seg = { t: string; c?: string; b?: boolean; anim?: boolean; click?: string };
 
@@ -292,12 +281,99 @@ export function buildDiagramLines(active: Selection): Seg[][] {
   return gridToLines(grid);
 }
 
+// Horizontal variant for the stacked layout (small/medium viewports). Same
+// character-grid painter as buildDiagramLines: the four database boxes form a
+// 2×2 cluster on the left, a manifold bus collects them and taps right into the
+// storage engine, and object storage sits directly below the engine (the shared
+// foundation reads as a vertical base). Kept compact (no drop shadows or
+// per-box rails) since it renders below the panel.
+export function buildDiagramLinesHorizontal(active: Selection): Seg[][] {
+  const C = COLORS;
+  const W = 61, H = 14;
+  const grid: Cell[][] = Array.from({ length: H }, () =>
+    Array.from({ length: W }, () => ({ ch: ' ', col: null, b: false, anim: false, click: null }))
+  );
+  type Opt = { b?: boolean; anim?: boolean; click?: string | null };
+  const set = (r: number, c: number, ch: string, col: string | null, o: Opt = {}) => {
+    if (r < 0 || r >= H || c < 0 || c >= W) return;
+    grid[r][c] = { ch, col, b: !!o.b, anim: !!o.anim, click: o.click == null ? null : o.click };
+  };
+  const row = (r: number, c0: number, c1: number, ch: string, col: string | null, o: Opt = {}) => {
+    for (let c = c0; c <= c1; c++) set(r, c, ch, col, o);
+  };
+  const put = (r: number, c: number, s: string, col: string | null, o: Opt = {}) => {
+    for (let k = 0; k < s.length; k++) set(r, c + k, s[k], col, o);
+  };
+
+  // ── database boxes: 2×2 cluster (double border, inner 14) ────────────────
+  // index → cell: 0 vector(top-left) 1 buffer(top-right) 2 timeseries(bottom-
+  // left) 3 log(bottom-right). Selected box lights blue + bold, rest gray.
+  databases.forEach((d, i) => {
+    const bx = (i % 2) * 18;           // columns at 0 and 18
+    const by = Math.floor(i / 2) * 6;  // rows at 0 and 6
+    const on = d.key === active;
+    const col = on ? C.active : C.gray;
+    const o: Opt = { b: on, click: d.key };
+    set(by, bx, '╔', col, o); row(by, bx + 1, bx + 14, '═', col, o); set(by, bx + 15, '╗', col, o);
+    const lines = ['', d.name, ''];
+    for (let k = 0; k < 3; k++) {
+      const r = by + 1 + k;
+      set(r, bx, '║', col, o);
+      row(r, bx + 1, bx + 14, ' ', col, { click: d.key });
+      if (lines[k]) put(r, bx + 1, ctr(lines[k], 14), col, o);
+      set(r, bx + 15, '║', col, o);
+    }
+    set(by + 4, bx, '╚', col, o); row(by + 4, bx + 1, bx + 14, '═', col, o); set(by + 4, bx + 15, '╝', col, o);
+  });
+
+  // ── manifold: a vertical bus right of the cluster, spanning its full height
+  //    and tapping right into the engine. Structural, so always neutral. ─────
+  const BUS = 35;
+  set(0, BUS, '╷', C.rail);
+  for (let r = 1; r <= 9; r++) set(r, BUS, '│', C.rail);
+  set(10, BUS, '╵', C.rail);
+  set(5, BUS, '├', C.rail);
+  row(5, BUS + 1, BUS + 2, '─', C.rail); set(5, BUS + 3, '►', C.rail);
+
+  // ── storage engine (heavy border), centered on the bus tap (rows 3–7) ────
+  const L = 40, R = 60, TRUNK = 50;  // inner 41..59 (19 wide); trunk at center
+  {
+    const on = active === 'engine';
+    const col = on ? C.active : C.gray;
+    const sub = on ? C.engineDim : C.gray;
+    const e: Opt = { click: 'engine' };
+    set(3, L, '┏', col, e); row(3, L + 1, R - 1, '━', col, e); set(3, R, '┓', col, e);
+    for (let r = 4; r <= 6; r++) { set(r, L, '┃', col, e); row(r, L + 1, R - 1, ' ', col, e); set(r, R, '┃', col, e); }
+    put(4, L + 1, ctr('OpenData', R - L - 1), col, { click: 'engine' });
+    put(5, L + 1, ctr('Storage Engine', R - L - 1), col, { b: true, click: 'engine' });
+    put(6, L + 1, ctr('built on SlateDB', R - L - 1), sub, e);
+    set(7, L, '┗', col, e); row(7, L + 1, R - 1, '━', col, e); set(7, TRUNK, '┬', C.rail); set(7, R, '┛', col, e);
+  }
+
+  // engine → object storage: trunk drops straight down (animated arrow in) ───
+  set(8, TRUNK, '│', C.rail);
+
+  // ── object storage (double border, rows 9–13), directly below the engine ──
+  {
+    const on = active === 'storage';
+    const col = on ? C.active : C.gray;
+    const s: Opt = { click: 'storage' };
+    set(9, L, '╔', col, s); row(9, L + 1, R - 1, '═', col, s); set(9, TRUNK, '▼', C.rail, { anim: true }); set(9, R, '╗', col, s);
+    for (let r = 10; r <= 12; r++) { set(r, L, '║', col, s); row(r, L + 1, R - 1, ' ', col, s); set(r, R, '║', col, s); }
+    put(10, L + 1, ctr('Object Storage', R - L - 1), col, { b: true, click: 'storage' });
+    put(12, L + 1, ctr('S3 · GCS · R2', R - L - 1), col, s);
+    set(13, L, '╚', col, s); row(13, L + 1, R - 1, '═', col, s); set(13, R, '╝', col, s);
+  }
+
+  return gridToLines(grid);
+}
+
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-export function diagramHTML(active: Selection): string {
+function linesToHTML(lines: Seg[][]): string {
   let out = '';
-  for (const line of buildDiagramLines(active)) {
+  for (const line of lines) {
     for (const s of line) {
       const style =
         `color:${s.c || '#444'};font-weight:${s.b ? 700 : 400};` +
@@ -311,48 +387,54 @@ export function diagramHTML(active: Selection): string {
   return out;
 }
 
+export function diagramHTML(active: Selection): string {
+  return linesToHTML(buildDiagramLines(active));
+}
+
+export function diagramHTMLHorizontal(active: Selection): string {
+  return linesToHTML(buildDiagramLinesHorizontal(active));
+}
+
 type PanelSpec = {
   iconKey: string;
   title: string;
   desc: string;
   facets: string[];
-  buttons: { href: string; label: string; primary: boolean }[];
-  notchOffset: string;
+  buttons: { href: string; label: string; primary: boolean; external?: boolean }[];
 };
 
 function renderPanel(p: PanelSpec): string {
   const facets = p.facets
     .map(
       (f) =>
-        `<div style="display:flex;gap:10px;margin-bottom:9px">` +
-        `<span style="font-family:var(--font-mono);color:#3a66d6;font-weight:700">&gt;</span>` +
-        `<span style="font-size:13px;color:#555;line-height:1.55">${esc(f)}</span>` +
+        `<div style="display:flex;gap:9px;margin-bottom:4px">` +
+        `<span style="flex-shrink:0;width:5px;height:5px;border-radius:50%;background:#4971ab;margin-top:7px"></span>` +
+        `<span style="font-size:13px;color:#555;line-height:1.5">${esc(f)}</span>` +
         `</div>`
     )
     .join('');
 
   const buttons = p.buttons
-    .map((b) =>
-      b.primary
-        ? `<a href="${b.href}" style="font-family:var(--font-mono);border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;font-size:12px;font-weight:500;padding:10px 16px;text-decoration:none">${esc(b.label)}</a>`
-        : `<a href="${b.href}" style="font-family:var(--font-mono);color:#3a66d6;font-size:12px;text-decoration:none">${esc(b.label)}</a>`
-    )
+    .map((b) => {
+      const ext = b.external ? ' target="_blank" rel="noopener"' : '';
+      return b.primary
+        ? `<a href="${b.href}"${ext} style="font-family:var(--font-mono);border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;font-size:12px;font-weight:500;padding:10px 16px;text-decoration:none">${esc(b.label)}</a>`
+        : `<a href="${b.href}"${ext} style="font-family:var(--font-mono);color:#4971ab;font-size:12px;text-decoration:none">${esc(b.label)}</a>`;
+    })
     .join('');
 
-  // Dark card with a bold blue spine on the edge that faces the diagram — left
-  // on the desktop two-column layout, top once the panel stacks below the
-  // diagram on mobile (see .fam-panel in index.astro) — the accent that ties
-  // the panel to the selected (blue) box, plus a small notch nodding back.
+  // Subtle floating card: soft drop shadow + hairline border (styling in
+  // .fam-panel, index.astro), tied to the selected (blue) box by the matching
+  // blue accent on the panel's edge facing the diagram.
+  // The product name sits on the panel's top border as a tab (.fam-title) rather
+  // than as a large in-body heading — keeps the dialog compact. Padding lives in
+  // .fam-panel (index.astro) so it can shrink on the stacked layout.
   return (
-    `<div class="fam-panel" style="position:relative;display:flex;flex-direction:column;background:#fff;box-shadow:5px 5px 0 0 #c8d1ef;padding:26px 26px 24px">` +
-    `<div class="fam-notch" style="--notch-offset:${p.notchOffset};position:absolute;left:-16px;transform:translateY(-50%);width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-right:10px solid #3a66d6"></div>` +
-    `<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">` +
-    iconTile(p.iconKey, 34, 18) +
-    `<div style="font-size:20px;font-weight:700;letter-spacing:-0.5px">${esc(p.title)}</div>` +
-    `</div>` +
-    `<div style="font-size:14px;line-height:1.65;color:#555;margin-bottom:20px">${esc(p.desc)}</div>` +
-    `<div style="border-top:1px dashed #cdd6ee;padding-top:16px">${facets}</div>` +
-    `<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:auto;padding-top:20px">${buttons}</div>` +
+    `<div class="fam-panel" style="position:relative;display:flex;flex-direction:column;background:#fff">` +
+    `<div class="fam-title">${esc(p.title)}</div>` +
+    `<div style="font-size:14px;line-height:1.6;color:#555;margin-bottom:14px">${esc(p.desc)}</div>` +
+    `<div style="border-top:1px dashed #dde2ec;padding-top:14px">${facets}</div>` +
+    `<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:auto;padding-top:16px">${buttons}</div>` +
     `</div>`
   );
 }
@@ -369,8 +451,10 @@ const FOUNDATION: Record<string, PanelSpec> = {
       'Scale readers independently from writers',
       'Learn one operational model',
     ],
-    buttons: [{ href: '/docs/overview/architecture', label: '[ learn more → ]', primary: true }],
-    notchOffset: notchOffset(ENG + 3), // engine box spans rows 11–17 → center row 14
+    buttons: [
+      { href: '/docs/overview/architecture', label: '[ learn more → ]', primary: true },
+      { href: 'https://www.slatedb.io/', label: 'slatedb.io →', primary: false, external: true },
+    ],
   },
   storage: {
     iconKey: 'storage',
@@ -383,16 +467,15 @@ const FOUNDATION: Record<string, PanelSpec> = {
       'Elastically scale compute without moving data',
     ],
     buttons: [{ href: '/docs/overview/storage', label: '[ learn more → ]', primary: true }],
-    notchOffset: notchOffset(OS + 2), // object storage box spans rows 21–25 → center row 23
   },
 };
 
-export function panelHTML(active: Selection): string {
+function panelSpec(active: Selection): PanelSpec {
   const found = FOUNDATION[active];
-  if (found) return renderPanel(found);
+  if (found) return found;
 
   const act = databases.find((d) => d.key === active) ?? databases[0];
-  return renderPanel({
+  return {
     iconKey: act.key,
     title: act.full,
     desc: act.desc,
@@ -401,6 +484,29 @@ export function panelHTML(active: Selection): string {
       { href: act.href, label: `[ read about ${act.name} → ]`, primary: true },
       { href: `/docs/${act.key}`, label: 'view docs →', primary: false },
     ],
-    notchOffset: notchOffset(DB_CENTER_ROW),
-  });
+  };
+}
+
+// Every selectable key, in diagram order (foundation first, then the products).
+export const ALL_KEYS: Selection[] = ['engine', 'storage', ...databases.map((d) => d.key)];
+
+export function panelHTML(active: Selection): string {
+  return renderPanel(panelSpec(active));
+}
+
+// Renders ALL panels stacked in the same grid cell so the container always
+// reserves space for the tallest one. Only the active layer is visible; the
+// rest stay laid out (visibility:hidden) so switching never resizes the box.
+export function panelsHTML(active: Selection): string {
+  const layers = ALL_KEYS.map((key) => {
+    const on = key === active;
+    const vis = on ? 'visible' : 'hidden';
+    return (
+      `<div class="fam-layer" data-panel="${key}" ` +
+      `style="grid-area:1/1;visibility:${vis}">` +
+      renderPanel(panelSpec(key)) +
+      `</div>`
+    );
+  }).join('');
+  return `<div class="fam-stack" style="display:grid">${layers}</div>`;
 }
