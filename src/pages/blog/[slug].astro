@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import PostToc from "../../components/PostToc.astro";
+import Tldr from "../../components/Tldr.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -47,7 +48,7 @@ const pillTags = tags.slice(1);
       </header>
 
       <div class="prose-opendata">
-        <Content />
+        <Content components={{ Tldr }} />
       </div>
     </article>
     <div class="flex items-center gap-6 font-mono text-sm">
@@ -77,16 +78,27 @@ const pillTags = tags.slice(1);
      border. No shadow or full box — lighter than the home page card. */
   .posthead {
     position: relative;
+    /* Bleed the frame out to the page gutter (16px = the outer px-4) on both
+       sides — the most it can bleed without overflowing the viewport. The 13px
+       left padding + 3px rail keep the title aligned with the body below while
+       giving it room to breathe off the rail. */
+    margin: 0 -16px;
     border-top: 1px solid rgba(20, 24, 40, 0.10);
     border-left: 3px solid #4971ab;
-    padding: 22px 0 16px 22px;
+    padding: 22px 16px 18px 13px;
   }
   .posthead-tab {
-    position: absolute; top: -10px; left: 18px;
-    background: #fff; padding: 0 8px;
+    position: absolute; top: -10px; left: 16px;
+    background: #fff; padding: 0 8px 0 0;
     font-family: var(--font-mono);
     font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
     color: #4971ab;
+  }
+  /* Small screens: drop the rail + bleed so the header isn't squished against
+     the edge. Keep the top border + tab, flush to the column. */
+  @media (max-width: 768px) {
+    .posthead { margin: 0; border-left: none; padding: 20px 0 14px 0; }
+    .posthead-tab { left: 0; }
   }
   .posthead-title {
     font-family: var(--font-mono);
