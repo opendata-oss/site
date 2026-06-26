@@ -351,7 +351,11 @@ const initialPanel = panelsHTML(DEFAULT_SELECTION);
      content column) runs continuously down through both rows, ending at the
      last section. The content keeps its original width and styling. */
   .lower { max-width: 1180px; margin-left: auto; margin-right: auto; padding: 12px 24px 48px; }
-  .lower-row { display: grid; grid-template-columns: 200px minmax(0, 1fr); }
+  /* Three columns keep the content (620 + its 56 left padding = 676) centered
+     on the page: the label sits in the left column (right-aligned against the
+     rule) and the empty right column balances it, so the content stays put as
+     the viewport narrows instead of drifting off-center. */
+  .lower-row { display: grid; grid-template-columns: minmax(150px, 1fr) minmax(0, 676px) minmax(150px, 1fr); margin-left: auto; margin-right: auto; }
   /* A gap between the rows breaks the rule between sections: each content
      column's border ends with its own content, and this margin (outside both
      borders) leaves a clear break before the next section's rule resumes. */
@@ -382,7 +386,9 @@ const initialPanel = panelsHTML(DEFAULT_SELECTION);
   @media (max-width: 900px) {
     /* Stack: label becomes a left-aligned eyebrow above its content, and the
        vertical bracket gives way to a horizontal rule between the sections. */
-    .lower-row { grid-template-columns: 1fr; }
+    /* Stacked: drop to the content's own width (620) so the centered block
+       hugs the content rather than reserving the gutter column. */
+    .lower-row { grid-template-columns: 1fr; max-width: 620px; }
     .lower-label { text-align: left; padding: 0 0 12px 0; }
     .lower-label span { display: inline; }
     .lower-content { border-left: none; padding-top: 0; padding-left: 0; padding-bottom: 32px; }
