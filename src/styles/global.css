@@ -62,7 +62,13 @@
 }
 
 .prose-opendata h2 {
-  @apply text-xl text-slate-900 mt-8 mb-3 font-semibold;
+  @apply text-slate-900 font-bold;
+  /* Match the docs heading measure (maple prose h2): 1.5em / line-height
+     1.333 / 2em above / .667em below. */
+  font-size: 1.5em;
+  line-height: 1.3333;
+  margin-top: 2em;
+  margin-bottom: 0.6667em;
   /* Blue accent tick beside each section heading, outdented so the heading
      text stays aligned with the body. */
   border-left: 3px solid #4971ab;
@@ -71,11 +77,18 @@
 }
 
 .prose-opendata h3 {
-  @apply text-lg text-slate-900 mt-6 mb-2 font-semibold;
+  @apply text-slate-900 font-bold;
+  /* Match the docs heading measure (maple prose h3). */
+  font-size: 1.25em;
+  line-height: 1.6;
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
 }
 
 .prose-opendata p {
-  @apply text-slate-700 mb-4 leading-relaxed text-[17px];
+  /* Match the docs long-form reading measure (maple base prose): 16px,
+     line-height 1.75, 1.25em paragraph spacing. */
+  @apply text-slate-700 mb-[1.25em] text-[16px] leading-[1.75];
 }
 
 .prose-opendata ul {
