@@ -110,11 +110,11 @@
 }
 
 .prose-opendata code {
-  @apply bg-slate-100 text-slate-800 text-sm px-1.5 py-0.5 rounded;
+  @apply bg-slate-100 text-slate-800 text-sm px-1.5 py-0.5;
 }
 
 .prose-opendata pre {
-  @apply text-xs px-4 py-6 rounded-lg overflow-x-auto my-8 font-mono border border-slate-200 bg-slate-50;
+  @apply text-xs px-4 py-6 overflow-x-auto my-8 font-mono border border-slate-200 bg-slate-50;
   line-height: 1.15;
   font-feature-settings: "calt" 0, "liga" 0, "dlig" 0;
   font-variant-ligatures: none;
@@ -139,7 +139,7 @@
 }
 
 .prose-opendata img {
-  @apply rounded-lg border border-slate-200 my-6 max-w-full h-auto bg-white p-4;
+  @apply border border-slate-200 my-6 max-w-full h-auto bg-white p-4;
 }
 
 /* Contributor avatars opt out of the generic blog-image framing above
