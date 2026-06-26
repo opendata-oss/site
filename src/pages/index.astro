@@ -77,10 +77,14 @@ const initialPanel = panelsHTML(DEFAULT_SELECTION);
       </div>
     </div>
 
-    <!-- three benefits -->
-    <div class="sec sec-why">
-      <div class="abox abox-bare max-w-[620px] mx-auto">
-        <div>
+    <!-- lower half: a left gutter of section labels runs alongside the
+         remaining sections, divided from the content by a single vertical rule. -->
+    <div class="lower">
+      <!-- why opendata -->
+      <div class="lower-row">
+        <div class="lower-label"><span>Why</span> <span>OpenData</span></div>
+        <div class="lower-content">
+          <div class="max-w-[620px]">
           <p class="text-[15px] leading-[1.8] text-[#444] mb-5">Running production databases requires specialized expertise, which is why databases are expensive.</p>
           <p class="text-[15px] leading-[1.8] text-[#444] mb-8">Object storage promises to change that. It gives us durable, globally addressable storage that makes radically simpler database architectures possible. What's more, the engineering needed to use object storage optimally is substantially similar across databases. That's why every OpenData database shares:</p>
 
@@ -105,14 +109,15 @@ const initialPanel = panelsHTML(DEFAULT_SELECTION);
           </div>
 
           <a href="/blog/manifesto" class="inline-flex items-center gap-1 text-[14px] font-medium text-[#4971ab] hover:text-[#375481] transition-colors">Read the manifesto &rarr;</a>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- install terminal -->
-    <div class="sec sec-term">
-      <div class="abox-bare max-w-[620px] mx-auto">
-        <div class="term">
+      <!-- get started -->
+      <div class="lower-row">
+        <div class="lower-label"><span>Get</span> <span>Started</span></div>
+        <div class="lower-content lower-content-last">
+          <div class="term max-w-[620px]">
         <!-- pure-CSS tabs: hidden radios drive both the tab highlight and the
              visible command line via :checked sibling selectors -->
         <input class="term-radio" type="radio" name="term-tab" id="term-log" checked />
@@ -151,6 +156,7 @@ const initialPanel = panelsHTML(DEFAULT_SELECTION);
             <a class="term-out term-link" href="/docs/buffer">&rarr; read the buffer docs</a>
           </div>
         </div>
+          </div>
         </div>
       </div>
     </div>
@@ -339,7 +345,50 @@ const initialPanel = panelsHTML(DEFAULT_SELECTION);
   @media (max-width: 640px) { .float-card { padding: 24px 22px; } }
   .sec { max-width: 1280px; margin-left: auto; margin-right: auto; padding-left: 24px; padding-right: 24px; }
   .sec-family { padding-top: 16px; padding-bottom: 64px; }
-  .sec-why { padding-top: 12px; padding-bottom: 76px; }
+
+  /* Lower half: section-label gutter. A fixed-width left column holds the
+     right-aligned mono labels; a single vertical rule (border-left on the
+     content column) runs continuously down through both rows, ending at the
+     last section. The content keeps its original width and styling. */
+  .lower { max-width: 1180px; margin-left: auto; margin-right: auto; padding: 12px 24px 48px; }
+  .lower-row { display: grid; grid-template-columns: 200px minmax(0, 1fr); }
+  /* A gap between the rows breaks the rule between sections: each content
+     column's border ends with its own content, and this margin (outside both
+     borders) leaves a clear break before the next section's rule resumes. */
+  .lower-row + .lower-row { margin-top: 72px; }
+  .lower-label {
+    text-align: right;
+    /* 32px top = the 28px the rule overhangs the content + a 4px optical
+       nudge, so every label lines up with the top of its content. */
+    padding: 32px 40px 0 0;
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    line-height: 1.5; letter-spacing: 2px; text-transform: uppercase;
+    color: #4971ab;
+  }
+  /* Stack the two words onto their own lines via block spans; the media query
+     below switches them back to inline so they share one line when stacked. */
+  .lower-label span { display: block; }
+  /* The rule (border-left) overhangs its content by the same 28px at every end
+     — top and bottom of both sections. Short feet (pseudo-elements) at each end
+     point back toward the label gutter, turning the rule into a ] bracket. */
+  .lower-content { position: relative; border-left: 1px solid #e4e4e4; padding: 28px 0 28px 56px; }
+  .lower-content::before,
+  .lower-content::after {
+    content: ""; position: absolute; left: -11px; width: 11px; height: 1px; background: #e4e4e4;
+  }
+  .lower-content::before { top: 0; }
+  .lower-content::after { bottom: 0; }
+
+  @media (max-width: 900px) {
+    /* Stack: label becomes a left-aligned eyebrow above its content, and the
+       vertical bracket gives way to a horizontal rule between the sections. */
+    .lower-row { grid-template-columns: 1fr; }
+    .lower-label { text-align: left; padding: 0 0 12px 0; }
+    .lower-label span { display: inline; }
+    .lower-content { border-left: none; padding-top: 0; padding-left: 0; padding-bottom: 32px; }
+    .lower-content::before, .lower-content::after { display: none; }
+    .lower-row + .lower-row { margin-top: 0; padding-top: 32px; border-top: 1px solid #e4e4e4; }
+  }
 
   /* Three pillars: stacked on small screens, a three-up row once there's room.
      Each card matches the family dialog — hairline border, a blue accent on the
@@ -371,7 +420,6 @@ const initialPanel = panelsHTML(DEFAULT_SELECTION);
 
   /* Install terminal: a mock terminal window with the pantheon backdrop and
      CSS-only tabs that swap the visible curl command. */
-  .sec-term { padding-top: 12px; padding-bottom: 76px; }
   /* The pantheon backdrop spans the whole window; the header sits over it and
      blurs its slice, the body shows it through a light scrim. */
   .term {
