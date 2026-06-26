@@ -68,6 +68,14 @@ const product = PRODUCTS[productKey] ?? null;
       </div>
 
       {product && (
+        <>
+        <!-- Subtle blue dashes fading at both ends, marking the seam between the
+             post body and the Get Started strip. Desktop only — on mobile the
+             stacked layout already draws a horizontal rule between sections. -->
+        <div class="lower-row post-sep-row" aria-hidden="true">
+          <div class="post-gutter-empty"></div>
+          <div class="post-sep-col"><div class="post-sep"></div></div>
+        </div>
         <!-- Get Started: its own bracketed section, mirroring the home page —
              "GET STARTED" in the gutter, the product as the selected window tab. -->
         <div class="lower-row">
@@ -95,6 +103,7 @@ const product = PRODUCTS[productKey] ?? null;
             </aside>
           </div>
         </div>
+        </>
       )}
 
       <!-- Footer nav row: aligned with the body column, no gutter rule. -->
@@ -144,9 +153,32 @@ const product = PRODUCTS[productKey] ?? null;
     padding-top: 0 !important;
   }
   .post-bodycol { padding-left: 56px; padding-top: 16px; min-width: 0; }
+
+  /* Separator seam between body and Get Started — splits the 72px inter-section
+     gap and sits aligned with the content column. */
+  .lower-row + .post-sep-row { margin-top: 40px; }
+  .post-sep-row + .lower-row { margin-top: 40px; }
+  .post-sep-col { padding-left: 56px; min-width: 0; }
+  .post-sep {
+    height: 1px;
+    /* Half width, centered within the content column. */
+    width: 50%;
+    margin: 0 auto;
+    /* Dashed accent rule, masked to transparent at both ends so it reads as a
+       soft pause rather than a hard line. */
+    background-image: linear-gradient(90deg, #4971ab 50%, transparent 50%);
+    background-size: 8px 1px;
+    background-repeat: repeat-x;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+    opacity: 0.5;
+  }
+
   @media (max-width: 900px) {
     .post-gutter-empty { display: none; }
     .post-bodycol { padding-left: 0; padding-top: 24px; }
+    /* The stacked layout already draws a rule between sections; drop the dashes. */
+    .post-sep-row { display: none; }
   }
 
   /* End-of-post terminal — mirrors the home page install terminal: warm paper
