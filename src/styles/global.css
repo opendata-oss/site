@@ -62,15 +62,33 @@
 }
 
 .prose-opendata h2 {
-  @apply text-xl text-slate-900 mt-8 mb-3 font-semibold;
+  @apply text-slate-900 font-bold;
+  /* Match the docs heading measure (maple prose h2): 1.5em / line-height
+     1.333 / 2em above / .667em below. */
+  font-size: 1.5em;
+  line-height: 1.3333;
+  margin-top: 2em;
+  margin-bottom: 0.6667em;
+  /* Blue accent tick beside each section heading, outdented so the heading
+     text stays aligned with the body. */
+  border-left: 3px solid #4971ab;
+  padding-left: 14px;
+  margin-left: -17px;
 }
 
 .prose-opendata h3 {
-  @apply text-lg text-slate-900 mt-6 mb-2 font-semibold;
+  @apply text-slate-900 font-bold;
+  /* Match the docs heading measure (maple prose h3). */
+  font-size: 1.25em;
+  line-height: 1.6;
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
 }
 
 .prose-opendata p {
-  @apply text-slate-700 mb-4 leading-relaxed text-[17px];
+  /* Match the docs long-form reading measure (maple base prose): 16px,
+     line-height 1.75, 1.25em paragraph spacing. */
+  @apply text-slate-700 mb-[1.25em] text-[16px] leading-[1.75];
 }
 
 .prose-opendata ul {
@@ -110,11 +128,11 @@
 }
 
 .prose-opendata code {
-  @apply bg-slate-100 text-slate-800 text-sm px-1.5 py-0.5 rounded;
+  @apply bg-slate-100 text-slate-800 text-sm px-1.5 py-0.5;
 }
 
 .prose-opendata pre {
-  @apply text-xs px-4 py-6 rounded-lg overflow-x-auto my-8 font-mono border border-slate-200 bg-slate-50;
+  @apply text-xs px-4 py-6 overflow-x-auto my-8 font-mono border border-slate-200 bg-slate-50;
   line-height: 1.15;
   font-feature-settings: "calt" 0, "liga" 0, "dlig" 0;
   font-variant-ligatures: none;
@@ -139,7 +157,7 @@
 }
 
 .prose-opendata img {
-  @apply rounded-lg border border-slate-200 my-6 max-w-full h-auto bg-white p-4;
+  @apply border border-slate-200 my-6 max-w-full h-auto bg-white p-4;
 }
 
 /* Contributor avatars opt out of the generic blog-image framing above
@@ -162,4 +180,51 @@
 
 .prose-opendata td {
   @apply px-3 py-2 align-top border-b border-slate-100;
+}
+
+/* ============================================================
+   Section-label gutter — the SHARED source of truth for the
+   right-aligned mono labels and their vertical-rule bracket.
+   Used by the home page lower half and the blog index so the
+   label inset is identical everywhere. Edit here only.
+   ============================================================ */
+.lower { max-width: 1180px; margin-left: auto; margin-right: auto; padding: 12px 24px 48px; }
+/* Three columns keep the content (620 + its 56 left padding = 676) centered
+   on the page: the label sits in the left column (right-aligned against the
+   rule) and the empty right column balances it, so the content stays put as
+   the viewport narrows instead of drifting off-center. */
+.lower-row { display: grid; grid-template-columns: minmax(150px, 1fr) minmax(0, 676px) minmax(150px, 1fr); margin-left: auto; margin-right: auto; }
+/* A gap between rows breaks the rule between sections. */
+.lower-row + .lower-row { margin-top: 72px; }
+.lower-label {
+  text-align: right;
+  /* 32px top = the 28px the rule overhangs the content + a 4px optical
+     nudge, so every label lines up with the top of its content. */
+  padding: 32px 40px 0 0;
+  font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+  line-height: 1.5; letter-spacing: 2px; text-transform: uppercase;
+  color: #4971ab;
+}
+/* Stack multi-word labels onto their own lines; the media query below
+   switches them back to inline when stacked. */
+.lower-label span { display: block; }
+/* The rule (border-left) overhangs its content by 28px at each end; short feet
+   (pseudo-elements) point back toward the gutter, turning it into a ] bracket. */
+.lower-content { position: relative; border-left: 1px solid #e4e4e4; padding: 28px 0 28px 56px; }
+.lower-content::before,
+.lower-content::after {
+  content: ""; position: absolute; left: -11px; width: 11px; height: 1px; background: #e4e4e4;
+}
+.lower-content::before { top: 0; }
+.lower-content::after { bottom: 0; }
+
+@media (max-width: 900px) {
+  /* Stack: label becomes a left-aligned eyebrow above its content, and the
+     vertical bracket gives way to a horizontal rule between sections. */
+  .lower-row { grid-template-columns: 1fr; max-width: 620px; }
+  .lower-label { text-align: left; padding: 0 0 12px 0; }
+  .lower-label span { display: inline; }
+  .lower-content { border-left: none; padding-top: 0; padding-left: 0; padding-bottom: 32px; }
+  .lower-content::before, .lower-content::after { display: none; }
+  .lower-row + .lower-row { margin-top: 0; padding-top: 32px; border-top: 1px solid #e4e4e4; }
 }

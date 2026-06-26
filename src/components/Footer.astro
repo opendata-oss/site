@@ -1,0 +1,57 @@
+---
+// Shared site footer. Extracted from the home page so the blog (and any future
+// Base-layout page) carries the same brand/sitemap chrome and they stay locked.
+import { databases } from './family.data';
+
+const GH = 'https://github.com/opendata-oss/opendata';
+const DISCORD = 'https://discord.gg/CsAQJ2AJGU';
+---
+<footer class="bg-white border-t border-[#ececec]">
+  <div class="max-w-[1280px] mx-auto px-5 sm:px-8 py-[32px] flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
+    <!-- brand (left): logo + copyright -->
+    <div>
+      <img src="/images/logo.svg" alt="OpenData" class="h-5 w-auto" />
+      <p class="mt-3 text-[12px] text-[#9a9a9a]">&copy; 2026 OpenData &middot; MIT licensed</p>
+    </div>
+
+    <!-- sitemap (right): tightly-packed link columns -->
+    <div class="flex flex-wrap gap-x-12 gap-y-10">
+      <!-- databases -->
+      <div>
+        <div class="text-[11px] font-semibold uppercase tracking-[0.6px] text-[#1a1a1a] mb-[14px]">Databases</div>
+        <ul class="space-y-[10px]">
+          {databases.map((d) => (
+            <li><a href={`/docs/${d.key}`} class="text-[13px] text-[#6a6a6a] hover:text-[#1a1a1a] transition-colors">{d.name}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- resources -->
+      <div>
+        <div class="text-[11px] font-semibold uppercase tracking-[0.6px] text-[#1a1a1a] mb-[14px]">Resources</div>
+        <ul class="space-y-[10px]">
+          <li><a href="/docs" class="text-[13px] text-[#6a6a6a] hover:text-[#1a1a1a] transition-colors">Docs</a></li>
+          <li><a href="/blog" class="text-[13px] text-[#6a6a6a] hover:text-[#1a1a1a] transition-colors">Blog</a></li>
+          <li><a href="/blog/manifesto" class="text-[13px] text-[#6a6a6a] hover:text-[#1a1a1a] transition-colors">Manifesto</a></li>
+        </ul>
+      </div>
+
+      <!-- community -->
+      <div>
+        <div class="text-[11px] font-semibold uppercase tracking-[0.6px] text-[#1a1a1a] mb-[14px]">Community</div>
+        <ul class="space-y-[10px]">
+          <li><a href={GH} target="_blank" rel="noopener" class="text-[13px] text-[#6a6a6a] hover:text-[#1a1a1a] transition-colors">GitHub</a></li>
+          <li><a href={DISCORD} target="_blank" rel="noopener" class="text-[13px] text-[#6a6a6a] hover:text-[#1a1a1a] transition-colors">Discord</a></li>
+        </ul>
+      </div>
+
+      <!-- company -->
+      <div>
+        <div class="text-[11px] font-semibold uppercase tracking-[0.6px] text-[#1a1a1a] mb-[14px]">Company</div>
+        <ul class="space-y-[10px]">
+          <li><a href="https://www.responsive.dev" target="_blank" rel="noopener" class="text-[13px] text-[#6a6a6a] hover:text-[#1a1a1a] transition-colors">About us</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -31,10 +31,10 @@ const lineIndent = (depth: number) => {
       aria-expanded="false"
       data-post-toc
       data-open="false"
-      class="post-toc group pointer-events-auto ml-3 inline-flex flex-col items-start rounded-lg p-2 transition-all duration-150"
+      class="post-toc group pointer-events-auto ml-3 inline-flex flex-col items-start p-2 transition-all duration-150"
     >
       <div
-        class="toc-header text-[0px] leading-none opacity-0 tracking-wider font-semibold uppercase text-slate-400 transition-all duration-150"
+        class="toc-header font-mono text-[0px] leading-none opacity-0 tracking-wider font-bold uppercase text-[#4971ab] transition-all duration-150"
       >
         Contents
       </div>
@@ -114,10 +114,10 @@ const lineIndent = (depth: number) => {
     color: rgb(15 23 42);
   }
   .post-toc [data-toc-link][data-active="true"] .toc-line {
-    background-color: rgb(15 23 42); /* slate-900 */
+    background-color: #4971ab; /* accent blue */
   }
   .post-toc[data-open="true"] [data-toc-link][data-active="true"] .toc-label {
-    color: rgb(15 23 42);
+    color: #4971ab;
     font-weight: 600;
   }
 </style>

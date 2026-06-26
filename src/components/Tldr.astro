@@ -1,0 +1,40 @@
+---
+// Tldr.astro — a post's one-line summary, rendered as a boxed callout with the
+// "tl;dr" label sitting on the top border. The box's blue left rail bleeds out
+// to the page gutter so it lines up with the post title's rail above it.
+---
+<div class="tldr">
+  <span class="tldr-tab">tl;dr</span>
+  <p class="tldr-body"><slot /></p>
+</div>
+
+<style>
+  .tldr {
+    position: relative;
+    /* Bleed -16px so the left rail aligns with the title's rail (same bleed). */
+    margin: 28px -16px;
+    background: #fff;
+    border: 1px solid rgba(20, 24, 40, 0.10);
+    border-left: 3px solid #4971ab;
+    box-shadow: 6px 6px 0 0 #d6d7d9;
+    padding: 18px 18px 16px;
+  }
+  /* "tl;dr" tab on the top border, its text aligned to the column edge so it
+     sits under the title. */
+  .tldr-tab {
+    position: absolute; top: -10px; left: 16px;
+    background: #fff; padding: 0 8px 0 0;
+    font-family: var(--font-mono);
+    font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
+    color: #4971ab;
+  }
+  .tldr-body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 15px; line-height: 1.6; color: #1a1a1a;
+  }
+  /* Small screens: match the title header — drop the side bleed, keep the box. */
+  @media (max-width: 768px) {
+    .tldr { margin: 24px 0; }
+  }
+</style>
