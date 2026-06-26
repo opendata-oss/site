@@ -163,3 +163,50 @@
 .prose-opendata td {
   @apply px-3 py-2 align-top border-b border-slate-100;
 }
+
+/* ============================================================
+   Section-label gutter — the SHARED source of truth for the
+   right-aligned mono labels and their vertical-rule bracket.
+   Used by the home page lower half and the blog index so the
+   label inset is identical everywhere. Edit here only.
+   ============================================================ */
+.lower { max-width: 1180px; margin-left: auto; margin-right: auto; padding: 12px 24px 48px; }
+/* Three columns keep the content (620 + its 56 left padding = 676) centered
+   on the page: the label sits in the left column (right-aligned against the
+   rule) and the empty right column balances it, so the content stays put as
+   the viewport narrows instead of drifting off-center. */
+.lower-row { display: grid; grid-template-columns: minmax(150px, 1fr) minmax(0, 676px) minmax(150px, 1fr); margin-left: auto; margin-right: auto; }
+/* A gap between rows breaks the rule between sections. */
+.lower-row + .lower-row { margin-top: 72px; }
+.lower-label {
+  text-align: right;
+  /* 32px top = the 28px the rule overhangs the content + a 4px optical
+     nudge, so every label lines up with the top of its content. */
+  padding: 32px 40px 0 0;
+  font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+  line-height: 1.5; letter-spacing: 2px; text-transform: uppercase;
+  color: #4971ab;
+}
+/* Stack multi-word labels onto their own lines; the media query below
+   switches them back to inline when stacked. */
+.lower-label span { display: block; }
+/* The rule (border-left) overhangs its content by 28px at each end; short feet
+   (pseudo-elements) point back toward the gutter, turning it into a ] bracket. */
+.lower-content { position: relative; border-left: 1px solid #e4e4e4; padding: 28px 0 28px 56px; }
+.lower-content::before,
+.lower-content::after {
+  content: ""; position: absolute; left: -11px; width: 11px; height: 1px; background: #e4e4e4;
+}
+.lower-content::before { top: 0; }
+.lower-content::after { bottom: 0; }
+
+@media (max-width: 900px) {
+  /* Stack: label becomes a left-aligned eyebrow above its content, and the
+     vertical bracket gives way to a horizontal rule between sections. */
+  .lower-row { grid-template-columns: 1fr; max-width: 620px; }
+  .lower-label { text-align: left; padding: 0 0 12px 0; }
+  .lower-label span { display: inline; }
+  .lower-content { border-left: none; padding-top: 0; padding-left: 0; padding-bottom: 32px; }
+  .lower-content::before, .lower-content::after { display: none; }
+  .lower-row + .lower-row { margin-top: 0; padding-top: 32px; border-top: 1px solid #e4e4e4; }
+}

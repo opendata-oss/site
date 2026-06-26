@@ -15,6 +15,12 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
+
+// The title tab carries the post's primary tag; any remaining tags become
+// pills below the metadata row.
+const tags: string[] = post.data.tags ?? [];
+const tabLabel = tags[0] ?? "post";
+const pillTags = tags.slice(1);
 ---
 
 <Base
@@ -26,23 +32,18 @@ const { Content, headings } = await render(post);
   <div
     class="bg-white min-h-screen flex flex-col items-center gap-6 px-4 pt-12 pb-12"
   >
-    <article class="post text-[#444] max-w-2xl w-full space-y-6">
-      <header class="space-y-3">
-        <h1 class="text-2xl text-[#1a1a1a] font-bold">{post.data.title}</h1>
-        <div class="flex items-center gap-3 text-sm text-[#9a9a9a] font-mono">
+    <article class="post text-[#444] max-w-2xl w-full space-y-8">
+      <header class="posthead">
+        <span class="posthead-tab">{tabLabel}</span>
+        <h1 class="posthead-title">{post.data.title}</h1>
+        <div class="posthead-meta">
           <time class="tabular-nums">{post.data.date.toISOString().slice(0, 10)}</time>
           <span>&middot;</span>
           <span>{post.data.author}</span>
+          {pillTags.map((tag: string) => (
+            <span class="posthead-pill">{tag}</span>
+          ))}
         </div>
-        {post.data.tags.length > 0 && (
-          <div class="flex gap-2">
-            {post.data.tags.map((tag: string) => (
-              <span class="font-mono text-xs text-[#4971ab] bg-[#eef2fb] border border-[#e3e8f3] rounded-full px-2.5 py-0.5">
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
       </header>
 
       <div class="prose-opendata">
@@ -62,17 +63,46 @@ const { Content, headings } = await render(post);
         aria-label="Subscribe via RSS"
         title="Subscribe via RSS"
       >
-        <svg
-          class="w-4 h-4"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-        >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1Z" />
         </svg>
       </a>
     </div>
   </div>
 </Base>
+
+<style>
+  /* Title header housed in a light L-frame: a blue left rail + a hairline top
+     border, with the product tab ("LOG", "TIMESERIES"…) inset on the top
+     border. No shadow or full box — lighter than the home page card. */
+  .posthead {
+    position: relative;
+    border-top: 1px solid rgba(20, 24, 40, 0.10);
+    border-left: 3px solid #4971ab;
+    padding: 22px 0 16px 22px;
+  }
+  .posthead-tab {
+    position: absolute; top: -10px; left: 18px;
+    background: #fff; padding: 0 8px;
+    font-family: var(--font-mono);
+    font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+    color: #4971ab;
+  }
+  .posthead-title {
+    font-family: var(--font-mono);
+    font-size: clamp(22px, 4vw, 28px); font-weight: 700;
+    letter-spacing: -0.5px; line-height: 1.18;
+    color: #1a1a1a; margin: 0;
+  }
+  .posthead-meta {
+    font-family: var(--font-mono);
+    font-size: 12px; color: #9a9a9a;
+    margin-top: 14px;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+  .posthead-pill {
+    font-size: 11px; color: #4971ab;
+    background: #eef2fb; border: 1px solid #e3e8f3; border-radius: 999px;
+    padding: 2px 9px;
+  }
+</style>
