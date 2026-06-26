@@ -26,18 +26,18 @@ const { Content, headings } = await render(post);
   <div
     class="bg-white min-h-screen flex flex-col items-center gap-6 px-4 pt-12 pb-12"
   >
-    <article class="post text-slate-700 max-w-2xl w-full space-y-6">
+    <article class="post text-[#444] max-w-2xl w-full space-y-6">
       <header class="space-y-3">
-        <h1 class="text-2xl text-slate-900 font-bold">{post.data.title}</h1>
-        <div class="flex items-center gap-3 text-sm text-slate-400">
-          <time>{post.data.date.toISOString().slice(0, 10)}</time>
+        <h1 class="text-2xl text-[#1a1a1a] font-bold">{post.data.title}</h1>
+        <div class="flex items-center gap-3 text-sm text-[#9a9a9a] font-mono">
+          <time class="tabular-nums">{post.data.date.toISOString().slice(0, 10)}</time>
           <span>&middot;</span>
           <span>{post.data.author}</span>
         </div>
         {post.data.tags.length > 0 && (
           <div class="flex gap-2">
             {post.data.tags.map((tag: string) => (
-              <span class="text-xs text-slate-400 border border-slate-200 rounded-full px-2 py-0.5">
+              <span class="font-mono text-xs text-[#4971ab] bg-[#eef2fb] border border-[#e3e8f3] rounded-full px-2.5 py-0.5">
                 {tag}
               </span>
             ))}
@@ -52,13 +52,13 @@ const { Content, headings } = await render(post);
     <div class="flex items-center gap-6 font-mono text-sm">
       <a
         href="/blog"
-        class="text-slate-500 hover:text-slate-900 underline underline-offset-4 transition-colors"
+        class="text-[#6a6a6a] hover:text-[#4971ab] underline underline-offset-4 transition-colors"
       >
         &larr; all posts
       </a>
       <a
         href="/rss.xml"
-        class="text-slate-400 hover:text-slate-900 transition-colors"
+        class="text-[#9a9a9a] hover:text-[#4971ab] transition-colors"
         aria-label="Subscribe via RSS"
         title="Subscribe via RSS"
       >

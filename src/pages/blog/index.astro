@@ -15,12 +15,12 @@ const posts = (await getCollection("blog"))
   <div
     class="bg-white min-h-screen flex flex-col items-center gap-6 px-4 pt-12 pb-12"
   >
-    <article class="font-mono text-slate-700 max-w-2xl w-full space-y-6">
+    <article class="font-mono text-[#444] max-w-2xl w-full space-y-6">
       <div class="flex items-center justify-between gap-4">
-        <h1 class="text-2xl text-slate-900">Blog</h1>
+        <h1 class="text-2xl text-[#1a1a1a] font-bold tracking-[-0.025em]">Blog</h1>
         <a
           href="/rss.xml"
-          class="text-slate-400 hover:text-slate-900 transition-colors"
+          class="text-[#9a9a9a] hover:text-[#4971ab] transition-colors"
           aria-label="Subscribe via RSS"
           title="Subscribe via RSS"
         >
@@ -37,7 +37,7 @@ const posts = (await getCollection("blog"))
         </a>
       </div>
 
-      {posts.length === 0 && <p class="text-slate-400">No posts yet.</p>}
+      {posts.length === 0 && <p class="text-[#9a9a9a]">No posts yet.</p>}
 
       <ul class="space-y-2">
         {posts.map((post) => (
@@ -46,10 +46,10 @@ const posts = (await getCollection("blog"))
               href={`/blog/${post.id}`}
               class="flex items-baseline justify-between gap-4 group"
             >
-              <span class="text-slate-900 group-hover:underline underline-offset-4">
+              <span class="text-[#1a1a1a] group-hover:text-[#4971ab] transition-colors">
                 {post.data.title}
               </span>
-              <time class="text-sm text-slate-400 shrink-0">
+              <time class="text-sm text-[#9a9a9a] shrink-0 tabular-nums">
                 {post.data.date.toISOString().slice(0, 10)}
               </time>
             </a>
@@ -59,7 +59,7 @@ const posts = (await getCollection("blog"))
     </article>
     <a
       href="/"
-      class="font-mono text-sm text-slate-500 hover:text-slate-900 underline underline-offset-4 transition-colors"
+      class="font-mono text-sm text-[#6a6a6a] hover:text-[#4971ab] underline underline-offset-4 transition-colors"
     >
       &larr; back home
     </a>
