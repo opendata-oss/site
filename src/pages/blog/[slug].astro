@@ -73,32 +73,14 @@ const pillTags = tags.slice(1);
 </Base>
 
 <style>
-  /* Title header housed in a light L-frame: a blue left rail + a hairline top
-     border, with the product tab ("LOG", "TIMESERIES"…) inset on the top
-     border. No shadow or full box — lighter than the home page card. */
-  .posthead {
-    position: relative;
-    /* Bleed the frame out to the page gutter (16px = the outer px-4) on both
-       sides — the most it can bleed without overflowing the viewport. The 13px
-       left padding + 3px rail keep the title aligned with the body below while
-       giving it room to breathe off the rail. */
-    margin: 0 -16px;
-    border-top: 1px solid rgba(20, 24, 40, 0.10);
-    border-left: 3px solid #4971ab;
-    padding: 22px 16px 18px 13px;
-  }
+  /* Plain header: a mono product eyebrow ("LOG", "TIMESERIES"…) above the
+     title, then the metadata. No frame — the eyebrow + title carry it. */
   .posthead-tab {
-    position: absolute; top: -10px; left: 16px;
-    background: #fff; padding: 0 8px 0 0;
+    display: block;
     font-family: var(--font-mono);
     font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
     color: #4971ab;
-  }
-  /* Small screens: drop the rail + bleed so the header isn't squished against
-     the edge. Keep the top border + tab, flush to the column. */
-  @media (max-width: 768px) {
-    .posthead { margin: 0; border-left: none; padding: 20px 0 14px 0; }
-    .posthead-tab { left: 0; }
+    margin-bottom: 10px;
   }
   .posthead-title {
     font-family: var(--font-mono);
