@@ -35,11 +35,11 @@ Buffer is an embedded library, so it needs no install — see its docs below.
 
 ## API reference
 
-Each database exposes an HTTP API documented with OpenAPI:
+Each database exposes an HTTP API described by an OpenAPI 3.1 specification (raw YAML you can load directly):
 
-- [Timeseries API](https://www.opendata.dev/docs/timeseries): `GET /api/v1/query`, `query_range`, `series`, `labels`, and `POST /api/v1/write`.
-- [Log API](https://www.opendata.dev/docs/log): `POST /api/v1/log/append`, `GET /api/v1/log/scan`, `keys`, `segments`, `count`.
-- [Vector API](https://www.opendata.dev/docs/vector): `POST /api/v1/vector/write`, `delete`, `search`, and `GET /api/v1/vector/vectors/{id}`.
+- Timeseries — [OpenAPI spec](https://www.opendata.dev/docs/openapi/timeseries.yaml), [reference](https://www.opendata.dev/docs/timeseries): `GET /api/v1/query`, `query_range`, `series`, `labels`, and `POST /api/v1/write`.
+- Log — [OpenAPI spec](https://www.opendata.dev/docs/openapi/log.yaml), [reference](https://www.opendata.dev/docs/log): `POST /api/v1/log/append`, `GET /api/v1/log/scan`, `keys`, `segments`, `count`.
+- Vector — [OpenAPI spec](https://www.opendata.dev/docs/openapi/vector.yaml), [reference](https://www.opendata.dev/docs/vector): `POST /api/v1/vector/write`, `delete`, `search`, and `GET /api/v1/vector/vectors/{id}`.
 
 ## Docs for LLMs
 

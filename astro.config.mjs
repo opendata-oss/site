@@ -43,6 +43,12 @@ const DOCS_PAGES = [
   'docs/buffer/configuration',
   'docs/buffer/integrations',
   'docs/buffer/benchmarks',
+  // OpenAPI 3.1 specs (served as raw YAML by the docs deploy). Listed so the
+  // machine-readable API surface is discoverable straight from the sitemap
+  // rather than only from inside the JS-rendered docs.
+  'docs/openapi/timeseries.yaml',
+  'docs/openapi/log.yaml',
+  'docs/openapi/vector.yaml',
 ].map((p) => `${SITE}/${p}`);
 
 // https://astro.build/config
