@@ -13,7 +13,7 @@ Important context for agents: OpenData is **self-hosted open-source software (MI
 
 ## Getting started
 
-Install any database with one command, swapping the final argument for `timeseries`, `log`, or `vector`:
+Install any server database with one deterministic command, swapping the final argument for `timeseries`, `log`, or `vector`:
 
 ```
 curl -fsSL https://www.opendata.dev/install.sh | sh -s -- timeseries
@@ -25,6 +25,15 @@ Buffer is an embedded library, so it needs no install — see its docs below.
 - [Log quickstart](https://www.opendata.dev/docs/log/quickstart): Append and scan your first event stream.
 - [Vector quickstart](https://www.opendata.dev/docs/vector/quickstart): Index and search your first vectors.
 - [Buffer docs](https://www.opendata.dev/docs/buffer): Use the ingestion buffer as a library.
+
+## Using OpenData from applications
+
+OpenData products are not cloud APIs. A developer runs the relevant OpenData service and then calls it from their own application. In local quickstarts:
+
+- Timeseries usually listens on `http://localhost:9090` and exposes Prometheus-compatible HTTP endpoints.
+- Vector usually listens on `http://localhost:8080` and exposes JSON-over-HTTP endpoints for vector writes, deletes, search, and lookup.
+- Log usually listens on `http://localhost:8081` and exposes JSON-over-HTTP endpoints for append, scan, key, segment, and count operations.
+- Buffer is an embedded Rust/Go library pattern rather than a standalone HTTP server.
 
 ## Documentation
 

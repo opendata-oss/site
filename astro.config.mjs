@@ -15,6 +15,8 @@ const SITE = 'https://www.opendata.dev';
 // can discover the full documentation surface from a single sitemap.
 const DOCS_PAGES = [
   'docs',
+  'docs/llms.txt',
+  'docs/llms-full.txt',
   'docs/overview/architecture',
   'docs/overview/writing-data',
   'docs/overview/reading-data',
@@ -35,6 +37,7 @@ const DOCS_PAGES = [
   'docs/vector',
   'docs/vector/quickstart',
   'docs/vector/data-model',
+  'docs/vector/configuration',
   'docs/vector/storage-design',
   'docs/vector/production',
   'docs/vector/benchmarks',
@@ -51,10 +54,16 @@ const DOCS_PAGES = [
   'docs/openapi/vector.yaml',
 ].map((p) => `${SITE}/${p}`);
 
+const AGENT_PAGES = [
+  'llms.txt',
+  'agents.md',
+  'install.sh',
+].map((p) => `${SITE}/${p}`);
+
 // https://astro.build/config
 export default defineConfig({
   site: SITE,
-  integrations: [mdx(), sitemap({ customPages: DOCS_PAGES })],
+  integrations: [mdx(), sitemap({ customPages: [...DOCS_PAGES, ...AGENT_PAGES] })],
   markdown: {
     shikiConfig: {
       theme: 'github-light',

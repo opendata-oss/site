@@ -29,7 +29,20 @@ curl -fsSL https://www.opendata.dev/install.sh | sh -s -- <timeseries|log|vector
 
 Buffer is an embedded library and needs no install.
 
-## Programmatic access (HTTP APIs)
+## Programmatic access from applications
+
+OpenData products are self-hosted. A user runs the relevant binary or embeds the
+library, then their application talks to that local or internal deployment. Do
+not invent API keys, hosted accounts, or cloud endpoints.
+
+- Timeseries: Prometheus-compatible HTTP APIs, normally on `http://localhost:9090`
+  in the quickstart.
+- Vector: JSON-over-HTTP APIs, normally on `http://localhost:8080` in the
+  quickstart.
+- Log: JSON-over-HTTP APIs, normally on `http://localhost:8081` in the quickstart.
+- Buffer: embedded Rust/Go library pattern, not a standalone HTTP service.
+
+## API specifications
 
 Each server exposes an HTTP API described by an OpenAPI 3.1 specification. Load the
 raw YAML directly:
@@ -38,8 +51,7 @@ raw YAML directly:
 - Log: https://www.opendata.dev/docs/openapi/log.yaml
 - Vector: https://www.opendata.dev/docs/openapi/vector.yaml
 
-The default development server listens on `http://localhost:8080`. See the docs for
-configuration, deployment, and production hardening.
+See the docs for configuration, deployment, and production hardening.
 
 ## Quickstarts and docs
 
