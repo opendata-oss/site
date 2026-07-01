@@ -1,0 +1,73 @@
+---
+// Shared layout for simple long-form pages (privacy, contact, and future legal
+// pages). Mirrors the blog post layout — the same .lower gutter bracket, the
+// mono .posthead-title, and the .prose-opendata body — so these pages carry the
+// exact typography, link colors, and heading style as the blog. The gutter
+// eyebrow is set per page via the `label` prop.
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  label: string;
+  updated?: string;
+}
+
+const { title, description, label, updated } = Astro.props;
+---
+
+<Base title={`${title} — OpenData`} description={description}>
+  <div class="bg-white min-h-screen pt-10 md:pt-14 pb-16">
+    <div class="lower">
+      <!-- Header row: eyebrow in the gutter, title bracketed by the shared rule
+           (same device as the blog post header). -->
+      <div class="lower-row">
+        <div class="lower-label"><span>{label}</span></div>
+        <div class="lower-content">
+          <h1 class="posthead-title">{title}</h1>
+          {updated && (
+            <div class="posthead-meta">Last updated {updated}</div>
+          )}
+        </div>
+      </div>
+
+      <!-- Body row: aligned under the header's content column, no gutter rule. -->
+      <div class="lower-row post-bodyrow">
+        <div class="post-gutter-empty" aria-hidden="true"></div>
+        <article class="post post-bodycol text-[#444]">
+          <div class="prose-opendata">
+            <slot />
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<style>
+  /* Kept in sync with blog/[slug].astro's post header + body-row rules. */
+  .posthead-title {
+    font-family: var(--font-mono);
+    font-size: clamp(22px, 4vw, 28px); font-weight: 700;
+    letter-spacing: -0.5px; line-height: 1.18;
+    color: #1a1a1a; margin: 0;
+  }
+  .posthead-meta {
+    font-family: var(--font-mono);
+    font-size: 12px; color: #9a9a9a;
+    margin-top: 14px;
+  }
+  /* Neutralize the shared inter-section gap/rule so the body sits directly
+     under the header (same as the blog post body row). */
+  .post-bodyrow {
+    margin-top: 0 !important;
+    border-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  .post-bodycol { padding-left: 56px; padding-top: 16px; min-width: 0; }
+
+  @media (max-width: 900px) {
+    .post-gutter-empty { display: none; }
+    .post-bodycol { padding-left: 0; padding-top: 24px; }
+  }
+</style>

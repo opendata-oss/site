@@ -11,6 +11,60 @@ interface Props {
 const { title, description, ogImage = '/images/opengraph.png' } = Astro.props;
 const ogImageUrl = new URL(ogImage, Astro.site).href;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const siteUrl = Astro.site!.href.replace(/\/$/, '');
+
+// Structured data so agents and search engines can identify the project as an
+// entity: who publishes it (Organization + sameAs links), the site itself
+// (WebSite), and what it is (a free, open-source SoftwareApplication).
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${siteUrl}/#organization`,
+      name: 'OpenData',
+      url: siteUrl,
+      logo: `${siteUrl}/images/logo.svg`,
+      description:
+        'A family of open-source, object-store-native databases built on SlateDB.',
+      sameAs: [
+        'https://github.com/opendata-oss/opendata',
+        'https://discord.gg/CsAQJ2AJGU',
+        'https://slatedb.io',
+        'https://www.responsive.dev',
+      ],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      name: 'OpenData',
+      url: siteUrl,
+      description,
+      publisher: { '@id': `${siteUrl}/#organization` },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': `${siteUrl}/#software`,
+      name: 'OpenData',
+      applicationCategory: 'DeveloperApplication',
+      applicationSubCategory: 'Database',
+      operatingSystem: 'Linux, macOS',
+      url: siteUrl,
+      downloadUrl: 'https://github.com/opendata-oss/opendata',
+      softwareHelp: `${siteUrl}/docs`,
+      license: 'https://opensource.org/licenses/MIT',
+      isAccessibleForFree: true,
+      description:
+        'A family of open-source, object-store-native databases — Timeseries (Prometheus-compatible metrics), Log (event streaming), Vector (approximate nearest neighbor search), and Buffer (ingestion buffer) — that share a unified storage foundation on object storage.',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+      },
+      publisher: { '@id': `${siteUrl}/#organization` },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -45,6 +99,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
     <Analytics />
   </head>
   <body class="font-sans text-[#1a1a1a] antialiased bg-white">
