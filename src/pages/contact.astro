@@ -1,0 +1,43 @@
+---
+import ProsePage from '../layouts/ProsePage.astro';
+
+const GH = 'https://github.com/opendata-oss/opendata';
+const DISCORD = 'https://discord.gg/CsAQJ2AJGU';
+---
+
+<ProsePage
+  title="Contact"
+  description="How to reach the OpenData project: GitHub, Discord, and the team behind it."
+  label="Get in touch"
+>
+  <p>
+    OpenData is an open-source project. The fastest way to reach us is on GitHub
+    or Discord — pick whichever fits.
+  </p>
+
+  <h2>Questions &amp; discussion</h2>
+  <p>
+    Join the <a href={DISCORD} target="_blank" rel="noopener">Discord</a> to ask
+    questions, share what you're building, or talk through a design.
+  </p>
+
+  <h2>Bugs &amp; feature requests</h2>
+  <p>
+    Open an issue on <a href={`${GH}/issues`} target="_blank" rel="noopener">GitHub</a>.
+    For general questions, <a href={`${GH}/discussions`} target="_blank" rel="noopener">GitHub Discussions</a>
+    works well too.
+  </p>
+
+  <h2>Security</h2>
+  <p>
+    Please report vulnerabilities privately via
+    <a href={`${GH}/security/advisories/new`} target="_blank" rel="noopener">GitHub Security Advisories</a>
+    rather than a public issue.
+  </p>
+
+  <h2>The team</h2>
+  <p>
+    OpenData is built by the team at
+    <a href="https://www.responsive.dev" target="_blank" rel="noopener">Responsive</a>.
+  </p>
+</ProsePage>

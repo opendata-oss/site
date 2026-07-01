@@ -1,0 +1,37 @@
+# OpenData — https://www.opendata.dev
+# Open-source, object-store-native databases. Crawlers and AI agents are
+# welcome; nothing here is private. See /llms.txt for an agent-oriented guide.
+
+# AI assistants / agents — explicitly allowed
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Everyone else
+User-agent: *
+Allow: /
+
+Sitemap: https://www.opendata.dev/sitemap-index.xml

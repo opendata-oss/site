@@ -1,0 +1,59 @@
+# OpenData
+
+> OpenData is a family of open-source, object-store-native databases that share a unified storage foundation built on SlateDB. You run them yourself on top of S3-compatible object storage to get durability, high availability, and low cost with minimal operational overhead.
+
+Important context for agents: OpenData is **self-hosted open-source software (MIT licensed)**, not a hosted SaaS or a public data API. There are no API keys or accounts to sign up for. You install each database on your own infrastructure and it reads and writes to object storage (e.g. Amazon S3). The source is at https://github.com/opendata-oss/opendata.
+
+## When to use each database
+
+- **Timeseries** — a Prometheus-compatible metrics database. Use it to store and query metrics and time series with PromQL-style instant and range queries.
+- **Log** — a key-oriented event streaming database. Use it for append-and-scan event streams and log-style workloads.
+- **Vector** — SPANN-style approximate nearest neighbor search with full-text search. Use it for embeddings, semantic search, and RAG retrieval.
+- **Buffer** — a stateless, highly available ingestion buffer on object storage. Use it as an embedded library to buffer high-throughput ingestion without running Kafka.
+
+## Getting started
+
+Install any database with one command, swapping the final argument for `timeseries`, `log`, or `vector`:
+
+```
+curl -fsSL https://www.opendata.dev/install.sh | sh -s -- timeseries
+```
+
+Buffer is an embedded library, so it needs no install — see its docs below.
+
+- [Timeseries quickstart](https://www.opendata.dev/docs/timeseries/quickstart): Install and run your first metric queries.
+- [Log quickstart](https://www.opendata.dev/docs/log/quickstart): Append and scan your first event stream.
+- [Vector quickstart](https://www.opendata.dev/docs/vector/quickstart): Index and search your first vectors.
+- [Buffer docs](https://www.opendata.dev/docs/buffer): Use the ingestion buffer as a library.
+
+## Documentation
+
+- [Documentation home](https://www.opendata.dev/docs): Concepts shared across every database.
+- [Architecture overview](https://www.opendata.dev/docs/overview/architecture): How the object-store-native design works.
+- [Writing data](https://www.opendata.dev/docs/overview/writing-data) and [reading data](https://www.opendata.dev/docs/overview/reading-data): The shared read/write path.
+- [Storage](https://www.opendata.dev/docs/overview/storage) and [deployment](https://www.opendata.dev/docs/overview/deployment): How data is stored and how to deploy.
+
+## API reference
+
+Each database exposes an HTTP API documented with OpenAPI:
+
+- [Timeseries API](https://www.opendata.dev/docs/timeseries): `GET /api/v1/query`, `query_range`, `series`, `labels`, and `POST /api/v1/write`.
+- [Log API](https://www.opendata.dev/docs/log): `POST /api/v1/log/append`, `GET /api/v1/log/scan`, `keys`, `segments`, `count`.
+- [Vector API](https://www.opendata.dev/docs/vector): `POST /api/v1/vector/write`, `delete`, `search`, and `GET /api/v1/vector/vectors/{id}`.
+
+## Docs for LLMs
+
+- [Documentation index for LLMs (llms.txt)](https://www.opendata.dev/docs/llms.txt): Machine-readable index of every docs page.
+- [Full documentation text (llms-full.txt)](https://www.opendata.dev/docs/llms-full.txt): The entire documentation concatenated as plain text.
+- Any documentation page is also available as raw Markdown by appending `.md` to its URL, e.g. https://www.opendata.dev/docs/vector/quickstart.md
+
+## Background
+
+- [Manifesto](https://www.opendata.dev/blog/manifesto): Why databases built on object storage change the operational model.
+- [Blog](https://www.opendata.dev/blog): Design deep-dives and release notes.
+- Built on [SlateDB](https://slatedb.io), an object-store-native LSM-tree storage engine.
+
+## Community
+
+- [GitHub](https://github.com/opendata-oss/opendata): Source, issues, and releases.
+- [Discord](https://discord.gg/CsAQJ2AJGU): Questions and discussion.
