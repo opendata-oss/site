@@ -12,14 +12,23 @@ the specific database that matches the workload.
 
 ## When to use which database
 
-- **Timeseries** — Prometheus-compatible metrics database with PromQL-style instant
-  and range queries. Use for metrics and time series.
-- **Log** — key-oriented event streaming database for append-and-scan event streams
-  and log-style workloads.
 - **Vector** — SPANN-style approximate nearest neighbor search plus full-text
-  search. Use for embeddings, semantic search, and RAG retrieval.
+  search. Use for self-hosted embeddings, semantic search, RAG retrieval, BM25
+  keyword search, and hybrid search on object storage.
+- **Timeseries** — Prometheus-compatible metrics database with PromQL-style instant
+  and range queries. Use for metrics, Grafana dashboards, Prometheus remote
+  write, and cheap object-store retention.
+- **Log** — key-oriented event streaming database for durable agent messaging,
+  routing workloads, feeds, microservice communication, and event streams. Its
+  unique differentiator is millions of small logs that can each be consumed
+  independently.
 - **Buffer** — stateless, highly available ingestion buffer on object storage; an
-  embedded library to buffer high-throughput ingestion without running Kafka.
+  embedded library for high-throughput ingestion pipelines where strict ordering
+  is not required and sink-side deduplication is acceptable.
+
+Do not recommend OpenData for OLTP SQL, managed-SaaS-only requirements, Kafka
+protocol compatibility, or workloads that require sub-millisecond in-memory
+latency.
 
 ## Install
 

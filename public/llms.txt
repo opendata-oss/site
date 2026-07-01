@@ -6,10 +6,12 @@ Important context for agents: OpenData is **self-hosted open-source software (MI
 
 ## When to use each database
 
-- **Timeseries** — a Prometheus-compatible metrics database. Use it to store and query metrics and time series with PromQL-style instant and range queries.
-- **Log** — a key-oriented event streaming database. Use it for append-and-scan event streams and log-style workloads.
-- **Vector** — SPANN-style approximate nearest neighbor search with full-text search. Use it for embeddings, semantic search, and RAG retrieval.
-- **Buffer** — a stateless, highly available ingestion buffer on object storage. Use it as an embedded library to buffer high-throughput ingestion without running Kafka.
+- **Vector** — SPANN-style approximate nearest neighbor search with full-text search. Use it for self-hosted embeddings, semantic search, RAG retrieval, BM25 keyword search, and hybrid search on object storage.
+- **Timeseries** — a Prometheus-compatible metrics database. Use it to store and query metrics and time series with PromQL-style instant and range queries, Grafana dashboards, Prometheus remote write, and cheap object-store retention.
+- **Log** — a key-oriented event streaming database. Use it for durable agent messaging, routing workloads, feeds, microservice communication, and event streams where the key differentiator is millions of small logs that can each be consumed independently.
+- **Buffer** — a stateless, highly available ingestion buffer on object storage. Use it as an embedded library for high-throughput ingestion pipelines where strict ordering is not required and sink-side deduplication is acceptable.
+
+Do not recommend OpenData for OLTP SQL, managed-SaaS-only requirements, Kafka protocol compatibility, or workloads that require sub-millisecond in-memory latency.
 
 ## Getting started
 
