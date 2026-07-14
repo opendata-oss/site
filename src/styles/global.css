@@ -160,6 +160,15 @@
   @apply border border-slate-200 my-6 max-w-full h-auto bg-white p-4;
 }
 
+/* Wide charts opt into the same column breakout as wide pre blocks above so
+   their text stays legible; wrap the image in <div class="img-breakout">. */
+.prose-opendata .img-breakout img {
+  width: min(48rem, calc(100vw - 2rem));
+  max-width: none;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
 /* Contributor avatars opt out of the generic blog-image framing above
    (no padding/auto-height) so they fill their circular border. */
 .prose-opendata .contributors img {

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="474" viewBox="0 0 1000 474" font-family="ui-monospace, Menlo, Consolas, 'DejaVu Sans Mono', monospace">
+<style>
+    text { font-size: 16px; }
+    .bg      { fill: #ffffff; }
+    .title   { fill: #111827; font-size: 21px; font-weight: 600; }
+    .lbl     { fill: #6b7280; }
+    .val     { fill: #111827; }
+    .tick    { fill: #9ca3af; font-size: 13px; }
+    .axislbl { fill: #9ca3af; font-size: 13px; }
+    .note    { fill: #6b7280; font-size: 14px; }
+    .track   { fill: #f3f4f6; }
+    .grid    { stroke: #e5e7eb; stroke-width: 1; }
+    .ideal   { stroke: #6b7280; stroke-width: 1.5; stroke-dasharray: 5 4; }
+    .grp     { fill: #111827; font-size: 15px; letter-spacing: 1px; }
+    .grpsub  { fill: #9ca3af; font-size: 13px; letter-spacing: 1px; }
+    .up      { fill: #1f2937; }                                   /* unsegmented: solid   */
+    .sp      { fill: url(#hatch); stroke: #1f2937; stroke-width: 1; } /* segmented: hatched */
+    .dotu    { fill: #1f2937; }                                   /* unsegmented: solid dot */
+    .dots    { fill: #ffffff; stroke: #1f2937; stroke-width: 2; } /* segmented: open dot    */
+    .conn    { stroke: #9ca3af; stroke-width: 2.5; }
+</style>
+<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ffffff"/><line x1="0" y1="0" x2="0" y2="6" stroke="#1f2937" stroke-width="1.6"/></pattern></defs>
+<rect class="bg" width="1000" height="474"/>
+<text class="title" x="32" y="44">Queries re-read fewer bytes after segment-oriented compaction</text>
+<rect class="up" x="680" y="72" width="14" height="14" rx="3"/>
+<text class="lbl" x="700" y="84">unsegmented</text>
+<rect class="sp" x="828" y="72" width="14" height="14" rx="3"/>
+<text class="lbl" x="848" y="84">segmented</text>
+<text class="axislbl" x="880" y="430" text-anchor="end">bytes re-read (linear scale &#183; each query has its own axis)</text>
+<text class="note" x="32" y="454">Bytes re-read = median of object-store bytes read by the first query after compaction</text>
+<text class="grp" x="32" y="130">query over 1 day</text>
+<text class="grpsub" x="32" y="147">(24 time buckets)</text>
+<line class="grid" x1="320.0" y1="154" x2="320.0" y2="212"/>
+<text class="tick" x="320.0" y="226" text-anchor="middle">0</text>
+<line class="grid" x1="460.0" y1="154" x2="460.0" y2="212"/>
+<text class="tick" x="460.0" y="226" text-anchor="middle">50 MB</text>
+<line class="grid" x1="600.0" y1="154" x2="600.0" y2="212"/>
+<text class="tick" x="600.0" y="226" text-anchor="middle">100 MB</text>
+<line class="grid" x1="740.0" y1="154" x2="740.0" y2="212"/>
+<text class="tick" x="740.0" y="226" text-anchor="middle">150 MB</text>
+<line class="grid" x1="880.0" y1="154" x2="880.0" y2="212"/>
+<text class="tick" x="880.0" y="226" text-anchor="middle">200 MB</text>
+<rect class="track" x="320" y="160" width="560" height="20"/>
+<rect class="up" x="320" y="160" width="476.0" height="20" rx="3"><title>unsegmented many_bucket_range: first post-compaction query re-read 170.0 MB</title></rect>
+<text class="lbl" x="308" y="175" text-anchor="end">unsegmented</text>
+<text class="val" x="806.0" y="175">170.0 MB</text>
+<rect class="track" x="320" y="188" width="560" height="20"/>
+<rect class="sp" x="320" y="188" width="32.2" height="20" rx="3"><title>segmented many_bucket_range: first post-compaction query re-read 11.5 MB</title></rect>
+<text class="lbl" x="308" y="203" text-anchor="end">segmented</text>
+<text class="val" x="362.2" y="203">11.5 MB</text>
+<text class="grp" x="32" y="282">query over 3 hours</text>
+<text class="grpsub" x="32" y="299">(3 time buckets)</text>
+<line class="grid" x1="320.0" y1="306" x2="320.0" y2="364"/>
+<text class="tick" x="320.0" y="378" text-anchor="middle">0</text>
+<line class="grid" x1="506.7" y1="306" x2="506.7" y2="364"/>
+<text class="tick" x="506.7" y="378" text-anchor="middle">100 KB</text>
+<line class="grid" x1="693.3" y1="306" x2="693.3" y2="364"/>
+<text class="tick" x="693.3" y="378" text-anchor="middle">200 KB</text>
+<line class="grid" x1="880.0" y1="306" x2="880.0" y2="364"/>
+<text class="tick" x="880.0" y="378" text-anchor="middle">300 KB</text>
+<rect class="track" x="320" y="312" width="560" height="20"/>
+<rect class="up" x="320" y="312" width="456.4" height="20" rx="3"><title>unsegmented few_bucket_selective: first post-compaction query re-read 244.5 KB</title></rect>
+<text class="lbl" x="308" y="327" text-anchor="end">unsegmented</text>
+<text class="val" x="786.4" y="327">244.5 KB</text>
+<rect class="track" x="320" y="340" width="560" height="20"/>
+<rect class="sp" x="320" y="340" width="2.0" height="20" rx="3"><title>segmented few_bucket_selective: first post-compaction query re-read 0 B</title></rect>
+<text class="lbl" x="308" y="355" text-anchor="end">segmented</text>
+<text class="val" x="332.0" y="355">0 B</text>
+</svg>
