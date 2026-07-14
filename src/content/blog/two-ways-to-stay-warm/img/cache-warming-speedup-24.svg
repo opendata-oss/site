@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="338" viewBox="0 0 1000 338" font-family="ui-monospace, Menlo, Consolas, 'DejaVu Sans Mono', monospace">
+<style>
+    text { font-size: 16px; }
+    .bg      { fill: #ffffff; }
+    .title   { fill: #111827; font-size: 21px; font-weight: 600; }
+    .lbl     { fill: #6b7280; }
+    .val     { fill: #111827; }
+    .tick    { fill: #9ca3af; font-size: 13px; }
+    .axislbl { fill: #9ca3af; font-size: 13px; }
+    .note    { fill: #6b7280; font-size: 14px; }
+    .track   { fill: #f3f4f6; }
+    .grid    { stroke: #e5e7eb; stroke-width: 1; }
+    .grp     { fill: #111827; font-size: 15px; letter-spacing: 1px; }
+    .grpsub  { fill: #9ca3af; font-size: 13px; letter-spacing: 1px; }
+    .solid   { fill: #1f2937; }
+    .hatched { fill: url(#hatch); stroke: #1f2937; stroke-width: 1; }
+</style>
+<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ffffff"/><line x1="0" y1="0" x2="0" y2="6" stroke="#1f2937" stroke-width="1.6"/></pattern></defs>
+<rect class="bg" width="1000" height="338"/>
+<text class="title" x="32" y="44">Warm cache speeds up queries</text>
+<line class="grid" x1="320.0" y1="74" x2="320.0" y2="260"/>
+<text class="tick" x="320.0" y="276" text-anchor="middle">0x</text>
+<line class="grid" x1="506.7" y1="74" x2="506.7" y2="260"/>
+<text class="tick" x="506.7" y="276" text-anchor="middle">50x</text>
+<line class="grid" x1="693.3" y1="74" x2="693.3" y2="260"/>
+<text class="tick" x="693.3" y="276" text-anchor="middle">100x</text>
+<line class="grid" x1="880.0" y1="74" x2="880.0" y2="260"/>
+<text class="tick" x="880.0" y="276" text-anchor="middle">150x</text>
+<text class="axislbl" x="880" y="294" text-anchor="end">first-query speedup vs cold start-up (linear scale)</text>
+<text class="note" x="32" y="318">Speedup = median first query after cold start-up / median first query after warmed start-up</text>
+<text class="grp" x="32" y="102">query over 1 day</text>
+<text class="grpsub" x="32" y="119">(24 time buckets)</text>
+<rect class="track" x="320" y="132" width="560" height="20"/>
+<rect class="solid" x="320" y="132" width="96.2" height="20" rx="3"><title>samples many_bucket_range: cold 18210.3 ms &#8594; warmed 706.8 ms (25.76x)</title></rect>
+<text class="val" x="426.2" y="147">25.76x</text>
+<text class="grp" x="32" y="200">query over 3 hours</text>
+<text class="grpsub" x="32" y="217">(3 time buckets)</text>
+<rect class="track" x="320" y="230" width="560" height="20"/>
+<rect class="solid" x="320" y="230" width="423.3" height="20" rx="3"><title>samples few_bucket_selective: cold 387.3 ms &#8594; warmed 3.4 ms (113.37x)</title></rect>
+<text class="val" x="753.3" y="245">113.37x</text>
+</svg>

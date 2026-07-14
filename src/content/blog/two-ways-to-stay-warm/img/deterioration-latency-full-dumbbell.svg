@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="360" viewBox="0 0 1000 360" font-family="ui-monospace, Menlo, Consolas, 'DejaVu Sans Mono', monospace">
+<style>
+    text { font-size: 16px; }
+    .bg      { fill: #ffffff; }
+    .title   { fill: #111827; font-size: 21px; font-weight: 600; }
+    .lbl     { fill: #6b7280; }
+    .val     { fill: #111827; }
+    .tick    { fill: #9ca3af; font-size: 13px; }
+    .axislbl { fill: #9ca3af; font-size: 13px; }
+    .note    { fill: #6b7280; font-size: 14px; }
+    .track   { fill: #f3f4f6; }
+    .grid    { stroke: #e5e7eb; stroke-width: 1; }
+    .ideal   { stroke: #6b7280; stroke-width: 1.5; stroke-dasharray: 5 4; }
+    .grp     { fill: #111827; font-size: 15px; letter-spacing: 1px; }
+    .grpsub  { fill: #9ca3af; font-size: 13px; letter-spacing: 1px; }
+    .up      { fill: #1f2937; }                                   /* unsegmented: solid   */
+    .sp      { fill: url(#hatch); stroke: #1f2937; stroke-width: 1; } /* segmented: hatched */
+    .dotu    { fill: #1f2937; }                                   /* unsegmented: solid dot */
+    .dots    { fill: #ffffff; stroke: #1f2937; stroke-width: 2; } /* segmented: open dot    */
+    .conn    { stroke: #9ca3af; stroke-width: 2.5; }
+</style>
+<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ffffff"/><line x1="0" y1="0" x2="0" y2="6" stroke="#1f2937" stroke-width="1.6"/></pattern></defs>
+<rect class="bg" width="1000" height="360"/>
+<text class="title" x="32" y="44">Query latency deteriorates less after segment-oriented compaction</text>
+<circle class="dotu" cx="687" cy="79" r="7"/>
+<text class="lbl" x="700" y="84">unsegmented</text>
+<circle class="dots" cx="835" cy="79" r="7"/>
+<text class="lbl" x="848" y="84">segmented</text>
+<text class="axislbl" x="880" y="316" text-anchor="end">deterioration (linear scale &#183; each query has its own axis)</text>
+<text class="note" x="32" y="340">Deterioration = median of first query after compaction / median of query with warm cache before compaction</text>
+<text class="grp" x="32" y="134">query over 1 day</text>
+<text class="grpsub" x="32" y="151">(24 time buckets)</text>
+<line class="grid" x1="320.0" y1="122" x2="320.0" y2="156"/>
+<text class="tick" x="320.0" y="170" text-anchor="middle">0x</text>
+<line class="grid" x1="506.7" y1="122" x2="506.7" y2="156"/>
+<text class="tick" x="506.7" y="170" text-anchor="middle">10x</text>
+<line class="grid" x1="693.3" y1="122" x2="693.3" y2="156"/>
+<text class="tick" x="693.3" y="170" text-anchor="middle">20x</text>
+<line class="grid" x1="880.0" y1="122" x2="880.0" y2="156"/>
+<text class="tick" x="880.0" y="170" text-anchor="middle">30x</text>
+<line class="ideal" x1="338.7" y1="122" x2="338.7" y2="156"/>
+<text class="note" x="344.7" y="106">1.0x = ideal (no deterioration)</text>
+<line class="grid" x1="320" y1="136" x2="880" y2="136"/>
+<line class="conn" x1="483.2" y1="136" x2="715.5" y2="136"/>
+<text class="val" x="599.3" y="124" text-anchor="middle">2.4x</text>
+<circle class="dots" cx="483.2" cy="136" r="7"><title>many_bucket_range: warm 1193.6 ms &#8594; post-compaction 10434.6 ms (8.74x)</title></circle>
+<circle class="dotu" cx="715.5" cy="136" r="7"><title>many_bucket_range: warm 1294.8 ms &#8594; post-compaction 27432.6 ms (21.19x)</title></circle>
+<text class="val" x="469.2" y="141" text-anchor="end">8.74x</text>
+<text class="val" x="729.5" y="141">21.19x</text>
+<text class="grp" x="32" y="232">query over 3 hours</text>
+<text class="grpsub" x="32" y="249">(3 time buckets)</text>
+<line class="grid" x1="320.0" y1="220" x2="320.0" y2="254"/>
+<text class="tick" x="320.0" y="268" text-anchor="middle">0x</text>
+<line class="grid" x1="460.0" y1="220" x2="460.0" y2="254"/>
+<text class="tick" x="460.0" y="268" text-anchor="middle">50x</text>
+<line class="grid" x1="600.0" y1="220" x2="600.0" y2="254"/>
+<text class="tick" x="600.0" y="268" text-anchor="middle">100x</text>
+<line class="grid" x1="740.0" y1="220" x2="740.0" y2="254"/>
+<text class="tick" x="740.0" y="268" text-anchor="middle">150x</text>
+<line class="grid" x1="880.0" y1="220" x2="880.0" y2="254"/>
+<text class="tick" x="880.0" y="268" text-anchor="middle">200x</text>
+<line class="ideal" x1="322.8" y1="220" x2="322.8" y2="254"/>
+<line class="grid" x1="320" y1="234" x2="880" y2="234"/>
+<line class="conn" x1="323.1" y1="234" x2="791.6" y2="234"/>
+<text class="val" x="557.4" y="222" text-anchor="middle">150x</text>
+<circle class="dots" cx="323.1" cy="234" r="7"><title>few_bucket_selective: warm 3.1 ms &#8594; post-compaction 3.5 ms (1.12x)</title></circle>
+<circle class="dotu" cx="791.6" cy="234" r="7"><title>few_bucket_selective: warm 3.1 ms &#8594; post-compaction 528.9 ms (168.45x)</title></circle>
+<text class="val" x="309.1" y="239" text-anchor="end">1.12x</text>
+<text class="val" x="805.6" y="239">168.45x</text>
+</svg>
